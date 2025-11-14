@@ -1,0 +1,3 @@
+# open-knx-valve-control
+
+This is a controller for up to 8 underfloor heating actuators like [HmIP-FALMOT-C12](https://homematic-ip.com/en/product/valve-drive-motorised) to be integrated into the KNX bus. The Controller is based on the [STRKNX](https://www.st.com/en/interfaces-and-transceivers/stknx.html) and [ATTINY3216](https://www.microchip.com/en-us/product/attiny3216) with an `230V` supply voltage.
