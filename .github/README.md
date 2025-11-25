@@ -4,15 +4,17 @@ This is a controller for up to 8 underfloor heating actuators like [HmIP-FALMOT-
 
 ## BOM-List
 
-| Name | Footprint |	Quantity	| Mouser No. |
-| --- | --- | --- | --- |
+The follwing is the BOM-List of all parts required for assembly and the order-number at [Mouser](http://mouser.com).
+
+| Name              | Footprint     |	Quantity | Mouser No.      |
+| ------------------| ------------- | ----- | -------------------- |
 | 4.7uF	            | C0603         | 1 	| C1608X5R1V475K080AC
 | 100nF	            | C0603         | 18	| CC0603KRX5R9BB104
 | 470nF	            | C0603         | 1 	| UMK107ABJ474KA-T
 | 10uF	            | C0603         | 11	| GRM188R6YA106MA73D
 | 47nF	            | C0603         | 2	    | CL10B473KB8NFNC
 | 1nF	            | C0603         | 2	    | 0603B102M500CT
-| 100uF	            | SMD,D8xL10mm	| 1	    | VEJ101M1HTR-0810
+| 100uF	            | SMD,D8xL10mm	| 1	    | 107SML050M
 | 22uF	            | C0603	        | 2	    | CL10A226MO7JZNC
 | 22nF	            | C0603	        | 2	    | 06035C223K4T4A
 | SS34	            | SMA(DO-214AC)	| 2	    | SS34-HF
@@ -20,9 +22,9 @@ This is a controller for up to 8 underfloor heating actuators like [HmIP-FALMOT-
 | P4SMAJ5.0A	    | SMA(DO-214AC)	| 1	    | P4SMAJ5.0A
 | SMAJ40CA-13-F	    | DO-214AC(SMA)	| 1	    | SMAJ40CA-13-F
 | 1N4148WS	        | SOD-323F	    | 3	    | 1N4148WS
-| 10kΩ Potentiometers |	SMD-3P,4.5x4.5mm	| 1	| 3314G-1-103E
-| IDC Connectors	| P=2.54mm, 2x3P	    | 2	| 2-1761603-1
-| 33uH	            | SMD,4.9x4.9mm	        | 1	| NR5040T330M
+| 10kΩ Potentiometers |	SMD-3P,4.5x4.5mm | 1| 3314G-1-103E
+| IDC Connectors	| P=2.54mm, 2x3P	 | 2| 2-1761603-1
+| 33uH	            | SMD,4.9x4.9mm	     | 1| NR5040T330M
 | LED Green	        | L0603	        | 2	   |  LTST-C190GKT
 | LED Blue	        | L0604	        | 3	   |  LTST-C194TBKT
 | LED Red	        | L0605	        | 2	   |  LTST-C190EKT
