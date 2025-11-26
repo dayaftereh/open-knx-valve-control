@@ -3,23 +3,20 @@
 
 #include <crc.hpp>
 #include <EEPROM.h>
-#include <Arduino.h>
-
-using Crc8_t = uint8_t;           //@brief typedef for 1-byte crc
-using EepromAddress_t = uint16_t; //@brief typedef for internal-eeprom addresses
-
-typedef bool (*Callback_t)(T& n);
+#include <common.hpp>
 
 template <typename T>
 class ConfigManager
 {
 public:
-    [[nodiscard]] bool setup(EepromAddress_t baseAddr, Print &pr, Callback_t func, bool autosave = true)
+    using Callback_T = bool (*)(T &config);
+
+    [[nodiscard]] bool setup(EepromAddress_t baseAddress, Print &pr, Callback_T callback, bool autosave = true)
     {
         this->print = &pr;
-        this->baseAddress = baseAddr;
-        this->callback = func;
         this->eepromSize = 512;
+        this->callback = callback;
+        this->baseAddress = baseAddress;
 
         return this->load(autosave);
     }
@@ -201,7 +198,7 @@ private:
 
     T config;
     Print *print;
-    Callback_t callback;
+    Callback_T callback;
     EepromAddress_t baseAddress;
 };
 

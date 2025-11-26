@@ -1,11 +1,51 @@
-#include <Arduino.h>
+#include <status_led.hpp>
+#include <config_manager.hpp>
+#include <serial_dispatcher.hpp>
 
-using foo = []<typename T>(T &i);
+#include "error.hpp"
+#include "config.hpp"
+#include "temperature.hpp"
+
+StatusLed statusLed;
+SerialDispatcher serialDispatcher;
+ConfigManager<Config> configManager;
 
 void setup()
 {
+    // start the serial
+    Serial.begin(DefaultSerialBaud);
+
+    // setup the status led
+    statusLed.setup(Pin::ErrorLed);
+
+    // setup the dispatcher
+    bool success = serialDispatcher.setup(
+        Serial, [](SerialMessage *message) {},
+        UnitType::Temperature,
+        1);
+    if (!success)
+    {
+        statusLed.setError(Error::SerialDispatcher);
+        return;
+    }
+
+    // setup the config-manager
+    success = configManager.setup(0, serialDispatcher, [](Config &config)
+                                  { 
+                                    config.resolution = 9; // set the percision to 9 bit
+
+                                    config.updateRate = 5.0f; // 5s                                    
+                                    
+                                    return true; }, false);
+    if (!success)
+    {
+        statusLed.setError(Error::ConfigManager);
+        return;
+    }
 }
 
 void loop()
 {
+    statusLed.update();
+    serialDispatcher.update();
 }
