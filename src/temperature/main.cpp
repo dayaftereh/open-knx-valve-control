@@ -4,9 +4,10 @@
 
 #include "error.hpp"
 #include "config.hpp"
-#include "temperature.hpp"
+#include "temperatures.hpp"
 
 StatusLed statusLed;
+Temperatures temperatures;
 SerialDispatcher serialDispatcher;
 ConfigManager<Config> configManager;
 
@@ -42,10 +43,21 @@ void setup()
         statusLed.setError(Error::ConfigManager);
         return;
     }
+
+    // get the loaded configuration
+    Config *config = configManager.getConfig();
+    // setup the temperatures
+    success = temperatures.setup(config, serialDispatcher);
+    if (!success)
+    {
+        statusLed.setError(Error::Temperatures);
+        return;
+    }
 }
 
 void loop()
 {
     statusLed.update();
+    temperatures.update();
     serialDispatcher.update();
 }

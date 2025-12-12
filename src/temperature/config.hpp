@@ -5,16 +5,21 @@
 
 namespace Pin
 {
-    static constexpr Pin_t T0 = 0;        // PA4
-    static constexpr Pin_t T1 = 1;        // PA5
-    static constexpr Pin_t T2 = 2;        // PA6
-    static constexpr Pin_t T3 = 3;        // PA7
-    static constexpr Pin_t T4 = 4;        // PB5
-    static constexpr Pin_t T5 = 5;        // PB4
-    static constexpr Pin_t T6 = 8;        // PB1
-    static constexpr Pin_t T7 = 11;       // PC1
-    static constexpr Pin_t T8 = 10;       // PC0
-    static constexpr Pin_t SPI_CS = 12;   // PC2
+    static constexpr Pin_t T0 = 0;  // PA4
+    static constexpr Pin_t T1 = 1;  // PA5
+    static constexpr Pin_t T2 = 2;  // PA6
+    static constexpr Pin_t T3 = 3;  // PA7
+    static constexpr Pin_t T4 = 4;  // PB5
+    static constexpr Pin_t T5 = 5;  // PB4
+    static constexpr Pin_t T6 = 8;  // PB1
+    static constexpr Pin_t T7 = 11; // PC1
+    static constexpr Pin_t T8 = 10; // PC0
+
+    static constexpr Pin_t SPI_CS = 12;  // PC2 
+    static constexpr Pin_t MISO_CS = 14; // PA1 - PC1 => MOSI -> MISO
+    static constexpr Pin_t MOSI_CS = 15; // PA2 - PC2 => MISO -> MOSI
+    static constexpr Pin_t SCK_CS = 16;  // PA3
+
     static constexpr Pin_t ErrorLed = 13; // PC3
 }
 

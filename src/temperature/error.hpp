@@ -8,6 +8,7 @@ enum class Error : uint8_t
     NoError = 0,
     ConfigManager,
     SerialDispatcher,
+    Temperatures,
 };
 
 #endif // ERROR_HPP

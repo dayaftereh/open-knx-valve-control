@@ -11,6 +11,9 @@ public:
     [[nodiscard]] bool setup(Config *config, Print &print);
 
     void update();
+
+    [[nodiscard]] float getTemperature(int index);
+
 private:
   
     Print *print;
