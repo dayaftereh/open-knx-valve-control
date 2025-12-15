@@ -10,7 +10,7 @@
     this->counts = 0;
 
     this->error = 0;
-    this->errorTimeout = 1000;
+    this->errorTimeout = 500;
 
     this->resetCounts = 3;
     this->resetTimeout = 250;

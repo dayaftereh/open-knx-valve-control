@@ -10,9 +10,8 @@
     pinMode(Pin::MISO_CS, OUTPUT);
     pinMode(Pin::SPI_CS, INPUT);
 
-    SPCR |= _BV(SPE);
 
-    attachInterrupt(Pin::SPI_CS, ISR_SPI, FALLING);
+    //attachInterrupt(Pin::SPI_CS, ISR_SPI, FALLING);
 }
 
 void SPISlave::update()

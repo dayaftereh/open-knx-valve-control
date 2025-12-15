@@ -6,10 +6,15 @@
 #include "config.hpp"
 #include "temperatures.hpp"
 
+#include <SPI.h>
+
 StatusLed statusLed;
 Temperatures temperatures;
 SerialDispatcher serialDispatcher;
 ConfigManager<Config> configManager;
+
+SPIClass spi;
+SPISettings settings;
 
 void setup()
 {
@@ -19,7 +24,14 @@ void setup()
     // setup the status led
     statusLed.setup(Pin::ErrorLed);
 
-    // setup the dispatcher
+    spi.pins(Pin::MOSI_CS, Pin::MISO_CS, Pin::SCK_CS, Pin::SPI_CS);
+
+    register8_t a = SPI0.CTRLA;
+    spi.begin();
+
+    SPI0.CTRLA = a | (SPI_ENABLE_bm);
+
+    /*// setup the dispatcher
     bool success = serialDispatcher.setup(
         Serial, [](SerialMessage *message) {},
         UnitType::Temperature,
@@ -32,11 +44,11 @@ void setup()
 
     // setup the config-manager
     success = configManager.setup(0, serialDispatcher, [](Config &config)
-                                  { 
+                                  {
                                     config.resolution = 9; // set the percision to 9 bit
 
-                                    config.updateRate = 5.0f; // 5s                                    
-                                    
+                                    config.updateRate = 5.0f; // 5s
+
                                     return true; }, false);
     if (!success)
     {
@@ -52,12 +64,14 @@ void setup()
     {
         statusLed.setError(Error::Temperatures);
         return;
-    }
+    }*/
+
+    statusLed.setError(10);
 }
 
 void loop()
 {
     statusLed.update();
-    temperatures.update();
-    serialDispatcher.update();
+    // temperatures.update();
+    // serialDispatcher.update();
 }
