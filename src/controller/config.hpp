@@ -6,7 +6,7 @@
 namespace Pin
 {    
 
-    static constexpr Pin_t SPI_CS = 12;  // PC2 
+    static constexpr Pin_t SPI_CS = 0;  // PA4 
     
     static constexpr Pin_t ErrorLed = 13; // PC3
 }

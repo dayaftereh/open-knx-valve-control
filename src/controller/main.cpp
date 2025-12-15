@@ -15,6 +15,8 @@ SPISettings settings;
 
 void setup()
 {
+    Serial.begin(DefaultSerialBaud);
+
     // setup the status led
     statusLed.setup(Pin::ErrorLed);
 
@@ -31,18 +33,24 @@ void setup()
     SPI.begin();
 }
 
+byte data = 0;
+
 void readAndWriteDataViaSPI()
 {
-    SPI.beginTransaction(settings);
+    //SPI.beginTransaction(settings);
 
     digitalWrite(Pin::SPI_CS, false);
 
-    byte data = 0;
-    data = SPI.transfer(data);
+    byte lastData = SPI.transfer(data);
+    Serial.print(data);
+    Serial.print(", ");
+    Serial.println(lastData);
+
+    data++;
 
     digitalWrite(Pin::SPI_CS, true);
 
-    SPI.endTransaction();
+   // SPI.endTransaction();
 }
 
 void loop()

@@ -16,8 +16,17 @@ ConfigManager<Config> configManager;
 SPIClass spi;
 SPISettings settings;
 
+bool volatile hasSPI;
+
+void ISR_SPI_CS()
+{
+    hasSPI = true;
+}
+
 void setup()
 {
+    delay(4000);
+
     // start the serial
     Serial.begin(DefaultSerialBaud);
 
@@ -27,9 +36,25 @@ void setup()
     spi.pins(Pin::MOSI_CS, Pin::MISO_CS, Pin::SCK_CS, Pin::SPI_CS);
 
     register8_t a = SPI0.CTRLA;
+    register8_t b = SPI0.CTRLB;
+
     spi.begin();
 
     SPI0.CTRLA = a | (SPI_ENABLE_bm);
+    SPI0.CTRLB = b; // | (SPI_BUFWR_bm);
+
+    Serial.println(SPI0.CTRLA, BIN);
+    Serial.println(SPI0.CTRLB, BIN);
+
+    hasSPI = false;
+
+    int interruptForPin = digitalPinToInterrupt(Pin::SPI_CS);
+    attachInterrupt(interruptForPin, ISR_SPI_CS, FALLING);
+
+    pinMode(Pin::MISO_CS, OUTPUT);
+    pinMode(Pin::SCK_CS, INPUT);
+    pinMode(Pin::MOSI_CS, INPUT);
+    pinMode(Pin::SPI_CS, INPUT);
 
     /*// setup the dispatcher
     bool success = serialDispatcher.setup(
@@ -65,13 +90,39 @@ void setup()
         statusLed.setError(Error::Temperatures);
         return;
     }*/
+    Serial.println("ss");
+}
 
-    statusLed.setError(10);
+byte lastData;
+
+void readAndSendSPI()
+{
+    asm volatile("nop");
+    while ((SPI0.INTFLAGS & SPI_RXCIF_bm) == 0)
+    {
+        Serial.println(SPI0.DATA);
+        if(digitalRead(Pin::SPI_CS)) {
+            break;
+        }
+    }
+    byte data = SPI0.DATA;
+    SPI0.DATA = lastData * 10;
+    Serial.print(data);
+    Serial.print(", ");
+    Serial.println(lastData * 10);
+    lastData = data;
 }
 
 void loop()
 {
     statusLed.update();
+    while (hasSPI)
+    {
+
+        hasSPI = !digitalRead(Pin::SPI_CS);
+        readAndSendSPI();
+    }
+
     // temperatures.update();
     // serialDispatcher.update();
 }

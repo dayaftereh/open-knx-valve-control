@@ -20,6 +20,10 @@ namespace Pin
     static constexpr Pin_t MOSI_CS = 15; // PA2 - PC2 => MISO -> MOSI
     static constexpr Pin_t SCK_CS = 16;  // PA3
 
+    // Master -> SLAVE
+    // PC2 (MOSI) -> PA2 (MISO)
+    // PC1 (MISO) -> PA1 (MOSI)
+
     static constexpr Pin_t ErrorLed = 13; // PC3
 }
 
