@@ -16,8 +16,8 @@ namespace Pin
     static constexpr Pin_t T8 = 10; // PC0
 
     static constexpr Pin_t SPI_CS = 12;  // PC2 
-    static constexpr Pin_t MISO_CS = 14; // PA1 - PC1 => MOSI -> MISO
-    static constexpr Pin_t MOSI_CS = 15; // PA2 - PC2 => MISO -> MOSI
+    static constexpr Pin_t MISO_CS = 15; // PA2 - PC1 => MISO -> MISO
+    static constexpr Pin_t MOSI_CS = 14; // PA1 - PC2 => MOSI -> MOSI
     static constexpr Pin_t SCK_CS = 16;  // PA3
 
     // Master -> SLAVE

@@ -20,7 +20,7 @@ bool volatile hasSPI;
 
 void ISR_SPI_CS()
 {
-    hasSPI = true;
+   SPI0.INTCTRL |= (SPI_)
 }
 
 void setup()
@@ -30,15 +30,21 @@ void setup()
     // start the serial
     Serial.begin(DefaultSerialBaud);
 
+    //SPI.pins(Pin::MOSI_CS, Pin::MISO_CS, Pin::SCK_CS, Pin::SPI_CS);
+
+    SPI0.CTRLA
+
+    //SPI.begin();
+
     // setup the status led
     statusLed.setup(Pin::ErrorLed);
 
-    spi.pins(Pin::MOSI_CS, Pin::MISO_CS, Pin::SCK_CS, Pin::SPI_CS);
+    // spi.pins(Pin::MOSI_CS, Pin::MISO_CS, Pin::SCK_CS, Pin::SPI_CS);
 
     register8_t a = SPI0.CTRLA;
     register8_t b = SPI0.CTRLB;
 
-    spi.begin();
+    // spi.begin();
 
     SPI0.CTRLA = a | (SPI_ENABLE_bm);
     SPI0.CTRLB = b; // | (SPI_BUFWR_bm);
@@ -98,12 +104,10 @@ byte lastData;
 void readAndSendSPI()
 {
     asm volatile("nop");
-    while ((SPI0.INTFLAGS & SPI_RXCIF_bm) == 0)
+    int c = 0;
+    while (((SPI0.INTFLAGS & SPI_RXCIF_bm) == 0) && c < 10000)
     {
-        Serial.println(SPI0.DATA);
-        if(digitalRead(Pin::SPI_CS)) {
-            break;
-        }
+        Serial.println(SPI0.INTFLAGS, BIN);
     }
     byte data = SPI0.DATA;
     SPI0.DATA = lastData * 10;
@@ -115,13 +119,12 @@ void readAndSendSPI()
 
 void loop()
 {
-    statusLed.update();
-    while (hasSPI)
+    if ((SPI0.INTFLAGS & SPI_IF_bm) == 1)
     {
-
-        hasSPI = !digitalRead(Pin::SPI_CS);
-        readAndSendSPI();
+        Serial.println(SPI0.INTFLAGS, BIN);
     }
+    statusLed.update();
+    
 
     // temperatures.update();
     // serialDispatcher.update();
