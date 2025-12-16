@@ -16,12 +16,8 @@ ConfigManager<Config> configManager;
 SPIClass spi;
 SPISettings settings;
 
-bool volatile hasSPI;
-
-void ISR_SPI_CS()
-{
-   SPI0.INTCTRL |= (SPI_)
-}
+byte volatile data;
+bool volatile updated = true;
 
 void setup()
 {
@@ -30,37 +26,16 @@ void setup()
     // start the serial
     Serial.begin(DefaultSerialBaud);
 
-    //SPI.pins(Pin::MOSI_CS, Pin::MISO_CS, Pin::SCK_CS, Pin::SPI_CS);
-
-    SPI0.CTRLA
-
-    //SPI.begin();
-
     // setup the status led
     statusLed.setup(Pin::ErrorLed);
 
-    // spi.pins(Pin::MOSI_CS, Pin::MISO_CS, Pin::SCK_CS, Pin::SPI_CS);
+    SPI0.CTRLA = (SPI_ENABLE_bm);              // ENABLE Spi in slave mode
+    SPI0.INTCTRL = (SPI_IE_bm | SPI_RXCIE_bm); // Enable Interrupts and trigger on recived
 
-    register8_t a = SPI0.CTRLA;
-    register8_t b = SPI0.CTRLB;
-
-    // spi.begin();
-
-    SPI0.CTRLA = a | (SPI_ENABLE_bm);
-    SPI0.CTRLB = b; // | (SPI_BUFWR_bm);
-
-    Serial.println(SPI0.CTRLA, BIN);
-    Serial.println(SPI0.CTRLB, BIN);
-
-    hasSPI = false;
-
-    int interruptForPin = digitalPinToInterrupt(Pin::SPI_CS);
-    attachInterrupt(interruptForPin, ISR_SPI_CS, FALLING);
-
-    pinMode(Pin::MISO_CS, OUTPUT);
-    pinMode(Pin::SCK_CS, INPUT);
-    pinMode(Pin::MOSI_CS, INPUT);
     pinMode(Pin::SPI_CS, INPUT);
+    pinMode(Pin::SPI_SCK, INPUT);
+    pinMode(Pin::SPI_MOSI, INPUT);
+    pinMode(Pin::SPI_MISO, OUTPUT);
 
     /*// setup the dispatcher
     bool success = serialDispatcher.setup(
@@ -99,33 +74,28 @@ void setup()
     Serial.println("ss");
 }
 
-byte lastData;
-
-void readAndSendSPI()
-{
-    asm volatile("nop");
-    int c = 0;
-    while (((SPI0.INTFLAGS & SPI_RXCIF_bm) == 0) && c < 10000)
-    {
-        Serial.println(SPI0.INTFLAGS, BIN);
-    }
-    byte data = SPI0.DATA;
-    SPI0.DATA = lastData * 10;
-    Serial.print(data);
-    Serial.print(", ");
-    Serial.println(lastData * 10);
-    lastData = data;
-}
-
 void loop()
 {
-    if ((SPI0.INTFLAGS & SPI_IF_bm) == 1)
-    {
-        Serial.println(SPI0.INTFLAGS, BIN);
-    }
+
     statusLed.update();
-    
+    if (updated)
+    {
+        updated = false;
+        Serial.println(data);
+    }
+
+    // Serial.println(SPI0.INTFLAGS & SPI_RXCIF_bm, BIN);
 
     // temperatures.update();
     // serialDispatcher.update();
+}
+
+ISR(SPI0_INT_vect)
+{
+    if ((SPI0.INTFLAGS & SPI_RXCIF_bm) == SPI_RXCIF_bm)
+    {
+        data = SPI0.DATA;
+        SPI0.DATA = data * 10;
+        updated=true;
+    }
 }

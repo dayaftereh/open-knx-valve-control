@@ -3,15 +3,10 @@
 [[nodiscard]] bool SPISlave::setup(Config *config, Print &print)
 {
 
-    SPI.begin();
-
-    pinMode(Pin::MOSI_CS, INPUT);
-    pinMode(Pin::SCK_CS, INPUT);
-    pinMode(Pin::MISO_CS, OUTPUT);
     pinMode(Pin::SPI_CS, INPUT);
-
-
-    //attachInterrupt(Pin::SPI_CS, ISR_SPI, FALLING);
+    pinMode(Pin::SPI_SCK, INPUT);
+    pinMode(Pin::SPI_MOSI, INPUT);
+    pinMode(Pin::SPI_MISO, OUTPUT);
 }
 
 void SPISlave::update()

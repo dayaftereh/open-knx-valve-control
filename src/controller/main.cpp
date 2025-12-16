@@ -10,7 +10,6 @@ StatusLed statusLed;
 uint32_t timer;
 uint32_t count;
 
-SPIClass spi;
 SPISettings settings;
 
 void setup()
@@ -20,7 +19,7 @@ void setup()
     // setup the status led
     statusLed.setup(Pin::ErrorLed);
 
-    bool success = spi.swap(1);
+    bool success = SPI.swap(1);
     if (!success)
     {
         statusLed.setError(1);
@@ -39,16 +38,21 @@ void readAndWriteDataViaSPI()
 {
     //SPI.beginTransaction(settings);
 
+    uint32_t start = millis();
     digitalWrite(Pin::SPI_CS, false);
 
     byte lastData = SPI.transfer(data);
-    Serial.print(data);
-    Serial.print(", ");
-    Serial.println(lastData);
-
     data++;
 
     digitalWrite(Pin::SPI_CS, true);
+
+    uint32_t elapsed = millis() - start;
+
+    Serial.print(data);
+    Serial.print(" * 10 = ");
+    Serial.print(lastData);
+    Serial.print(", ");
+    Serial.println(elapsed);
 
    // SPI.endTransaction();
 }
