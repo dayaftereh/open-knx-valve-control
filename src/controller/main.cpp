@@ -4,68 +4,93 @@
 #include <status_led.hpp>
 
 #include "config.hpp"
+#include "error.hpp"
+#include "config.hpp"
+#include "temperatures.hpp"
+#include "serial_message_dispatcher.hpp"
 
 StatusLed statusLed;
-
-uint32_t timer;
-uint32_t count;
-
-SPISettings settings;
+Temperatures temperatures;
+SerialDispatcher serialDispatcher;
+ConfigManager<Config> configManager;
+SerialMessageDispatcher serialMessageDispatcher;
 
 void setup()
 {
+    // start the serial
     Serial.begin(DefaultSerialBaud);
-
     // setup the status led
     statusLed.setup(Pin::ErrorLed);
 
-    bool success = SPI.swap(1);
+    // setup the dispatcher
+    bool success = serialDispatcher.setup(
+        Serial, [](SerialMessage *message)
+        { serialMessageDispatcher.onMessage(message); },
+        UnitType::Controller,
+        1);
     if (!success)
     {
-        statusLed.setError(1);
+        statusLed.setError(Error::SerialDispatcher);
         return;
     }
 
-    pinMode(Pin::SPI_CS, OUTPUT);
-    digitalWrite(Pin::SPI_CS, true);
+    // setup the config-manager
+    success = configManager.setup(0, serialDispatcher, [](Config &config)
+                                  {
+                                    config.temperaturesUpdateRate = 10.0f; // 10s
 
-    SPI.begin();
+                                    config.spiTemperature = 0.4f;
+
+                                    return true; }, false);
+    if (!success)
+    {
+        statusLed.setError(Error::ConfigManager);
+        return;
+    }
+
+    // get the loaded configuration
+    Config *config = configManager.getConfig();
+
+    // setup the temperatures
+    success = temperatures.setup(config, serialDispatcher);
+    if (!success)
+    {
+        statusLed.setError(Error::Temperatures);
+        return;
+    }
+
+    // setup the serial-message-dispatcher
+    success = serialMessageDispatcher.setup(temperatures, serialDispatcher, configManager, serialDispatcher);
+    if (!success)
+    {
+        statusLed.setError(Error::SerialMessageDispatcher);
+        return;
+    }
 }
 
-byte data = 0;
-
-void readAndWriteDataViaSPI()
-{
-    //SPI.beginTransaction(settings);
-
-    uint32_t start = millis();
-    digitalWrite(Pin::SPI_CS, false);
-
-    byte lastData = SPI.transfer(data);
-    data++;
-
-    digitalWrite(Pin::SPI_CS, true);
-
-    uint32_t elapsed = millis() - start;
-
-    Serial.print(data);
-    Serial.print(" * 10 = ");
-    Serial.print(lastData);
-    Serial.print(", ");
-    Serial.println(elapsed);
-
-   // SPI.endTransaction();
-}
+uint32_t timer;
 
 void loop()
 {
     statusLed.update();
+    temperatures.update();
+    serialDispatcher.update();
 
-    uint32_t now = millis();
-    uint32_t elapsed = now - timer;
-    if (elapsed > 2000)
+    uint32_t elapsed = millis() - timer;
+    if (elapsed < 10000)
     {
-        timer = now;
-        readAndWriteDataViaSPI();
+        return;
     }
+    timer = millis();
+
+    // set all temperatures to -1
+    for (int i = 0; i < TemperaturesCount; i++)
+    {
+        float temperature = temperatures.getTemperature(i);
+        Serial.print(i);
+        Serial.print(" : ");
+        Serial.println(temperature, 2);
+    }
+
+    Serial.println('---');
 }

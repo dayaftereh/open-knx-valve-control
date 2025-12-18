@@ -9,7 +9,6 @@ enum class Error : uint8_t
     ConfigManager,
     SerialDispatcher,
     Temperatures,
-    SPISlave,
     SerialMessageDispatcher,
 };
 

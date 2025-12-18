@@ -1,7 +1,9 @@
 #ifndef TEMPERATURES_HPP
 #define TEMPERATURES_HPP
 
-#include "temperature.hpp"
+#include <SPI.h>
+
+#include "config.hpp"
 
 #define TemperaturesCount 9
 
@@ -15,11 +17,15 @@ public:
     [[nodiscard]] float getTemperature(uint8_t index);
 
 private:
+
+    void readTemperaturesViaSPI();
   
     Print *print;
     Config *config;
 
-    Temperature temperatures[TemperaturesCount];
+    uint32_t timer;
+
+    float temperatures[TemperaturesCount];
 };
 
 #endif // TEMPERATURES_HPP

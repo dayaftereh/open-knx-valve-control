@@ -29,8 +29,11 @@ namespace Pin
 
 struct __attribute__((packed)) Config
 {
-    uint8_t resolution;
-    float updateRate; // s
+    uint8_t resolution; // the resolution 9 bit -> 12 bit for the DS18B20
+    
+    float updateRate; // the update rate in second for the DS18B20 
+
+    float spiTemperature; // factor to convert temperature for spi transfer
 };
 
 #endif

@@ -11,7 +11,7 @@
 
 // check if SERIAL_BUFFER_SIZE is already defined
 #ifndef SERIAL_BUFFER_SIZE
-#define SERIAL_BUFFER_SIZE 128
+#define SERIAL_BUFFER_SIZE 64
 #endif
 
 class SerialDispatcher : public Print

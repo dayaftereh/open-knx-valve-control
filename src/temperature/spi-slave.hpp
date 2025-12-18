@@ -4,21 +4,14 @@
 #include <SPI.h>
 
 #include "config.hpp"
+#include "temperatures.hpp"
 
-class SPISlave
+namespace SPISlave
 {
-public:
-    [[nodiscard]] bool setup(Config *config, Print &print);
+    [[nodiscard]] bool setup(Config *config, Temperatures &temperatures, Print &print);
 
-    void update();
+    void onISR();
 
-private:
-  
-    Print *print;
-    Config *config;
-
-    SPISettings settings;
-
-};
+}
 
 #endif // SPI_SLAVE_HPP

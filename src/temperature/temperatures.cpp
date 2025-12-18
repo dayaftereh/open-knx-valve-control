@@ -28,7 +28,7 @@ void Temperatures::update()
     }
 }
 
-[[nodiscard]] float Temperatures::getTemperature(int index)
+[[nodiscard]] float Temperatures::getTemperature(uint8_t index)
 {
     if (index < 0 || index >= TemperaturesCount)
     {
