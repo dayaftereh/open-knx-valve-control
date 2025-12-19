@@ -51,20 +51,29 @@ void Temperatures::update()
 
 void Temperatures::readTemperaturesViaSPI()
 {
-    // pull cs low for the start
-    digitalWrite(Pin::SPI_CS, false);
 
     // request each temperature
     for (uint8_t index = 0; index < TemperaturesCount; index++)
     {
-        // get the raw temperature
-        byte rawTemperature = SPI.transfer(index);
         // calculate the temperatures
-        this->temperatures[index] = float(rawTemperature) * this->config->spiTemperature;
+        this->temperatures[index] = this->readTemperatureViaSPI(index);
     }
+}
+
+[[nodiscard]] float Temperatures::readTemperatureViaSPI(uint8_t index)
+{
+    // pull cs low for the start
+    digitalWrite(Pin::SPI_CS, false);
+
+    // get the raw temperature
+    byte rawTemperature = SPI.transfer(index);
+    // calculate the temperatures
+    float temperature = float(rawTemperature) * this->config->spiTemperature;
 
     // make the pin back high
     digitalWrite(Pin::SPI_CS, true);
+
+    return temperature;
 }
 
 [[nodiscard]] float Temperatures::getTemperature(uint8_t index)

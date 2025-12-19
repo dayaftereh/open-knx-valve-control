@@ -24,6 +24,8 @@ private:
 
     float temperature;
 
+    Pin_t pin;
+
     Print *print;
     Config *config;
 

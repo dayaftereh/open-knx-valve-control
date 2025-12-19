@@ -17,6 +17,8 @@
     this->temperatures[index++].setup(config, Pin::T6, index * seed, print);
     this->temperatures[index++].setup(config, Pin::T7, index * seed, print);
     this->temperatures[index++].setup(config, Pin::T8, index * seed, print);
+
+    return true;
 }
 
 void Temperatures::update()
@@ -36,6 +38,12 @@ void Temperatures::update()
     }
 
     Temperature *temperature = &this->temperatures[index];
+    // check if connected
+    if (!temperature->isConnected())
+    {
+        return 0.0f;
+    }
+    
     float value = temperature->getTemperature();
     return value;
 }

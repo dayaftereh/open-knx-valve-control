@@ -20,13 +20,11 @@ void setup()
     Serial.begin(DefaultSerialBaud);
 
     // setup the status led
-    statusLed.setup(Pin::ErrorLed);
 
     // setup the dispatcher
     bool success = serialDispatcher.setup(
-        Serial, [](SerialMessage *message) {
-            serialMessageDispatcher.onMessage(message);
-        },
+        Serial, [](SerialMessage *message)
+        { serialMessageDispatcher.onMessage(message); },
         UnitType::Temperature,
         1);
     if (!success)
@@ -38,7 +36,7 @@ void setup()
     // setup the config-manager
     success = configManager.setup(0, serialDispatcher, [](Config &config)
                                   {
-                                    config.resolution = 9; // set the percision to 9 bit
+                                    config.resolution = 12; // set the percision to 9 bit
 
                                     config.updateRate = 5.0f; // 5s
 

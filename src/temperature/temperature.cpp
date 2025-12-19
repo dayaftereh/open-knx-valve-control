@@ -2,6 +2,7 @@
 
 [[nodiscard]] bool Temperature::setup(Config *config, Pin_t pin, uint32_t seed, Print &print)
 {
+    this->pin = pin;
     this->print = &print;
     this->config = config;
     // create the one-wire
@@ -40,7 +41,7 @@ void Temperature::update()
 
 [[nodiscard]] bool Temperature::isConnected()
 {
-    return this->temperature != DEVICE_DISCONNECTED_C;
+    return this->temperature > 0.0;
 }
 
 [[nodiscard]] float Temperature::getTemperature()
