@@ -17,14 +17,12 @@ public:
     [[nodiscard]] float getTemperature(uint8_t index);
 
 private:
-    void readTemperaturesViaSPI();
     [[nodiscard]] float Temperatures::readTemperatureViaSPI(uint8_t index);
 
     Print *print;
     Config *config;
 
-    uint32_t timer;
-
+    uint32_t timers[TemperaturesCount];
     float temperatures[TemperaturesCount];
 };
 

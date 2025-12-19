@@ -77,9 +77,28 @@ void setup()
     }
 }
 
+uint32_t timer;
+
 void loop()
 {
     statusLed.update();
     temperatures.update();
+    //SPISlave::update();
     serialDispatcher.update();
+
+    uint32_t elapsed = millis() - timer;
+    if (elapsed < 10000)
+    {
+        return;
+    }
+    timer = millis();
+
+    // set all temperatures to -1
+    for (int i = 0; i < TemperaturesCount; i++)
+    {
+        float temperature = temperatures.getTemperature(i);
+        Serial.print(i);
+        Serial.print(" : ");
+        Serial.println(temperature, 2);
+    }
 }

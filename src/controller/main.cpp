@@ -22,6 +22,8 @@ void setup()
     // setup the status led
     statusLed.setup(Pin::ErrorLed);
 
+    delay(1000);
+
     // setup the dispatcher
     bool success = serialDispatcher.setup(
         Serial, [](SerialMessage *message)

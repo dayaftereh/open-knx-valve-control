@@ -12,6 +12,10 @@ namespace SPISlave
 
     void onISR();
 
+    void update();
+
+    void onReceiveCompleted();
+    void onTransmitCompleted();
 }
 
 #endif // SPI_SLAVE_HPP
