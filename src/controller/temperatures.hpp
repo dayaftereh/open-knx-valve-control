@@ -19,6 +19,8 @@ public:
 private:
     [[nodiscard]] float Temperatures::readTemperatureViaSPI(uint8_t index);
 
+    int index;
+
     Print *print;
     Config *config;
 

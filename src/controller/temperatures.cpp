@@ -5,6 +5,8 @@
     this->config = config;
     this->print = &print;
 
+    this->index = -1;
+
     // swap the spi
     bool success = SPI.swap(1);
     if (!success)
@@ -33,6 +35,14 @@
 
 void Temperatures::update()
 {
+    // check if an index is marked for fast read
+    if (this->index >= 0)
+    {
+        // read the temperature for the given index
+        this->temperatures[this->index] = this->readTemperatureViaSPI(this->index);
+        this->index = -1;
+        return;
+    }
 
     int32_t timeout = int32_t(this->config->temperaturesUpdateRate * 1000.0f);
     // request each temperature
@@ -42,21 +52,19 @@ void Temperatures::update()
         uint32_t now = millis();
         // check if the last read to old
         int32_t elapsed = int32_t(now) - int32_t(this->timers[index]);
-
+        // check if timer excced
         if (elapsed < timeout)
         {
             continue;
         }
-
-
+        // update the timer
         this->timers[index] = now;
-        // read the temperature for the given index
-        this->temperatures[index] = this->readTemperatureViaSPI(index);
+        // execute read to load the temperature into SPI.DATA
+        this->readTemperatureViaSPI(index);
+        // mark the index for fast read on next loop
+        this->index = index;
 
-        Serial.print(index);
-        Serial.print(":s:");
-        Serial.println(this->temperatures[index]);
-        Serial.flush();
+        return;
     }
 }
 
@@ -64,21 +72,10 @@ void Temperatures::update()
 {
     // pull cs low for the start
     digitalWrite(Pin::SPI_CS, false);
-    SPISettings settings;
-SPI.beginTransaction(settings);
-  Serial.print(index);
-  Serial.print("d");
-    Serial.print(SPI0.DATA);
     // get the raw temperature
     byte rawTemperature = SPI.transfer(index);
     // calculate the temperatures
     float temperature = float(rawTemperature) * this->config->spiTemperature;
-
-   
-        Serial.print(":r:");
-        Serial.println(rawTemperature);
-
-        SPI.endTransaction();
 
     // make the pin back high
     digitalWrite(Pin::SPI_CS, true);

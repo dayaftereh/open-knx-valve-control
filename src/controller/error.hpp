@@ -10,6 +10,7 @@ enum class Error : uint8_t
     SerialDispatcher,
     Temperatures,
     SerialMessageDispatcher,
+    Drives,
 };
 
 #endif // ERROR_HPP

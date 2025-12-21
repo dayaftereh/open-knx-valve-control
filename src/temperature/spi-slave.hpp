@@ -11,11 +11,6 @@ namespace SPISlave
     [[nodiscard]] bool setup(Config *config, Temperatures &temperatures, Print &print);
 
     void onISR();
-
-    void update();
-
-    void onReceiveCompleted();
-    void onTransmitCompleted();
 }
 
 #endif // SPI_SLAVE_HPP

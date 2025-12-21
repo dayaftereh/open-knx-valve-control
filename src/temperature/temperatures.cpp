@@ -6,7 +6,7 @@
     this->print = &print;
 
     int index = 0;
-    int seed = 133;
+    uint32_t seed = 500;
 
     this->temperatures[index++].setup(config, Pin::T0, index * seed, print);
     this->temperatures[index++].setup(config, Pin::T1, index * seed, print);
