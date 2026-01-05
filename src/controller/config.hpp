@@ -18,6 +18,9 @@ struct __attribute__((packed)) Config
     // the i2c address of the drives PCF8574
     uint8_t drivesAddress;
 
+    // the i2c address of the INA219
+    uint8_t ina219Address;
+
     float temperaturesUpdateRate; // the update rate to request the temperatures
 
     float spiTemperature; // factor to convert temperature for spi transfer

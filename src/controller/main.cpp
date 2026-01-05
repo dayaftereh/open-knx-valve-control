@@ -1,17 +1,20 @@
 #include <Arduino.h>
-#include <SPI.h>
 
 #include <status_led.hpp>
+#include <config_manager.hpp>
+#include <serial_dispatcher.hpp>
 
 #include "error.hpp"
 #include "config.hpp"
 #include "drives.hpp"
 #include "config.hpp"
 #include "temperatures.hpp"
+#include "drive_current.hpp"
 #include "serial_message_dispatcher.hpp"
 
 Drives drives;
 StatusLed statusLed;
+DriveCurrent driveCurrent;
 Temperatures temperatures;
 SerialDispatcher serialDispatcher;
 ConfigManager<Config> configManager;
@@ -42,6 +45,7 @@ void setup()
     success = configManager.setup(0, serialDispatcher, [](Config &config)
                                   {
                                     config.drivesAddress = 0x20;
+                                    config.ina219Address = 0x40;
                                     
                                     config.temperaturesUpdateRate = 10.0f; // 10s
 
@@ -75,6 +79,14 @@ void setup()
         return;
     }
 
+    // setup the drive-current
+    success = driveCurrent.setup(config, serialDispatcher);
+    if (!success)
+    {
+        statusLed.setError(Error::DriveCurrent);
+        return;
+    }
+
     // setup the serial-message-dispatcher
     success = serialMessageDispatcher.setup(temperatures, serialDispatcher, configManager, serialDispatcher);
     if (!success)
@@ -84,37 +96,11 @@ void setup()
     }
 }
 
-int counter = 0;
-uint32_t timer;
-
 void loop()
 {
     drives.update();
     statusLed.update();
     temperatures.update();
+    driveCurrent.update();
     serialDispatcher.update();
-
-    uint32_t elapsed = millis() - timer;
-    if (elapsed < 10000)
-    {
-        return;
-    }
-    timer = millis();
-
-    drives.open(counter++);
-    if (counter > 3)
-    {
-        counter = 0;
-    }
-
-    // set all temperatures to -1
-    for (int i = 0; i < TemperaturesCount; i++)
-    {
-        float temperature = temperatures.getTemperature(i);
-        Serial.print(i);
-        Serial.print(" : ");
-        Serial.println(temperature, 2);
-    }
-
-    Serial.println('---');
 }
