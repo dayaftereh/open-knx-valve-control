@@ -17,7 +17,7 @@ public:
     [[nodiscard]] float getTemperature(uint8_t index);
 
 private:
-    [[nodiscard]] float Temperatures::readTemperatureViaSPI(uint8_t index);
+    [[nodiscard]] float readTemperatureViaSPI(uint8_t index);
 
     int index;
 
