@@ -124,9 +124,9 @@
 #define KoStell-Wert_3 
 #define KoStell-Wert_4 
 #define KoStell-Wert_5 
-#define KoStell-Wert_6 
-#define KoStell-Wert_7 
-#define KoStell-Wert_8 
+#define KoStell_Wert_6 
+#define KoStell_Wert_7 
+#define KoStell_Wert_8 
 #define KoT0 
 #define KoT1 
 #define KoT2 
@@ -180,11 +180,11 @@
 // Der prozentuale Stell-Wert für Stellmotor 5
 #define KoStell-Wert_5                        (knx.getGroupObject(KoStell-Wert_5))
 // Der prozentuale Stell-Wert für Stellmotor 6
-#define KoStell-Wert_6                        (knx.getGroupObject(KoStell-Wert_6))
+#define KoStell_Wert_6                        (knx.getGroupObject(KoStell_Wert_6))
 // Der prozentuale Stell-Wert für Stellmotor 7
-#define KoStell-Wert_7                        (knx.getGroupObject(KoStell-Wert_7))
+#define KoStell_Wert_7                        (knx.getGroupObject(KoStell_Wert_7))
 // Der prozentuale Stell-Wert für Stellmotor 8
-#define KoStell-Wert_8                        (knx.getGroupObject(KoStell-Wert_8))
+#define KoStell_Wert_8                        (knx.getGroupObject(KoStell_Wert_8))
 // Temperaturmesswert von T0
 #define KoT0                                  (knx.getGroupObject(KoT0))
 // Temperaturmesswert von T1
