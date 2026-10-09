@@ -1,6 +1,6 @@
 # ETS application, heating zones and valve-control concept
 
-**Status:** Requirement capture and proposed design, not implemented or verified. Date: 2026-10-09.
+**Status:** Requirement capture and proposed design, not implemented or verified. Date: 2026-10-09. The [ETS product-data audit](ETS_PRODUCT_AUDIT.md) distinguishes the existing XML objects from this future zone-based design.
 
 ## Goal and definitions
 
@@ -13,7 +13,7 @@ Support up to eight individually wired **Homematic IP HmIP-VDMOT (153309A0)** ac
 - Zone 1..8: enable, associated channels (via channel-to-zone assignment), operation mode (room-temperature regulator or direct position), KNX external temperature selection, temperature setpoint defaults/limits, temperature deadband, controller type and tuning, sensor staleness policy, frost protection and loss-of-bus behavior.
 - Product parameters should be expressed as explicit ETS ParameterType bounds, options, units and default values, and mapped to firmware parameter storage. Validate ETS limitations and generated `.knxprod` packaging before relying on these names.
 
-**Potential KNX group objects (draft, not yet allocated to definitive DPTs or object numbers):**
+**Proposed new zone-based group objects (not yet assigned final numbers):** The current XML already declares **33 motor-oriented objects** (1..8 setpoint, 9..16 actual, 17..24 position, 25..33 local temperatures), but not the full zone/room model. The existing position objects are DPT **5.004**, not the candidate external scaling DPT **5.001**. See [ETS_PRODUCT_AUDIT.md](ETS_PRODUCT_AUDIT.md) for exact cataloguing and migration risks.
 
 | Object | Direction | Usage |
 | --- | --- | --- |
@@ -64,7 +64,7 @@ Queue/channel scheduler accepts requests for all eight channels but energizes on
 
 ## Verification status
 
-ETS6 installation found on LLO Desktop: **KNX ETS6 v6.4.1 (6.4.8718)**. Existing `assets/open-knx-valve-control.xml` and `include/knxprod.hpp` are present, but no new `.knxprod` has been built, imported or functionally checked. The original schematic V1.2 PDF was rendered and visually inspected; see [review report](SCHEMATIC_V1_2_REVIEW.md). PCB/netlist tests and assembled-board measurements have **not** been completed.
+ETS6 installation found on LLO Desktop: **KNX ETS6 v6.4.1 (6.4.8718)**. [OpenKNXproducer 3.12.2](ETS_PRODUCT_AUDIT.md) successfully generated a **temporary** `.knxprod` candidate and a header, but **no import into ETS6 or functional KNX test** has been performed. Header macro naming and the one-channel product layout still need correction. The V1.2 PDF was visually reviewed; [PCB static invariants](PCB_V1_2_AUDIT.md) pass, while full DRC, BOM and hardware measurements remain open.
 
 ## V1.2 hardware restrictions for ETS and firmware
 

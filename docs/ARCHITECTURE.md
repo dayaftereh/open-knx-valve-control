@@ -4,13 +4,13 @@ Baseline: 2026-10-09. This page distinguishes observed project files from unimpl
 
 ## Existing architecture
 
-- Main electronics: schematic V1.2 at [PDF](../schematic/sch_knx-valve-control_v1.2.pdf), [schematic JSON](../schematic/sch_knx-valve-control_v1.2.json), and [PCB JSON](../schematic/pcb_knx-valve-control_v1.2.json). PDF rendered and reviewed; see [detailed V1.2 schematic analysis](SCHEMATIC_V1_2_REVIEW.md). PCB layout, BOM and physical assembly still require verification.
+- Main electronics: schematic V1.2 at [PDF](../schematic/sch_knx-valve-control_v1.2.pdf), [schematic JSON](../schematic/sch_knx-valve-control_v1.2.json), and [PCB JSON](../schematic/pcb_knx-valve-control_v1.2.json). PDF rendered and reviewed; see [detailed V1.2 schematic analysis](SCHEMATIC_V1_2_REVIEW.md) and [PCB static audit](PCB_V1_2_AUDIT.md). PCB pads and tracks were inspected programmatically; complete DRC, BOM and physical assembly remain unverified.
 - The UPDI programmer has separate schematic/PCB V1.4 files and is not evidence of a newer main controller PCB.
 - RP2040 controller environment: [controller.ini](../src/controller/controller.ini); Arduino-Pico, OpenKNX stack, INA219 and PCF8574 dependencies.
 - RP2040 [main.cpp](../src/controller/main.cpp): serial KNX startup, programming LED/button and framework loop; no complete motor positioning or room thermostat implementation here yet.
 - Controller [config.hpp](../src/controller/config.hpp): eight drive pins D10-D17, shared control inputs D18/D19, temperature interface, KNX pins, INA219 and PCF8574 addresses and inverse direction setting.
 - Temperature unit: ATtiny3216 [temperature.ini](../src/temperature/temperature.ini), OneWire/DallasTemperature, serial dispatcher and SPI slave in [main.cpp](../src/temperature/main.cpp).
-- KNX artifacts: [product XML](../assets/open-knx-valve-control.xml), [Sensor XML](../assets/Sensor.xml), and [generated header](../include/knxprod.hpp). Existing files are not by themselves proof of successful ETS import.
+- KNX artifacts: [product XML](../assets/open-knx-valve-control.xml), [Sensor XML](../assets/Sensor.xml), and [generated header](../include/knxprod.hpp). See the [ETS product-data audit](ETS_PRODUCT_AUDIT.md): the XML already declares 33 objects, but only one dynamic ETS channel; an isolated candidate package was generated, **not** imported into ETS6.
 - Mechanical design: [FreeCAD/STL DIN-rail assets](../assets/3d-models/knx-value-control/).
 - Earlier README with proposed BOM: [component inventory](../.github/README.md).
 - Verified motor information: [Homematic IP HmIP-VDMOT actuator](ACTUATOR_HMIP_VDMOT.md), article 153309A0 / Amazon B07RJZ5F1Y.
@@ -36,6 +36,10 @@ Each physical channel belongs to at most one room zone. Multiple channels can sh
 The actual actuator is **Homematic IP HmIP-VDMOT (153309A0)** with manufacturer-rated **3.3 V DC SELV**, **120 mA maximum current consumption**, **4.3 +/- 0.3 mm stroke** and M30 x 1.5 connection. **120 mA is NOT an official end-stop threshold**. Running/stall current, end-stop signature and real movement time must be measured; see [motor documentation](ACTUATOR_HMIP_VDMOT.md). Motor power supply, protection, stall behavior, driver selection, INA219 shunt/current path and switching require explicit schematic V1.2 and hardware verification. Timed travel estimates are not encoder position measurements.
 
 The existing former README describes a 230 V supply and mentions STKNX, ATTINY3216, INA219, PCF8574 and TB6612FNG. Confirm their precise presence/usage against the hardware and PDF before drawing electrical conclusions. Do not test powered end-stop operation without safe electrical protections, independent movement timeout and validated current sensing.
+
+## Reproducible static audit
+
+Use [tools/audit_design.py](../tools/audit_design.py) to check exported V1.2 pads, nets and XML objects without modifying project files. It is not a physical DRC or a runtime hardware test.
 
 ## Open verification tasks
 

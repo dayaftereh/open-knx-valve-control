@@ -8,8 +8,10 @@ Controller for up to **eight motorized underfloor-heating valve actuators** with
 
 - [Architecture and verified project inventory](docs/ARCHITECTURE.md)
 - [Schematic V1.2 electrical review and open findings](docs/SCHEMATIC_V1_2_REVIEW.md)
+- [PCB V1.2 static layout/pad audit](docs/PCB_V1_2_AUDIT.md)
 - [Verified HmIP-VDMOT actuator specification](docs/ACTUATOR_HMIP_VDMOT.md)
 - [ETS application, heating zones and regulation concept](docs/ETS_AND_CONTROL_CONCEPT.md)
+- [Actual ETS product XML and OpenKNXproducer audit](docs/ETS_PRODUCT_AUDIT.md)
 - [Legacy (potentially outdated) BOM and component list](.github/README.md)
 
 ## Hardware and source material
@@ -17,7 +19,7 @@ Controller for up to **eight motorized underfloor-heating valve actuators** with
 | Topic | Repository files | Notes |
 | --- | --- | --- |
 | Main board schematic V1.2 | [PDF](schematic/sch_knx-valve-control_v1.2.pdf), [JSON](schematic/sch_knx-valve-control_v1.2.json) | PDF visually reviewed (one sheet); see [electrical findings](docs/SCHEMATIC_V1_2_REVIEW.md) |
-| Main board PCB V1.2 | [JSON](schematic/pcb_knx-valve-control_v1.2.json) | PCB export; no layout/DRC verification yet |
+| Main board PCB V1.2 | [JSON](schematic/pcb_knx-valve-control_v1.2.json) | Four-layer pad/net static audit documented; no formal DRC or physical validation |
 | UPDI programmer V1.4 | [PDF](schematic/sch_updi_programmer_v1.4.pdf), [schematic JSON](schematic/sch_updi_programmer_v1.4.json), [PCB JSON](schematic/pcb_updi_programmer_v1.4.json) | Separate programmer, not main-board revision |
 | RP2040 controller | [main.cpp](src/controller/main.cpp), [configuration](src/controller/config.hpp) | KNX startup currently present |
 | ATtiny3216 temperature unit | [main.cpp](src/temperature/main.cpp), [configuration](src/temperature/config.hpp) | Separate temperature acquisition firmware |
@@ -41,9 +43,9 @@ Detailed behavior, ETS parameter tables, safety behavior, scheduling and open de
 
 1. Validate the identified HmIP-VDMOT's wiring polarity, 3.3 V motor rail under load, running and end-stop current profiles, full travel time and installed valve's effective hydraulic opening.
 2. Reconcile [V1.2 schematic review findings](docs/SCHEMATIC_V1_2_REVIEW.md) with actual PCB assembly: R29 shunt value/MPN, U25 MCU marking, STKNX power budget, motor output polarity, current sensor and nine sensor ports.
-3. Design ETS room/channel topology, parameters and group objects; verify the existing XML/product header against the new design.
+3. Address the [existing ETS product audit](docs/ETS_PRODUCT_AUDIT.md): extend the eight motor objects into zone-based configuration, decide DPT 5.001 versus 5.004, fix invalid generated Ko macro names, and repeat KNX product generation.
 4. Prototype safe single-motor arbitration, current-limited endpoint learning and movement timing with real hardware.
 5. Implement positioning, feedback and error handling, then temperature-controller mode and room grouping.
-6. Generate and import-test an ETS6-compatible KNX product database (`.knxprod`) and validate telegrams end-to-end.
+6. Import-test the isolated KNX product generation candidate in ETS6, validate group objects, then verify telegrams end-to-end when hardware is ready.
 
-**Documentation-only update:** No PCB, firmware or KNX product exports were modified as part of this concept capture.
+**Audit status:** PCB, schematic, firmware and canonical KNX XML/header are unchanged. Run the standard-library-only static checks with `python tools/audit_design.py`. A test `.knxprod` was generated **outside the repository**; no ETS6 import or firmware build is claimed.
