@@ -81,3 +81,9 @@ Do not let ETS expose unsafe parameter ranges unchecked. A defective ETS value m
 - Explicitly mark all raw readings as measurements, not manufacturer rated values.
 
 See [ETS and control concept](ETS_AND_CONTROL_CONCEPT.md) and [architecture](ARCHITECTURE.md).
+
+## Hardware cross-check (schematic V1.2)
+
+The original [V1.2 schematic review](SCHEMATIC_V1_2_REVIEW.md) identifies dedicated 3.3 V-powered outputs from four TB6612FNG dual H-bridges, common `IN_1/IN_2` direction lines, independent channel PWM enables, and **one** INA219 watching `M_VCC` through nominally 0.2 Ohm shunt R29.
+
+**Do not start current-based homing until actual R29 population is verified.** Its EasyEDA part metadata is inconsistent with the displayed 200 mOhm/1 W value. Likewise, the KNX-powered supply budget, motor voltage at the output terminals, wiring polarity and running/end-stop current profiles remain unmeasured. The HmIP-VDMOT's manufacturer rating of 120 mA maximum is not an endpoint threshold.

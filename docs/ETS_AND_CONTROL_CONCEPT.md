@@ -4,7 +4,7 @@
 
 ## Goal and definitions
 
-Support up to eight individually wired **Homematic IP HmIP-VDMOT (153309A0)** actuators, rated 3.3 V DC SELV with manufacturer-specified maximum current consumption of 120 mA; see [actuator documentation](ACTUATOR_HMIP_VDMOT.md). Each physical channel is assigned by ETS to one heating zone/room. Multiple channels can share a zone (e.g. 2, 3 or 4 heating circuits in one room). A zone issues the same requested opening to each member, subject to sequential execution and each motor's calibration. No physical motor may run simultaneously with another until measured electrical limits are verified to allow otherwise; baseline is **one at a time**.
+Support up to eight individually wired **Homematic IP HmIP-VDMOT (153309A0)** actuators, rated 3.3 V DC SELV with manufacturer-specified maximum current consumption of 120 mA; see [actuator documentation](ACTUATOR_HMIP_VDMOT.md). Each physical channel is assigned by ETS to one heating zone/room. Multiple channels can share a zone (e.g. 2, 3 or 4 heating circuits in one room). A zone issues the same requested opening to each member, subject to sequential execution and each motor's calibration. For the V1.2 circuit, **exactly one motor at a time** is a fixed baseline: all eight motor channels share one INA219 high-side sensor and common IN_1/IN_2 direction lines; the KNX bus supply budget is unverified. Do not infer independent current sensing from the eight separate H-bridge outputs.
 
 ## Proposed ETS6 structure
 
@@ -59,9 +59,20 @@ Queue/channel scheduler accepts requests for all eight channels but energizes on
 4. Control method: PI, two-point controller or valve-position-only as default; controller tuning and sample cycle. Frost protection, summer shutoff, offline fallback.
 5. Actual room temperature source (KNX/local), local temperature channel mapping, sensor failure/stale telegram handling.
 6. ETS product metadata/manufacturer ID, application/version, group-object assignments and naming; whether XML/knxprod generation pipeline passes import validation in installed ETS6 v6.4.1.
-7. Verify V1.2 main-board schematic visually and compare to controller pin and INA219 assumptions before any motor energization.
+7. Address the remaining [V1.2 schematic review issues](SCHEMATIC_V1_2_REVIEW.md), especially populated shunt R29, regulator headroom, U25 identity, shared-motor scheduling and failsafe tests before any motor energization.
 8. Build static configuration tests; test single-channel reference, 0/25/50/75/100% movement, multiple channels in one room, two rooms competing for motor access, KNX telegram loss and reboot/fault recovery.
 
 ## Verification status
 
-ETS6 installation found on LLO Desktop: **KNX ETS6 v6.4.1 (6.4.8718)**. Existing `assets/open-knx-valve-control.xml` and `include/knxprod.hpp` are present, but no new `.knxprod` has been built, imported or functionally checked. The main schematic V1.2 PDF and matching JSON exist, but PDF rendering/visual checks were not completed in this pass.
+ETS6 installation found on LLO Desktop: **KNX ETS6 v6.4.1 (6.4.8718)**. Existing `assets/open-knx-valve-control.xml` and `include/knxprod.hpp` are present, but no new `.knxprod` has been built, imported or functionally checked. The original schematic V1.2 PDF was rendered and visually inspected; see [review report](SCHEMATIC_V1_2_REVIEW.md). PCB/netlist tests and assembled-board measurements have **not** been completed.
+
+## V1.2 hardware restrictions for ETS and firmware
+
+Refer to the [actual schematic review](SCHEMATIC_V1_2_REVIEW.md) before assigning ETS parameters or generating `.knxprod`. The hardware supplies:
+- Eight motor channels on four TB6612FNG dual H-bridges; all channels share the direction pair `IN_1`/`IN_2`, and each has one independent `M*_EN` output.
+- A **single** INA219 / nominal 200 mOhm supply shunt for all motors. Its actual populated resistor value must be confirmed; EasyEDA manufacturer-part metadata does **not** match the drawn shunt value.
+- Nine local temperature inputs `T0` through `T8`, distinct from eight motor circuits. ETS must explicitly select a zone's temperature source (a suitable local room sensor or an external KNX temperature group object). Never implicitly map manifold/pipe temperature to room-air control.
+- `STBY` permanently tied high to the driver logic rail; hardware does not offer an MCU-controlled global bridge disable. On boot, reset and fault, all eight PWM signals must go inactive before direction changes.
+- An **unverified power budget** from STKNX through a 3.3 V DC/DC converter. The 1 A output rating of the downstream TSR 1-2433 is not proof of 1 A available from KNX.
+
+For each channel, ETS may ultimately expose its calibrated travel time, direction inversion, current/end-stop detection policy, min. change and re-reference policy; **firmware-independent hard timeouts/current protection must not be removable through ETS**. Grouping several circuits into one room always creates a sequence of individual moves, not simultaneous movement. Any status telegram claiming valve position should be labelled **estimated** unless feedback hardware is added.

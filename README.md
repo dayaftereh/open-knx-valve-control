@@ -7,16 +7,17 @@ Controller for up to **eight motorized underfloor-heating valve actuators** with
 ## Documentation
 
 - [Architecture and verified project inventory](docs/ARCHITECTURE.md)
+- [Schematic V1.2 electrical review and open findings](docs/SCHEMATIC_V1_2_REVIEW.md)
 - [Verified HmIP-VDMOT actuator specification](docs/ACTUATOR_HMIP_VDMOT.md)
 - [ETS application, heating zones and regulation concept](docs/ETS_AND_CONTROL_CONCEPT.md)
-- [Existing BOM and component list](.github/README.md)
+- [Legacy (potentially outdated) BOM and component list](.github/README.md)
 
 ## Hardware and source material
 
 | Topic | Repository files | Notes |
 | --- | --- | --- |
-| Main board schematic V1.2 | [PDF](schematic/sch_knx-valve-control_v1.2.pdf), [JSON](schematic/sch_knx-valve-control_v1.2.json) | Latest main-board schematic PDF present in this checkout; visual circuit verification still pending |
-| Main board PCB V1.2 | [JSON](schematic/pcb_knx-valve-control_v1.2.json) | Board export |
+| Main board schematic V1.2 | [PDF](schematic/sch_knx-valve-control_v1.2.pdf), [JSON](schematic/sch_knx-valve-control_v1.2.json) | PDF visually reviewed (one sheet); see [electrical findings](docs/SCHEMATIC_V1_2_REVIEW.md) |
+| Main board PCB V1.2 | [JSON](schematic/pcb_knx-valve-control_v1.2.json) | PCB export; no layout/DRC verification yet |
 | UPDI programmer V1.4 | [PDF](schematic/sch_updi_programmer_v1.4.pdf), [schematic JSON](schematic/sch_updi_programmer_v1.4.json), [PCB JSON](schematic/pcb_updi_programmer_v1.4.json) | Separate programmer, not main-board revision |
 | RP2040 controller | [main.cpp](src/controller/main.cpp), [configuration](src/controller/config.hpp) | KNX startup currently present |
 | ATtiny3216 temperature unit | [main.cpp](src/temperature/main.cpp), [configuration](src/temperature/config.hpp) | Separate temperature acquisition firmware |
@@ -39,7 +40,7 @@ Detailed behavior, ETS parameter tables, safety behavior, scheduling and open de
 ## Next steps
 
 1. Validate the identified HmIP-VDMOT's wiring polarity, 3.3 V motor rail under load, running and end-stop current profiles, full travel time and installed valve's effective hydraulic opening.
-2. Visually cross-check schematic V1.2, motor driver arrangement, current sensing, power paths, MCU connections and sensor count.
+2. Reconcile [V1.2 schematic review findings](docs/SCHEMATIC_V1_2_REVIEW.md) with actual PCB assembly: R29 shunt value/MPN, U25 MCU marking, STKNX power budget, motor output polarity, current sensor and nine sensor ports.
 3. Design ETS room/channel topology, parameters and group objects; verify the existing XML/product header against the new design.
 4. Prototype safe single-motor arbitration, current-limited endpoint learning and movement timing with real hardware.
 5. Implement positioning, feedback and error handling, then temperature-controller mode and room grouping.

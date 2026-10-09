@@ -4,7 +4,7 @@ Baseline: 2026-10-09. This page distinguishes observed project files from unimpl
 
 ## Existing architecture
 
-- Main electronics: schematic V1.2 at [PDF](../schematic/sch_knx-valve-control_v1.2.pdf), [schematic JSON](../schematic/sch_knx-valve-control_v1.2.json), and [PCB JSON](../schematic/pcb_knx-valve-control_v1.2.json). Files verified present; detailed PDF visual inspection remains pending.
+- Main electronics: schematic V1.2 at [PDF](../schematic/sch_knx-valve-control_v1.2.pdf), [schematic JSON](../schematic/sch_knx-valve-control_v1.2.json), and [PCB JSON](../schematic/pcb_knx-valve-control_v1.2.json). PDF rendered and reviewed; see [detailed V1.2 schematic analysis](SCHEMATIC_V1_2_REVIEW.md). PCB layout, BOM and physical assembly still require verification.
 - The UPDI programmer has separate schematic/PCB V1.4 files and is not evidence of a newer main controller PCB.
 - RP2040 controller environment: [controller.ini](../src/controller/controller.ini); Arduino-Pico, OpenKNX stack, INA219 and PCF8574 dependencies.
 - RP2040 [main.cpp](../src/controller/main.cpp): serial KNX startup, programming LED/button and framework loop; no complete motor positioning or room thermostat implementation here yet.
@@ -39,7 +39,7 @@ The existing former README describes a 230 V supply and mentions STKNX, ATTINY32
 
 ## Open verification tasks
 
-1. Render and visually inspect every sheet of main-board schematic V1.2; compare with PCB JSON and firmware pin definitions.
+1. Resolve [remaining schematic V1.2 findings](SCHEMATIC_V1_2_REVIEW.md): the PDF was inspected and pin labels checked, but populated parts, PCB layout, ERC/DRC and physical measurements remain open.
 2. Test the identified HmIP-VDMOT and installed valve: polarity, motor supply, running/stall/endpoint current characteristics and opening/closing timing (not in the manual).
 3. Verify the shared-current signal identifies the selected motor and no other drive is enabled concurrently.
 4. Map local temperature channels to logical zones, including the external KNX sensor option.
@@ -47,3 +47,14 @@ The existing former README describes a 230 V supply and mentions STKNX, ATTINY32
 6. Execute reproducible builds and hardware tests before claiming features implemented.
 
 Current documented Git baseline before writing: `main`, clean, `ef245de` (2026-02-11). Work in this pass is documentation-only.
+
+## V1.2 hardware topology confirmed from the original PDF
+
+Detailed cross-checks, pin map and prioritized findings: [SCHEMATIC_V1_2_REVIEW.md](SCHEMATIC_V1_2_REVIEW.md).
+
+- Four TB6612FNG dual H-bridges (U34/U36/U37/U35) provide eight separate motor channels; `IN_1/IN_2` are common direction signals, while `M1_EN`..`M8_EN` are distinct PWM signals from RP2040 GPIO10..17.
+- U23 INA219 senses only the shared high-side motor supply `M_VCC` through R29, labelled **200 mOhm** on the drawing. Thus software must energize at most **one** motor at a time for unambiguous current measurements.
+- The ATtiny3216 section exposes **nine** local 3-pin sensor ports `T0`..`T8` for a maximum of eight motor channels. Mapping those sensors to ETS rooms is an explicit future design task.
+- U29 is **one PCF8574 for the LCD**, not a bank of valve switching channels. LCD1, rotary encoder SW3 and programming/debug ports are present.
+- Main-board V1.2 does **not** show a 230 V input; KNX (STKNX integrated converter) and USB feed the 5 V/3.3 V chain. The legacy BOM/README may describe earlier hardware.
+- **Critical unverified details:** R29 component metadata conflicts with its 200 mOhm schematic value; U25 shown as ATtiny3216 but has an ATTINY1616-SN manufacturer field; the KNX supply budget and regulator diode-drop headroom need measurements. Do not use schematic manufacturer-part metadata as an automatically trusted purchasing BOM.
