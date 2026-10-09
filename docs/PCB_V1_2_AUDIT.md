@@ -76,3 +76,7 @@ Before energized motor tests:
 6. Export EasyEDA DRC, netlist and manufacturing BOM for a proper board release gate.
 
 See [SCHEMATIC_V1_2_REVIEW.md](SCHEMATIC_V1_2_REVIEW.md) for the detailed power discussion and [ETS_AND_CONTROL_CONCEPT.md](ETS_AND_CONTROL_CONCEPT.md) for zone and actuator control requirements.
+
+## Power jumper verification and external-supply planning
+
+Static pad/net analysis now explicitly checks **JMP1** (`KNX_VCC` <-> `R9_2`), **Q1** (pins 1=`USB_VCC`, 2=`5V_`, 3=`R9_2`), **D6**, **F1**, **D1**, and **U6** (pin 1=`D1_1`, 2=`GND`, 3=`3.3V`). The documented two-pad `JMP1` is a normally-open SMD solder bridge, **not** a DuPont cable socket. A dedicated, protected external-5-V entry point **does not exist** in this V1.2 pad-net map. See [POWER_SUPPLY_CONCEPT.md](POWER_SUPPLY_CONCEPT.md) for the two hardware options, possible backfeed paths, and required physical tests. No modification to the PCB has been approved or performed.

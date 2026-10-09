@@ -106,3 +106,7 @@ The configured *logical* GPIO assignments in [controller config](../src/controll
 ### Scope boundary
 
 **Confirmed** means present in the provided PDF schematic and/or source JSON; **planned** means desired firmware or ETS behavior; **unverified** means on-board population, physical wiring, power, current, timings, electrical safety and successful ETS operation still require tests. No canonical schematic/PCB, firmware or product XML was modified during this review.
+
+## External 5-V power-source concept (not wired)
+
+This review's KNX-versus-USB 5-V power chain was traced pin-by-pin in the subsequent [POWER_SUPPLY_CONCEPT.md](POWER_SUPPLY_CONCEPT.md), including **JMP1 / Q1 / D6 / F1 / D1 / U6**. The STKNX **150 mA DC/DC** specification is distinct from its **30 mA KNX bus extraction**. A supplemental 5-V SELV source is a proposed fix for **unverified** power margin, not evidence KNX-only operation has failed. USB 5 V must pass two Schottky diodes on the existing V1.2 route before U6, whose minimum specified input is **4.75 V**. Do not connect external 5 V to 3.3 V motor output net `M_VCC`, or bridge external sources into existing jumpers without verified protection/backfeed isolation.

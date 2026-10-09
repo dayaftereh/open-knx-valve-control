@@ -100,6 +100,23 @@ def main() -> int:
     hmi = parts.get("U29", {}).get("pins", {})
     report(len(hmi) == 16 and hmi.get("15") == "SDA" and hmi.get("14") == "SCL",
            "LCD PCF8574: shared I2C bus")
+    # Net-level power path invariants: do not assume these are protected external inputs.
+    power_path = {
+        "JMP1": {"1": "KNX_VCC", "2": "R9_2"},
+        "Q1": {"1": "USB_VCC", "2": "5V_", "3": "R9_2"},
+        "D6": {"1": "5V_", "2": "USB_VCC"},
+        "F1": {"1": "5V_", "2": "5V"},
+        "D1": {"1": "D1_1", "2": "5V"},
+        "U6": {"1": "D1_1", "2": "GND", "3": "3.3V"},
+    }
+    for ref, expected in power_path.items():
+        pins = parts.get(ref, {}).get("pins", {})
+        report(all(pins.get(pin) == net for pin, net in expected.items()),
+               f"Power path {ref}: " +
+               ", ".join(f"pin{pin}={net}" for pin, net in expected.items()))
+    warn("External 5V on USB_VCC reaches U6 after two Schottkys; its min VIN is 4.75V. Measure the actual VIN.")
+    warn("JMP1 is a KNX power-path solder bridge, NOT an external 5V source connector.")
+
     objects = [e for e in xml.iter() if short_tag(e) == "ComObject"]
     params = [e for e in xml.iter() if short_tag(e) == "Parameter"]
     channels = [e for e in xml.iter() if short_tag(e) == "Channel"]

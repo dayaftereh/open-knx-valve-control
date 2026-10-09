@@ -62,3 +62,7 @@ Detailed cross-checks, pin map and prioritized findings: [SCHEMATIC_V1_2_REVIEW.
 - U29 is **one PCF8574 for the LCD**, not a bank of valve switching channels. LCD1, rotary encoder SW3 and programming/debug ports are present.
 - Main-board V1.2 does **not** show a 230 V input; KNX (STKNX integrated converter) and USB feed the 5 V/3.3 V chain. The legacy BOM/README may describe earlier hardware.
 - **Critical unverified details:** R29 component metadata conflicts with its 200 mOhm schematic value; U25 shown as ATtiny3216 but has an ATTINY1616-SN manufacturer field; the KNX supply budget and regulator diode-drop headroom need measurements. Do not use schematic manufacturer-part metadata as an automatically trusted purchasing BOM.
+
+## External 5-V supply decision
+
+The owner proposed a supplementary regulated **5 V SELV supply** in case the STKNX supply cannot reliably run RP2040/HMI plus a single HmIP-VDMOT. This has not yet been measured. The existing board has a 2-pad **JMP1 KNX power-path bridge** and two upstream Schottky diodes; neither is a protected external motor-power connector. The motor must still receive **3.3 V** through a regulator, never direct 5 V. See [POWER_SUPPLY_CONCEPT.md](POWER_SUPPLY_CONCEPT.md) for the V1.2 exact pad/net map, power budget, source-selection hazards and controlled bench-test gates.
