@@ -23,7 +23,7 @@
 
 | Slice | Status | Objective | Dependencies | Gate-4-Abnahme (noch nicht erfuellt) |
 | --- | --- | --- | --- | --- |
-| **KNX001** ASH Workflow Bootstrap | **open, Gate 3** | ASH v1 kopieren, Project/Slice/Session Regeln, Historie, README und Roadmap verankern | vorhandenes Repo und Library-Original | 7 Quelltexte vorhanden, Links/Repo-Audit PASS, Git scope clean, KNX001 in History geschlossen und Marker geloescht |
+| **KNX001** ASH Workflow Bootstrap | **closed, 2026-10-10** | ASH v1 kopieren, Project/Slice/Session Regeln, Historie, README und Roadmap verankern | vorhandenes Repo und Library-Original | 7 Quelltexte vorhanden, Links/Repo-Audit PASS, Git scope clean, KNX001 in History geschlossen und Marker geloescht |
 | **KNX002** As-built Hardware/BOM | planned | R29-Wert, U25-Typ, F1, Pinouts, PCB Rev V1.2, Native EasyEDA DRC/ERC/BOM und Power-Jumper-Bestueckung abgleichen | KNX001; bestueckte Platine/Artefakte | Provenienzfotos/Messwerte, BOM/DRC/Evidence, klare PASS/Blocker fuer KNX003 |
 | **KNX003** Stromversorgung 5 V | planned | Gemeinsames externes 5-V-Design vs. separate Motor-3,3-V-Schiene entscheiden, Quellenentkopplung, Schutz und Power-Good spezifizieren/testen | KNX002; geeignete sichere Labormittel | Nachgewiesener Quellentrennungs-/Spannungs-/Rueckspeisetest bei ausgeschalteten Motoren, ggf. PCB V1.3 Vorschlag |
 | **KNX004** Motor-Safety und Scheduler | planned | RP2040 sichere Default-Ausgaenge, all-off, exklusives Motor-Token und Fehler-/Timeout-Zustaende implementieren, ohne riskanten Endanschlagbetrieb | KNX002; Versorgungsentscheidung fuer echte Hardwaretests | Unit-/Mock-Tests: niemals zwei Motoren aktiv, Reset/Fail-safe, sauberes Stoppen; Build PASS |
