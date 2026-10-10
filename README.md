@@ -2,7 +2,7 @@
 
 Controller for up to **eight motorized underfloor-heating valve actuators** with KNX integration. This repository contains firmware, KNX product-description sources, electronics schematics/PCB exports and DIN-rail enclosure models.
 
-> **Project status (2026-10-09):** Architecture and ETS parameterization are being specified. The current RP2040 controller firmware initializes KNX, but does **not yet implement the complete valve-control, positioning, grouping or room-temperature control algorithms**. This document separates confirmed repository contents from requirements and concepts.
+> **Project status (2026-10-11):** KNX013 implemented the ATtiny 9-channel nonblocking 1-Wire sampler and stored quality/age snapshots (native tests/firmware build passed; real board not tested). The RP2040 initializes KNX but does **not yet implement** ATtiny UART transport, KNX temperature publishing, motor positioning, grouping or room-temperature regulation. This document separates confirmed repository contents from requirements and concepts.
 
 ## ASH Project Workflow v1 (verbindlich)
 
@@ -21,6 +21,7 @@ Dieses Projekt arbeitet nach dem **ASH Slice-Konzept** aus dem ChatGPT-Space `/A
 
 - [Architecture and verified project inventory](docs/ARCHITECTURE.md)
 - [Software-first: zwei Firmwares, ATtiny/RP2040, OneWire/UART und KNX-MVP](docs/FIRMWARE_SOFTWARE_FIRST.md)
+- [KNX013: ATtiny nonblocking temperature sampler – implementation and tests](docs/KNX013_ATTINY_SAMPLER.md)
 - [Schematic V1.2 electrical review and open findings](docs/SCHEMATIC_V1_2_REVIEW.md)
 - [5-V-Externversorgung, Jumper und KNX-Leistungsbudget](docs/POWER_SUPPLY_CONCEPT.md)
 - [PCB V1.2 static layout/pad audit](docs/PCB_V1_2_AUDIT.md)
@@ -62,9 +63,9 @@ The V1.2 board currently derives 3.3 V from KNX or USB. The project owner is con
 
 ## Prioritaet: Firmware und KNX-Temperatur-MVP
 
-Zuerst nur die **neun Temperaturen** T0 (Vorlauf) und T1..T8 (Ruecklaeufe der Heizkreise) ermitteln und auf den KNX-Bus bringen. Die [Software-first-Planung](docs/FIRMWARE_SOFTWARE_FIRST.md) trennt ATtiny3216 (zyklischer, nicht-blockierender OneWire-Snapshot) und RP2040 (UART-Abruf, KNX-Senden und spaeter Raum-/Motorregelung). Der PCB-V1.2-SPI-Takt und die ATtiny-Pins stimmen derzeit **nicht** mit der Firmware ueberein; zunaechst [Pin-Audit](tools/audit_temperature_bridge.py) und UART-Verbindung qualifizieren. Dies sind geplante Softwarearbeiten, noch kein erfolgreiches Hardware/Bus-End-to-End-System.
+Zuerst nur die **neun Temperaturen** T0 (Vorlauf) und T1..T8 (Ruecklaeufe der Heizkreise) ermitteln und auf den KNX-Bus bringen. Die [Software-first-Planung](docs/FIRMWARE_SOFTWARE_FIRST.md) trennt ATtiny3216 (zyklischer, nicht-blockierender OneWire-Snapshot) und RP2040 (UART-Abruf, KNX-Senden und spaeter Raum-/Motorregelung). Die **ATtiny-Pins sind in KNX013 korrigiert** und das ungeroutete SPI0 ist deaktiviert. [ATtiny-Sampler KNX013](docs/KNX013_ATTINY_SAMPLER.md) ist offline gebaut und simuliert getestet; der [Pin-Audit](tools/audit_temperature_bridge.py) besteht fuer den Sensorscope. **UART zum RP2040 und KNX-Telegramme fehlen weiterhin**, also noch kein End-to-End-System.
 
-Fuer die ASH-Abfolge siehe [ROADMAP](docs/ROADMAP.md), geplant zuerst KNX013 Sampler -> KNX014 UART -> KNX015 KNX-Publish -> KNX016 ETS6-Testprodukt. Reale Motorfahrten bleiben gesperrt, bis die Hardwareversorgung/INA219-Safety-Gates erfuellt sind.
+Fuer die ASH-Abfolge siehe [ROADMAP](docs/ROADMAP.md): **KNX013 ATtiny-Sampler implementiert**, als naechste Slices geplant KNX014 UART -> KNX015 KNX-Publish -> KNX016 ETS6-Testprodukt. Reale Motorfahrten bleiben gesperrt, bis die Hardwareversorgung/INA219-Safety-Gates erfuellt sind.
 
 ## Next steps
 
@@ -75,4 +76,4 @@ Fuer die ASH-Abfolge siehe [ROADMAP](docs/ROADMAP.md), geplant zuerst KNX013 Sam
 5. Implement positioning, feedback and error handling, then temperature-controller mode and room grouping.
 6. Import-test the isolated KNX product generation candidate in ETS6, validate group objects, then verify telegrams end-to-end when hardware is ready.
 
-**Audit status:** PCB, schematic, firmware and canonical KNX XML/header are unchanged. Run the standard-library-only static checks with `python tools/audit_design.py`. A test `.knxprod` was generated **outside the repository**; no ETS6 import or firmware build is claimed.
+**Audit status:** PCB, schematic, RP2040 firmware and canonical KNX XML/header are unchanged; die ATtiny3216-Sensorfirmware wurde im KNX013-Slice geaendert und offline geprueft. Run the standard-library-only static checks with `python tools/audit_design.py`. A test `.knxprod` was generated **outside the repository**; no ETS6 import or firmware build is claimed.

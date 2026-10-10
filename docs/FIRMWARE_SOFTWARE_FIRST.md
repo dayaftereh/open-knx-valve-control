@@ -1,6 +1,6 @@
 # Software-first: zwei Firmwares, Temperaturpfad und KNX-MVP
 
-**Stand:** 2026-10-10. **Typ:** technisch begruendeter Software-Fahrplan, **noch keine erfolgreiche Integration**. Die echte PCB-Bestueckung und die KNX-Versorgung sind nicht freigegeben. ASH-Slice fuer diese Dokumentation: **KNX012**.
+**Stand:** 2026-10-11. **Typ:** software-first Architektur, urspruenglich aus **KNX012**, danach KNX013-Sampler implementiert. **Achtung:** Die Tabellen zu Bestandsfirmware und Pinfehlern in Kapiteln 2/3 beschreiben den **Vor-KNX013-Ausgangszustand**. Der neue Stand steht in [KNX013_ATTINY_SAMPLER.md](KNX013_ATTINY_SAMPLER.md). Echte Hardware-/KNX-Integration nicht freigegeben.
 
 ## 1. Ziel und Prioritaet
 
@@ -29,7 +29,7 @@ Der **ATtiny3216** liest neun voneinander getrennte Dallas-/1-Wire-Sensoreingaen
 | ATtiny Firmware | [main.cpp](../src/temperature/main.cpp) | `Config.resolution=12`, `updateRate=5.0f` Sekunden, `spiTemperature=2.5f`; initialisiert `Serial`, OneWire/Temperaturen, SPI0-Slave und SerialDispatcher |
 | ATtiny Temperaturklasse | [temperature.cpp](../src/temperature/temperature.cpp) | `requestTemperatures()` und `getTempCByIndex(0)` direkt im `update()`; bei 12 Bit potenziell blockierend; `temperature > 0` akzeptiert gueltige 0/negative Werte nicht |
 | ATtiny Kanalregister | [temperatures.cpp](../src/temperature/temperatures.cpp) | neun Instanzen, versetzte Start-Offsets um 500 ms; ungueltige Werte werden als `0.0f` zurueckgegeben und sind damit nicht unterscheidbar |
-| ATtiny SPI | [spi-slave.cpp](../src/temperature/spi-slave.cpp) | Byte mit Kanalindex einlesen, Wert * 2.5 als ein `uint8_t` abgeben; ohne CRC, Status, Alter und ohne dokumentierte Zweit-Byte-Antwortphase |
+| ATtiny SPI | spi-slave.cpp (historisch im Git; in KNX013 entfernt) | Byte mit Kanalindex einlesen, Wert * 2.5 als ein `uint8_t` abgeben; ohne CRC, Status, Alter und ohne dokumentierte Zweit-Byte-Antwortphase |
 | ATtiny SerialDispatcher | [serial_message_dispatcher.cpp](../src/temperature/serial_message_dispatcher.cpp) | Bisher Status-/Konfigurationskommunikation, **keine neun Temperaturwerte per definiertem Request-Snapshot-Protokoll** |
 | RP2040 Firmware | [main.cpp](../src/controller/main.cpp) | Init von KNX und Poll `knx.loop()`; **kein** UART/SPI-Sensortreiber, Snapshot, Publikationsscheduler, Soll-/Ist-Regler oder Motorpositionssteuerung |
 | ETS XML | [Produkt-Audit](ETS_PRODUCT_AUDIT.md) | neun vorhandene KNX-KO T0..T8 vom Typ DPT 9.001, aber nicht als End-to-End-Telegrammfluss implementiert. Dynamische Produktdarstellung unvollstaendig |
@@ -38,7 +38,7 @@ Der DS18B20 ist die **naheliegende Sensorfamilie** anhand von DallasTemperature,
 
 ## 3. Schaltplan/PCB V1.2 und Framework: belegte Pin-Konflikte
 
-**Nachweisbasis:** [EasyEDA PCB V1.2](../schematic/pcb_knx-valve-control_v1.2.json), [ATtiny Pin-Konfiguration](../src/temperature/config.hpp), [SPI-Routine](../src/temperature/spi-slave.cpp), [Microchip ATtiny3216 SOIC20-Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/ATtiny3216-17-DataSheet-DS40002205A.pdf) und **das tatsaechlich installierte** megaTinyCore `variants/txy6/pins_arduino.h` (PIN_PA4=0, PIN_PA5=1 ...). Der [statische Pin-Audit](../tools/audit_temperature_bridge.py) kann dies wiederholt ausgeben.
+**Nachweisbasis:** [EasyEDA PCB V1.2](../schematic/pcb_knx-valve-control_v1.2.json), [ATtiny Pin-Konfiguration](../src/temperature/config.hpp), fruehere SPI-Routine (im Git-Verlauf; in KNX013 entfernt), [Microchip ATtiny3216 SOIC20-Datenblatt](https://ww1.microchip.com/downloads/en/DeviceDoc/ATtiny3216-17-DataSheet-DS40002205A.pdf) und **das tatsaechlich installierte** megaTinyCore `variants/txy6/pins_arduino.h` (PIN_PA4=0, PIN_PA5=1 ...). Der [statische Pin-Audit](../tools/audit_temperature_bridge.py) kann dies wiederholt ausgeben.
 
 | Netz | ATtiny SOIC-20 Pin | Physischer Port | MegaTinyCore Arduino-Digitalpin | Bisheriger Firmware-Pin | Abweichung |
 | --- | ---: | --- | ---: | ---: | --- |
@@ -145,7 +145,7 @@ DS18B20-artige Fuehler T0..T8
 - **Ohne Hardware machbar:** Quellen-/Pin-Audit, Protokoll-Unit-Tests, ATtiny-/RP-PlatformIO-Build, synthetische 9-Kanal-Snapshots, KNX-DPT9.001 Encode-/Decode-Tests, XML/Producer-Sanity.
 - **Hardware erforderlich:** Messen der realen DS18B20/sonstigen 1-Wire-Topologie, tatsaechlicher U25-Chiptyp, live PA1/PA2 UART, Stromversorgung unter Last; KNX-Busmonitor/ETS Download an physischem Geraet.
 - **Niemals behaupten:** Ein statischer PCB-Test sei ein echter DRC oder ein erfolgreich gebautes Produkt ein ETS Import. Keine laufenden Motoren, solange Safety- und Power-Gates ausstehen.
-- **Naechster konkreter Arbeitsschritt:** **KNX013 Gate1** mit dem reproduzierbaren [Pin-/Transport-Audit](../tools/audit_temperature_bridge.py) beginnen, Core-Pin-Namen berichtigen, SPI0 zugunsten der geplanten seriellen Schnittstelle entkoppeln und zuerst eine reine OneWire-Mock-Testsuite anlegen. **Noch keine Motoren.**
+- **KNX013 (implementiert):** Pin-Korrektur, nichtblockierende OneWire-Messungen, Snapshot-/Fehlerstatus, Native-Mock-Tests und ATtiny Build: siehe [KNX013-Abnahme](KNX013_ATTINY_SAMPLER.md). **Naechster Software-Slice: KNX014 UART-Bridge** mit PA1/PA2-PORTMUX, RP2040-Empfang und CRC. Noch keine Motoren.
 
 ## 10. Bereits ausgefuehrte Baseline-Softwarepruefungen (2026-10-10)
 

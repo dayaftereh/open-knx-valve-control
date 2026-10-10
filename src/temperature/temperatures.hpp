@@ -1,25 +1,27 @@
-#ifndef TEMPERATURES_HPP
-#define TEMPERATURES_HPP
+#ifndef KNX_TEMPERATURES_HPP
+#define KNX_TEMPERATURES_HPP
 
 #include "temperature.hpp"
 
-#define TemperaturesCount 9
+static constexpr uint8_t TemperaturesCount = 9;
 
 class Temperatures
 {
 public:
     [[nodiscard]] bool setup(Config *config, Print &print);
-
     void update();
 
-    [[nodiscard]] float getTemperature(uint8_t index);
+    // Pure in-memory copy: no 1-Wire transactions, suitable for the UART
+    // transport implementation in KNX014.
+    [[nodiscard]] TemperatureSampler::Snapshot getSnapshot(uint8_t index,
+                                                            uint32_t now) const;
+
+    // Historical API, retained for source compatibility; never returns
+    // synthetic 0 C for missing channels.
+    [[nodiscard]] float getTemperature(uint8_t index) const;
 
 private:
-  
-    Print *print;
-    Config *config;
-
-    Temperature temperatures[TemperaturesCount];
+    Temperature channels_[TemperaturesCount];
 };
 
-#endif // TEMPERATURES_HPP
+#endif // KNX_TEMPERATURES_HPP

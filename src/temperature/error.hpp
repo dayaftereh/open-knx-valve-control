@@ -9,7 +9,7 @@ enum class Error : uint8_t
     ConfigManager,
     SerialDispatcher,
     Temperatures,
-    SPISlave,
+    SPISlave, // reserved legacy error code: SPI0 is disabled on PCB V1.2
     SerialMessageDispatcher,
 };
 

@@ -2,48 +2,41 @@
 
 [[nodiscard]] bool Temperatures::setup(Config *config, Print &print)
 {
-    this->config = config;
-    this->print = &print;
+    // These are PCB V1.2 terminal labels, not a "room air" sensor array.
+    // T0 is common supply; T1..T8 are returns for motor loops M1..M8.
+    const Pin_t pins[TemperaturesCount] = {
+        Pin::T0, Pin::T1, Pin::T2, Pin::T3, Pin::T4,
+        Pin::T5, Pin::T6, Pin::T7, Pin::T8
+    };
 
-    int index = 0;
-    uint32_t seed = 500;
-
-    this->temperatures[index++].setup(config, Pin::T0, index * seed, print);
-    this->temperatures[index++].setup(config, Pin::T1, index * seed, print);
-    this->temperatures[index++].setup(config, Pin::T2, index * seed, print);
-    this->temperatures[index++].setup(config, Pin::T3, index * seed, print);
-    this->temperatures[index++].setup(config, Pin::T4, index * seed, print);
-    this->temperatures[index++].setup(config, Pin::T5, index * seed, print);
-    this->temperatures[index++].setup(config, Pin::T6, index * seed, print);
-    this->temperatures[index++].setup(config, Pin::T7, index * seed, print);
-    this->temperatures[index++].setup(config, Pin::T8, index * seed, print);
-
+    for (uint8_t index = 0; index < TemperaturesCount; ++index)
+    {
+        // Discovery and measurements staggered 500 ms apart to avoid
+        // synchronous bus scans; each 1-Wire channel has its own bus.
+        if (!channels_[index].setup(config, pins[index],
+                                    static_cast<uint32_t>(index) * 500U, print))
+            return false;
+    }
     return true;
 }
 
 void Temperatures::update()
 {
-    for (int i = 0; i < TemperaturesCount; i++)
-    {
-        Temperature *temperature = &this->temperatures[i];
-        temperature->update();
-    }
+    for (uint8_t index = 0; index < TemperaturesCount; ++index)
+        channels_[index].update();
 }
 
-[[nodiscard]] float Temperatures::getTemperature(uint8_t index)
+[[nodiscard]] TemperatureSampler::Snapshot
+Temperatures::getSnapshot(uint8_t index, uint32_t now) const
 {
-    if (index < 0 || index >= TemperaturesCount)
-    {
-        return 0.0f;
-    }
+    if (index >= TemperaturesCount)
+        return TemperatureSampler::Snapshot{};
+    return channels_[index].getSnapshot(now);
+}
 
-    Temperature *temperature = &this->temperatures[index];
-    // check if connected
-    if (!temperature->isConnected())
-    {
-        return 0.0f;
-    }
-    
-    float value = temperature->getTemperature();
-    return value;
+[[nodiscard]] float Temperatures::getTemperature(uint8_t index) const
+{
+    if (index >= TemperaturesCount)
+        return DEVICE_DISCONNECTED_C;
+    return channels_[index].getTemperature();
 }
