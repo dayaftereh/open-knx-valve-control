@@ -4,6 +4,19 @@ Controller for up to **eight motorized underfloor-heating valve actuators** with
 
 > **Project status (2026-10-09):** Architecture and ETS parameterization are being specified. The current RP2040 controller firmware initializes KNX, but does **not yet implement the complete valve-control, positioning, grouping or room-temperature control algorithms**. This document separates confirmed repository contents from requirements and concepts.
 
+## ASH Project Workflow v1 (verbindlich)
+
+Dieses Projekt arbeitet nach dem **ASH Slice-Konzept** aus dem ChatGPT-Space `/ASH`. **Project** ist der dauerhafte Repository-Zustand, **Slice** ein pruefbares Arbeitspaket, **Session** ein austauschbarer Chat/Agent-Lauf. Ein Slice darf mehrere Sessions ueberleben; die zentrale Quelle fuer aktuellen Projektfortschritt bleibt das Repository, **nicht** der Chatverlauf.
+
+**Standard:** genau **ein aktiver Write-Slice**, markiert durch `docs/slices/_OPEN_<ID>_<SLUG>.md`. Ein Slice durchlaeuft **Gate 1 Checkup/Analysis -> Gate 2 Decision/Plan -> Gate 3 Implementation -> Gate 4 Validation/Commit/Close**. Vor jedem Write Session-/Gitstatus, offene Slice-Marker, Quarantaene fremder Aenderungen und Baseline pruefen. Beim Schliessen `docs/slices/HISTORY.md` ergaenzen und den offenen Marker im Closing-Commit entfernen. **Naechsten Slice nicht automatisch starten.**
+
+- [Projektkonfiguration](.ash/project.yaml) | [projektlokale ASH-Regeln](.ash/WORKFLOW.md)
+- [Slice Roadmap & Abnahmeziele](docs/ROADMAP.md) | [Slice- und Recovery-Anleitung](docs/slices/README.md) | [History geschlossener Slices](docs/slices/HISTORY.md)
+- [Alle sieben originalen ASH-v1-Workflowquellen (vollstaendig, mit Herkunft)](docs/reference/ash/README.md) - darunter [Slice-Protokoll](docs/reference/ash/SLICE_PROTOCOL.md), [Vorlage](docs/reference/ash/SLICE_TEMPLATE.md), [Recovery/Handoff](docs/reference/ash/RECOVERY_HANDOFF.md) und [Quell-Hash-Manifest](docs/reference/ash/MANIFEST.sha256)
+- **Checks:** `python tools/audit_ash_workflow.py` fuer Referenzen, ASH-Regeln und Markdown-Links; `python tools/audit_design.py` fuer die bestehende statische KNX-/PCB-/ETS-Baseline
+
+**Aktueller Arbeitsfortschritt:** Unter `docs/slices/_OPEN_*.md` steht nur der tatsaechlich gestartete Slice; ansonsten gilt die [Roadmap](docs/ROADMAP.md) als Plan, nicht als Implementierungs- oder Hardwarefreigabe. Vorherige commits `53b308a` .. `c2e4bee` sind historischer Baseline-Stand, nicht rueckwirkend formal geschlossene Slices.
+
 ## Documentation
 
 - [Architecture and verified project inventory](docs/ARCHITECTURE.md)

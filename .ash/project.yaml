@@ -1,0 +1,24 @@
+# ASH Project Workflow v1 - OpenKNXValveControl
+# Referenz: docs/reference/ash/README_PROJECT_WORKFLOW.md und PROJECT_PROTOCOL.md
+protocol: ash-project/v1
+name: open-knx-valve-control
+profile: software
+slices:
+  max_active_write: 1
+  marker_dir: docs/slices
+  gates:
+    - checkup
+    - decision
+    - implementation
+    - validation
+validation:
+  commands:
+    - python tools/audit_design.py
+    - python tools/audit_ash_workflow.py
+    - git diff --check
+workflow:
+  require_git_commit_on_close: true
+  roadmap: docs/ROADMAP.md
+  history: docs/slices/HISTORY.md
+  recovery: docs/slices/README.md
+# Projektspezifische Erweiterungen und harte Hardware-Gates: .ash/WORKFLOW.md

@@ -1,0 +1,4 @@
+# ASH Library-Referenzen sollen reproduzierbar aus dem Original gespiegelt werden.
+# Markdown-Hardbreaks aus dem Quellstandard enthalten absichtlich zwei Leerzeichen.
+docs/reference/ash/*.md text eol=lf whitespace=-blank-at-eol
+docs/reference/ash/MANIFEST.sha256 text eol=lf
