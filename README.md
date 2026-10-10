@@ -20,6 +20,7 @@ Dieses Projekt arbeitet nach dem **ASH Slice-Konzept** aus dem ChatGPT-Space `/A
 ## Documentation
 
 - [Architecture and verified project inventory](docs/ARCHITECTURE.md)
+- [Software-first: zwei Firmwares, ATtiny/RP2040, OneWire/UART und KNX-MVP](docs/FIRMWARE_SOFTWARE_FIRST.md)
 - [Schematic V1.2 electrical review and open findings](docs/SCHEMATIC_V1_2_REVIEW.md)
 - [5-V-Externversorgung, Jumper und KNX-Leistungsbudget](docs/POWER_SUPPLY_CONCEPT.md)
 - [PCB V1.2 static layout/pad audit](docs/PCB_V1_2_AUDIT.md)
@@ -58,6 +59,12 @@ Detailed behavior, ETS parameter tables, safety behavior, scheduling and open de
 The V1.2 board currently derives 3.3 V from KNX or USB. The project owner is considering a **dedicated external isolated 5 V SELV supply** because the STKNX 150 mA **buck-output** rating (distinct from the 30 mA KNX-bus extraction) may not cover the full board plus a 3.3 V / 120 mA actuator. This is **not yet measured**.
 
 **No 5 V may be applied to a 3.3 V motor or to `M_VCC`.** Board V1.2 includes solder jumper `JMP1` for the KNX power path (not a ready external input), two Schottky diodes in the USB-to-U6 path, and a TSR 1-2433 requiring **at least 4.75 V at its own input**. Read the actual jumper/pad map and two proposed external-supply architectures in [POWER_SUPPLY_CONCEPT.md](docs/POWER_SUPPLY_CONCEPT.md) before modifying hardware.
+
+## Prioritaet: Firmware und KNX-Temperatur-MVP
+
+Zuerst nur die **neun Temperaturen** T0 (Vorlauf) und T1..T8 (Ruecklaeufe der Heizkreise) ermitteln und auf den KNX-Bus bringen. Die [Software-first-Planung](docs/FIRMWARE_SOFTWARE_FIRST.md) trennt ATtiny3216 (zyklischer, nicht-blockierender OneWire-Snapshot) und RP2040 (UART-Abruf, KNX-Senden und spaeter Raum-/Motorregelung). Der PCB-V1.2-SPI-Takt und die ATtiny-Pins stimmen derzeit **nicht** mit der Firmware ueberein; zunaechst [Pin-Audit](tools/audit_temperature_bridge.py) und UART-Verbindung qualifizieren. Dies sind geplante Softwarearbeiten, noch kein erfolgreiches Hardware/Bus-End-to-End-System.
+
+Fuer die ASH-Abfolge siehe [ROADMAP](docs/ROADMAP.md), geplant zuerst KNX013 Sampler -> KNX014 UART -> KNX015 KNX-Publish -> KNX016 ETS6-Testprodukt. Reale Motorfahrten bleiben gesperrt, bis die Hardwareversorgung/INA219-Safety-Gates erfuellt sind.
 
 ## Next steps
 

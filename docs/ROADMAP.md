@@ -1,6 +1,6 @@
 # OpenKNXValveControl - ASH Slice Roadmap
 
-**Stand:** 2026-10-10. **Version:** initialer, projektbezogener Plan; geplante IDs/Abhaengigkeiten sind **noch keine Implementierungsfreigabe**.
+**Stand:** 2026-10-10. **Version:** Software-first Repriorisierung KNX012: Erst ATtiny -> UART -> RP2040 -> KNX-Temperaturen; danach Motor-Safety und Raumregelung. Geplante IDs/Abhaengigkeiten sind **keine Implementierungsfreigabe**.
 
 **Workflow:** [ASH Slice Protocol v1](reference/ash/SLICE_PROTOCOL.md) und [lokale Regeln](../.ash/WORKFLOW.md).
 
@@ -29,19 +29,36 @@
 | **KNX004** Motor-Safety und Scheduler | planned | RP2040 sichere Default-Ausgaenge, all-off, exklusives Motor-Token und Fehler-/Timeout-Zustaende implementieren, ohne riskanten Endanschlagbetrieb | KNX002; Versorgungsentscheidung fuer echte Hardwaretests | Unit-/Mock-Tests: niemals zwei Motoren aktiv, Reset/Fail-safe, sauberes Stoppen; Build PASS |
 | **KNX005** INA219/HmIP-VDMOT Charakterisierung | planned | Mit freigegebener Versorgung Stromkurven, Motorpolung, Anlauf, Endanschlag und gemessene Laufzeit auf einem Kanal aufnehmen | KNX002 + KNX003 + KNX004; echter Antrieb | Nachvollziehbare Messdaten, Grenzwerte/Filter & unabh. Abschaltkriterien; keine Annahme `120 mA = Endlage` |
 | **KNX006** Referenzfahrt und Position | planned | Individuelle Position 0..100 % per Homing + getrennte Laufzeiten, Persistenz/Uncertainty und Diagnose je M1..M8 | KNX004 + KNX005 | 0/25/50/75/100-%-Tests, Reboot/Unterbrechung/Blocker, immer nur ein Antrieb und fehlersicheres Stoppen |
-| **KNX007** Temperaturpfad | planned | ATtiny3216/OneWire T0..T8, UART/SPI-Anbindung und KNX-Isttemperaturquelle eindeutig modellieren | KNX002, Software-Baseline | Frischewerte, Timeouts, Fehler-/Sensorstaleness, Zuordnung `T0..T8` vs. Raum und relevante Tests |
+| **KNX007** Temperaturpfad (grober Altplan) | planned, aufgeteilt | Urspruenglich ATtiny3216/OneWire und UART/SPI bis KNX in einem Slice. **Jetzt Arbeitszerlegung KNX013..016 statt eigener paralleler Implementierung.** | Software-Pin-Audit KNX012; KNX002 nur fuer echten Hardwaretest | Bewertung durch die Einzel-Slices, keine fiktive Abnahme/Schliessung von KNX007 |
 | **KNX008** ETS Zone/Channel Design | planned | Acht Motoren auf bis zu acht Räume gruppierbar; Regelungsmodus `Soll/Ist Temperatur` vs. `0..100%` und korrekte DPTs sowie KNX-Objektnamen festlegen | KNX001 und [ETS-Audit](ETS_PRODUCT_AUDIT.md) | Reviewte Nummer-/Parameter-/DPT-Tabelle, migrationsfaehige Versionierung, C-sichere Identifier; **noch keine Aktivierung im Altprojekt** |
 | **KNX009** ETS6 Produkt-/Importtest | planned | XML/Header/Producer aktualisieren, versionierte `.knxprod` bauen und isoliert in ETS6 importieren | KNX008 | XML Sanity/Generator, Header-Compile, ETS Import-/GA-Sichttest, Version/Release-Manifest |
 | **KNX010** Raum-/Heizkreisregelung | planned | Mehrfachzuordnung M1..M8 zu Zonen, PI-/hysteresebasiertes Raumregeln und direktes KNX 0..100 % inklusive Fault Fallback implementieren | KNX006 + KNX007 + KNX009 | Tests fuer Raum mit 1/2/3/4 Motoren, Sensorfehler, Busausfall, konkurrierende Sollwerte, stabile sequenzielle Fahrten |
 | **KNX011** HMI, Integration & Release Gate | planned | LCD/Encoder/Diagnostik integrieren, Strom-/Versorgungs-/ETS-/Motorchecks zusammenfuehren, validierte Version dokumentieren | KNX003..KNX010 | End-to-End ETS-Download/Telegramme, Tests am realen Aufbau, BOM/DRC/QA, Fehlerfälle und Release-Artefakte dokumentiert |
 
+| **KNX012** Software-First Pin-/Protokollplan | **open, Gate 3 (2026-10-10)** | ATtiny/RP2040-Quell- und PCB-Pin-Review, T0 Vorlauf/T1..T8 Ruecklauf, UART-Protokollentwurf und Roadmap | KNX001; Schaltplan/PCB V1.2 und Source-Code | Pin-Audit reproduzierbar, Konzept und Folge-Slices dokumentiert, QA + ASH Close; keine voreilige Hardware-/KNX-Funktionsbehauptung |
+| **KNX013** ATtiny nichtblockierender Sampler | planned | Neun korrekte OneWire-Pins, 12-/11-Bit-Aufloesung, nichtblockierende Messungen und Snapshot mit Valid/Alter/Fehler | KNX012, vorhandener Source; Hardware spaeter fuer Realtest | ATtiny Build/Host-Tests, neun Pins korrekt, gueltiges 0 C und negative T, keine Loop-Blockierung, Timeout/CRC/Sentinel-Tests |
+| **KNX014** UART ATtiny<->RP2040 | planned | USART0 ALT1 PA1/PA2, RP GPIO8/9 Serial2, framing+CRC, GET_SNAPSHOT und Kommunikations-Timeout | KNX013, KNX012 Interface-Contract | Host-Frame-/CRC-/Stale-Tests, Builds beider Targets, gefaehrdungsfreie UART-Simulation; echte Hardware spaeter |
+| **KNX015** KNX-Sensordaten MVP | planned | T0..T8 DPT9.001 ueber RP2040 KNX publizieren, konfigurierbare Mindest-/Zyklusintervalle und Aenderungsschwelle, Status/Fault | KNX014; vorhandene 9 KO, erforderlicher ETS-Minimalvertrag | synthetische neun Temperaturwerte -> KNX-Encoder, keine ungueltigen/stale Telegramme, Throttling, Build; echter Bus noch separat |
+| **KNX016** ETS6-Temperatur-Importtest | planned | Nur Temperatur-MVP-Produkt versioniert erzeugen, sichere KO-Identifiers und ETS6-Testprojekt-Import/GA-Pruefung | KNX015; OpenKNXproducer vorhanden | Generator/ZIP/Header-Pruefung, ETS6-Import in isoliertes Projekt und 9 Temperatur-KO nachgewiesen; kein produktives KNX-Download |
+
 ## Reihenfolge und Sicherheitsabhaengigkeiten
 
-- **Naechster zweckmaessiger Hardware-Slice:** KNX002. Ohne Fotos/Bestueckung kann er `blocked` werden; das darf nicht als Erfolg gewertet werden.
-- **Bereits ohne laufende Hardwaretests moegliche konzeptionelle Arbeit:** KNX008 (ETS-Datenmodell), sobald KNX001 geschlossen wurde. Unabhaengige Planung ist moeglich; **kein zweiter paralleler Write-Slice**.
+- **Jetzt software-first:** KNX012 ist ein enger Architektur-/Pin-Audit-Slice; **anschliessend KNX013**, KNX014, KNX015 und KNX016. Sie koennen ohne Motorbewegung mit Host-Tests und Offline-Builds vorbereitet werden. Sie ersetzen nicht spaetere Hardware-/Bus-Abnahmetests.
+- **Naechster zweckmaessiger Hardware-Slice (separat):** KNX002. Ohne Fotos/Bestueckung kann er `blocked` werden; das darf nicht als Erfolg gewertet werden.
+- **Auch ohne laufende Hardwaretests moegliche konzeptionelle Arbeit:** KNX008 (ETS-Zonenmodell), aber fuer den ersten KNX-Temperatur-MVP ist die Reihenfolge KNX013..016 vorrangig. **Kein zweiter paralleler Write-Slice**.
 - KNX003 und KNX005 duerfen keine gefaehrlichen Blindversuche mit 5 V/3,3 V, Netzteilen oder Antrieben ausloesen. Stromversorgung, Diodenpfad, Schutz und reale Bestueckung muessen vorher freigegeben sein.
 - KNX009 baut nur ein separates Produkt und importiert es zum Test; keine ungepruefte Aenderung am produktiven KNX-/ETS-Projekt.
 - Projektrelease nur nach KNX011 oder anderem expliziten Release-Gate, **nicht automatisch beim Abschluss einzelner Slices**.
+
+
+## Temperatur-MVP zuerst: fachliche Abnahme
+
+- **ATtiny3216**: Temperatur **T0 = gemeinsamer Vorlauf**, **T1..T8 = Ruecklauf Heizkreis 1..8**; die neun OneWire-Sensoren werden zyklisch und ohne blockierende Konversionswarteschleifen erfasst, wobei Qualitaet und Alter im Snapshot festgehalten werden.
+- **Transportschicht**: PCB V1.2 hat ATtiny-PA3/SPI-SCK nicht verdrahtet; UART-ALT1 auf PA1/PA2 zum RP GPIO8/9 ist der zu pruefende Zielpfad. Der installierte Core nutzt USART0 standardmaessig auf PB2/PB3. Siehe [Firmwareplan](FIRMWARE_SOFTWARE_FIRST.md) und [statischen Pin-Audit](../tools/audit_temperature_bridge.py).
+- **KNX**: T0..T8 als DPT9.001 in ETS; Publikationsintervall, Mindestabstand und Delta-T-Schwelle individuell bzw. global parametrierbar. Sensoralter und Verbindungsverlust loesen Diagnose aus.
+- **Spaetere Regelung**: Raumsoll/-ist (externer KNX-Raumfuehler) mit langsamer Positions-PI-Regelung **oder** direkter DPT5.001-Stellwert; Heizkreise sind zu Raeumen gruppierbar. Ruecklauftemperatur ist keine Raumtemperatur, Durchflussveraenderungen anderer Kreise werden nicht blind mit Ruecklauf-Pseudo-PI korrigiert.
+- **Motor-Gates bleiben blockierend fuer echte Fahrten**: KNX002/003 Versorgung und Bestueckung, KNX004/005 Sicherheitsabschaltung und INA219-Messung vor KNX006/010.
+
 
 ## Nutzung der Roadmap
 
