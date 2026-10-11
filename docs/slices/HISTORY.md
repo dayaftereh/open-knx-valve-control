@@ -68,3 +68,29 @@ Bei Gate 4 fuer jeden echten Slice mindestens ID, Datum, Objective/Result, Profi
 - RP2040-Temperaturkommunikation fehlt noch; im Controller Build existiert ein OpenKNX-Producer-Pre-Script, das `include/knxprod.hpp` veraendern koennte. **Kein unkontrollierter RP2040 Build/ETS-Import in KNX012.**
 - Physische U25-Bestueckung, genaue Dallas-Fuehler, KNX-Versorgungsreserve, echte UART-Kommunikation und KNX-Busmonitor sind **ungeprueft**; die Motor-Safety-Gates bleiben unveraendert bindend.
 - **Kein Push** nach GitHub und keine behauptete Firmware-Funktionsfreigabe.
+
+
+## KNX013 – ATtiny3216: asynchroner 9-Kanal-Temperatursammler
+
+- **State:** closed
+- **Closed:** 2026-10-11
+- **Profile:** software, mit nativen C++ Unit-/Mock-Tests und ATtiny-PlatformIO-Build; kein Hardwaretest
+- **Objective:** PCB-V1.2-korrekte T0..T8-Pins, 1-Wire-Messungen ohne blockierende Konversionswartezeit, gespeicherte Messwerte mit Gültigkeit/Fehler/Alter und zuverlässiges Verhalten bei fehlenden Sensoren.
+- **Baseline:** bfb6745 auf sauberem main, acht lokale, noch nicht gepushte Commits vor origin/main; kein anderer offener Slice oder fremde aktive Write-Session.
+- **Implementation commit:** 34b0dc3 (feat(knx013): add asynchronous ATtiny nine-sensor sampler).
+- **Closing commit:** der separate Commit mit diesem HISTORY-Eintrag, Roadmap-Status closed und Entfernung des _OPEN_KNX013_ATTINY_SAMPLER.md-Markers.
+- **Detailed engineering record:** [KNX013_ATTINY_SAMPLER.md](../KNX013_ATTINY_SAMPLER.md); Software-Roadmap [FIRMWARE_SOFTWARE_FIRST.md](../FIRMWARE_SOFTWARE_FIRST.md).
+
+### Gate-Protokoll
+
+1. **Gate 1 / Checkup:** LLO Desktop Agent online, Git/Session/Slice-Markierungen verifiziert. Neun bisherige ATtiny-Pin-Zuordnungen falsch gegenüber EasyEDA V1.2. Legacy-SPI0 unbrauchbar, weil PA3/SCK nicht geroutet. Firmware hatte blockierende DallasTemperature-Wartezeit und gab für fehlende Sensoren künstlich 0 °C zurück.
+2. **Gate 2 / Decision:** T0 als Vorlauf, T1..T8 als Rücklauf je Heizkreis; neun getrennte 1-Wire-Eingänge, versetzter Messzyklus, Snapshot mit Fehler-/Alterstatus. Legacy-SPI entfernen, UART/RP2040 erst KNX014. Motor- und Stromversorgungsarbeiten vollständig ausgeschlossen.
+3. **Gate 3 / Implementation:** Portzuordnung auf PIN_PA5, PIN_PA6, PIN_PA7, PIN_PB5, PIN_PB4, PIN_PB1, PIN_PC1, PIN_PC0, PIN_PB0 korrigiert. Hardwareunabhängiger Sampler-Core mit asynchronem DallasTemperature-Adapter, Wiedererkennung/CRC-Fehler, 85-C-Power-On- und Parasitenwarnung sowie Stale-/Valid-Flags. Arduino-Config-Layout kompatibel belassen. Alte SPI0-Quellmodule und SPI-Dependency entfernt; kein UART-Protokoll vorgezogen.
+4. **Gate 4 / Validation:** ATtiny PlatformIO Build **PASS**, 924/2048 B RAM und AVR-size 8426/32768 B Program. Zwei native C++ Testsuites **PASS** (reiner Scheduler und produktive Temperature/Temperatures mit neun OneWire-/Dallas-Mocks), inklusive 0/negativ, Steckverlust/Wiederanschluss, Stale, 85 °C, Wraparound und Recovering-Status. KNX013 Pin-/Sensor-Audit --scope sensors --strict **PASS, 0 Sensorlücken**. ASH Workflow Audit **PASS, 30 Checks**, lokaler Markdown-Linkcheck, PCB/ETS Static Audit ohne neue strukturelle Fehler. Gestagter Git-Diff-Whitespacecheck **PASS**. Abschlussprüfungen nach Markerentfernung erneut verifiziert.
+
+### Grenzen und nächste Schritte
+
+- **Nichts geflasht**; reale ATtiny-Bestückung, echte Sensor-Genauigkeit/Latenz, externe 3,3-/5-V-Versorgung und KNX-Telegramme weiterhin ungetestet. Host-/Compiler-PASS ist keine Hardwarefreigabe.
+- **KNX014 geplant, nicht gestartet:** USART0-Pinmux ATtiny PA1/PA2 und RP2040 GPIO8/9, gerahmtes CRC-gesichertes GET_SNAPSHOT/Response, Timeout/Stale-Behandlung. Die beiden übergeordneten Transportlücken bleiben im Gesamtaudit sichtbar.
+- Nach KNX014 folgen KNX015 KNX DPT9.001 Publish und KNX016 ETS6-Temperaturprodukt. Keine Motorbewegung vor separaten Hardware-/Safety-Slices KNX002..006.
+- **Kein GitHub-Push** und keine Releasefreigabe durch KNX013.
