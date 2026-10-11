@@ -11,6 +11,7 @@ enum class Error : uint8_t
     Temperatures,
     SPISlave, // reserved legacy error code: SPI0 is disabled on PCB V1.2
     SerialMessageDispatcher,
+    UartSetup,
 };
 
 #endif // ERROR_HPP

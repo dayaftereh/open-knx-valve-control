@@ -136,13 +136,67 @@ def main() -> int:
         if not present:
             transport_issues.append("PCB_" + net)
 
-    if "Serial.begin(" in main_src and "Serial.swap(" not in main_src:
-        print("  KNX014 TODO: ATtiny Serial default PB2/PB3; "
-              "PORTMUX USART0 ALT1 PA1/PA2 not configured")
-        transport_issues.append("ATtiny_UART_ROUTE")
-    if "Temperatures" not in rp_main and "temperature" not in rp_main.lower():
-        print("  KNX014 TODO: no RP2040 temperature transport implementation")
-        transport_issues.append("RP_UART")
+    # KNX014 transport: require real ALT1 and independent RP Serial2.
+    proto_path = ROOT / "lib/common/temperature_protocol.hpp"
+    core_path = ROOT / "lib/common/temperature_client_core.hpp"
+    at_link_path = ROOT / "src/temperature/temperature_link.cpp"
+    rp_link_path = ROOT / "src/controller/temperature_bridge.cpp"
+    rp_config_path = ROOT / "src/controller/config.hpp"
+
+    proto = proto_path.read_text(encoding="utf-8") if proto_path.exists() else ""
+    client = core_path.read_text(encoding="utf-8") if core_path.exists() else ""
+    at_link = at_link_path.read_text(encoding="utf-8") if at_link_path.exists() else ""
+    rp_link = rp_link_path.read_text(encoding="utf-8") if rp_link_path.exists() else ""
+    rp_config = rp_config_path.read_text(encoding="utf-8")
+
+    def require_transport(condition: bool, reason: str) -> None:
+        if not condition:
+            transport_issues.append(reason)
+
+    swap_at = main_src.find("Serial.swap(1)")
+    begin_at = main_src.find("Serial.begin(115200)")
+    require_transport(swap_at >= 0 and begin_at > swap_at,
+                      "ATtiny_USART_ALT1_PA1_PA2")
+    require_transport("temperatureLink.setup(Serial, temperatures)" in main_src
+                      and "temperatureLink.update()" in main_src,
+                      "ATtiny_LINK_SETUP_LOOP")
+    require_transport("serialDispatcher.setup(" not in main_src
+                      and "serialDispatcher.update()" not in main_src,
+                      "UNFRAMED_LEGACY_UART_ACTIVE")
+    require_transport("TemperatureProtocol::GetSnapshot" in at_link
+                      and "temperatures_->getSnapshot(i, now)" in at_link
+                      and "TemperatureProtocol::encodeSnapshot" in at_link,
+                      "ATtiny_SNAPSHOT_RESPONDER")
+
+    require_transport("TemperaturesTx = D8;" in rp_config
+                      and "TemperaturesRx = D9;" in rp_config,
+                      "RP_GPIO8_9")
+    require_transport("Serial2.setTX(Pin::TemperaturesTx)" in rp_main
+                      and "Serial2.setRX(Pin::TemperaturesRx)" in rp_main
+                      and "Serial2.begin(TemperatureBridge::Baud)" in rp_main,
+                      "RP_SERIAL2_PINS_BAUD")
+    require_transport("temperatureBridge.setup(Serial2)" in rp_main
+                      and "temperatureBridge.update()" in rp_main,
+                      "RP_POLL_LOOP")
+    require_transport("TPUart::Interface::ArduinoSerial(Serial1)" in rp_main,
+                      "KNX_UART1_SEPARATE")
+    require_transport("client_.feed(" in rp_link
+                      and "client_.prepareRequest(" in rp_link
+                      and "client_.tick(" in rp_link,
+                      "RP_CRC_RESPONSE_CLIENT")
+
+    for token in ("crc16(", "GetSnapshot = 0x01",
+                  "SnapshotResponse = 0x81", "Channels = 9",
+                  "SnapshotPayloadBytes = 4 + 1 + Channels * 6",
+                  "Version = 1", "MaxFrameBytes == 67"):
+        require_transport(token in proto, "PROTOCOL_" + token)
+    require_transport("ReplyTimeoutMs = 400U" in client
+                      and "OfflineAfterMs = 15000U" in client
+                      and "frame.sequence != sequence_" in client,
+                      "CRC_SEQUENCE_TIMEOUT_POLICY")
+    print("  KNX014 ATtiny USART ALT1, RP2040 Serial2 and KNX Serial1: " +
+          ("PASS" if not transport_issues else "CHECK"))
+
     print(f"RESULT: KNX013 sensor gaps={len(sensor_issues)}, "
           f"KNX014 transport gaps={len(transport_issues)} "
           f"(scope={args.scope})")

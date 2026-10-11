@@ -1,67 +1,54 @@
+#include <Arduino.h>
 #include <status_led.hpp>
 #include <config_manager.hpp>
-#include <serial_dispatcher.hpp>
 
 #include "error.hpp"
 #include "config.hpp"
 #include "temperatures.hpp"
-#include "serial_message_dispatcher.hpp"
+#include "temperature_link.hpp"
 
 StatusLed statusLed;
 Temperatures temperatures;
-SerialDispatcher serialDispatcher;
+TemperatureLink temperatureLink;
 ConfigManager<Config> configManager;
-SerialMessageDispatcher serialMessageDispatcher;
 
 void setup()
 {
-    // megaTinyCore ATtiny3216 default USART0 PB2/PB3:
-    // this remains the legacy local debug/config link in KNX013.
-    // KNX014 will explicitly move USART0 to PA1/PA2 for RP2040 UART.
-    Serial.begin(DefaultSerialBaud);
-    delay(1000);
-
-    bool success = serialDispatcher.setup(
-        Serial, [](SerialMessage *message)
-        { serialMessageDispatcher.onMessage(message); },
-        UnitType::Temperature, 1);
-    if (!success)
+    // ATtiny3216 USART0 default PB2/PB3 is only the historical debug port.
+    // PCB V1.2 connects USART0 ALT1 PA1(TX) -> RP GPIO9(RX) and
+    // PA2(RX) <- RP GPIO8(TX), so switch before starting the UART.
+    if (!Serial.swap(1))
     {
-        statusLed.setError(Error::SerialDispatcher);
+        statusLed.setError(Error::UartSetup);
         return;
     }
+    Serial.begin(115200);
 
-    success = configManager.setup(0, serialDispatcher, [](Config &config)
-    {
-        config.resolution = 12;       // DS18B20 12 bit; max 750 ms conversion
-        config.updateRate = 10.0f;   // default: one sample / 10 s / probe
-        config.spiTemperature = 2.5f; // deprecated layout-preserving field
-        return true;
-    }, false);
-    if (!success)
+    // Keep the existing CRC-protected EEPROM configuration layout.
+    // Do NOT attach the legacy, UNFRAMED SerialDispatcher to this UART:
+    // it would interpret the CRC-framed temperature protocol as commands.
+    const bool configReady = configManager.setup(
+        0, Serial, [](Config &config) {
+            config.resolution = 12;       // DS18B20 12-bit
+            config.updateRate = 10.0f;    // one sample / 10 seconds
+            config.spiTemperature = 2.5f; // retained layout, no longer used
+            return true;
+        }, false);
+    if (!configReady)
     {
         statusLed.setError(Error::ConfigManager);
         return;
     }
 
     Config *config = configManager.getConfig();
-    success = temperatures.setup(config, serialDispatcher);
-    if (!success)
+    if (!temperatures.setup(config, Serial))
     {
         statusLed.setError(Error::Temperatures);
         return;
     }
-
-    // KNX013: intentionally NO SPI0 slave initialization.
-    // The PCB V1.2 leaves ATtiny PA3/SPI0_SCK unconnected to RP2040.
-    // Current firmware must never drive PA1/PA2 as SPI if they will be
-    // selected for the RP2040 temperature UART in KNX014.
-
-    success = serialMessageDispatcher.setup(
-        temperatures, serialDispatcher, configManager, serialDispatcher);
-    if (!success)
+    if (!temperatureLink.setup(Serial, temperatures))
     {
-        statusLed.setError(Error::SerialMessageDispatcher);
+        statusLed.setError(Error::UartSetup);
         return;
     }
 }
@@ -69,6 +56,6 @@ void setup()
 void loop()
 {
     statusLed.update();
-    temperatures.update(); // bounded short bus operations; no 750 ms delay
-    serialDispatcher.update();
+    temperatures.update();    // nine nonblocking conversion schedulers
+    temperatureLink.update(); // UART requests answered from RAM snapshots
 }
