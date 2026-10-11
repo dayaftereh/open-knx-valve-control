@@ -94,3 +94,52 @@ Bei Gate 4 fuer jeden echten Slice mindestens ID, Datum, Objective/Result, Profi
 - **KNX014 geplant, nicht gestartet:** USART0-Pinmux ATtiny PA1/PA2 und RP2040 GPIO8/9, gerahmtes CRC-gesichertes GET_SNAPSHOT/Response, Timeout/Stale-Behandlung. Die beiden übergeordneten Transportlücken bleiben im Gesamtaudit sichtbar.
 - Nach KNX014 folgen KNX015 KNX DPT9.001 Publish und KNX016 ETS6-Temperaturprodukt. Keine Motorbewegung vor separaten Hardware-/Safety-Slices KNX002..006.
 - **Kein GitHub-Push** und keine Releasefreigabe durch KNX013.
+
+
+## KNX014 – CRC-framed UART bridge ATtiny3216 to RP2040
+
+- **State:** closed
+- **Date:** 2026-10-11
+- **Profile:** software, offline build and native simulation. **No physical UART/KNX hardware acceptance.**
+- **Initial HEAD:** 1e45868 (main clean, 10 commits ahead origin/main); no other active write sessions or open Slice markers.
+- **Implementation:** 48eb2cb — feat(knx014): add CRC framed UART temperature bridge.
+- **Closing:** Separate commit of this HISTORY, ROADMAP closed state and deletion of _OPEN_KNX014_UART_BRIDGE.md.
+- **Technical documentation:** [KNX014_UART_BRIDGE.md](../KNX014_UART_BRIDGE.md).
+
+### ASH Gate 1 – Checkup / Analysis
+
+- Confirmed PCB V1.2 UART nets: ATtiny PA1/Pin17 TX via T_RX -> RP2040 GPIO9 RX; ATtiny PA2/Pin18 RX via T_TX <- RP2040 GPIO8 TX.
+- megaTinyCore 2.6.7 supports Serial.swap(1) to USART0 ALT1; Arduino-Pico Serial2 on UART1 GPIO8/9 is separate from KNX Serial1.
+- KNX013 provided nine valid/age/fault snapshots; older ATtiny SerialDispatcher was an incompatible unframed binary protocol; existing RP build pre-script could regenerate the canonical knxprod.hpp.
+- Project baseline and ASH protocol checked before changes.
+
+### ASH Gate 2 – Decision / Plan
+
+- Fixed 115200 8N1 polling transport with A5 5A sync, version/type/seq/length, CRC16-CCITT-FALSE; GET_SNAPSHOT request 8 bytes, SNAPSHOT reply 67 bytes with nine six-byte channels and ATtiny uptime.
+- Shared platform-independent codec/parser, explicit request timeout 400 ms, poll period 3 seconds, offline after 15 seconds, no acceptance of wrong CRC/version/sequence.
+- ATtiny responds **only from cached RAM snapshots**, with no live OneWire call on the serial request; no KNX publish until KNX015.
+- Existing ATtiny EEPROM config preserved, but former PB2/PB3 serial configuration protocol intentionally not attached to PA1/PA2; future KNX/ETS configuration migration remains open.
+
+### ASH Gate 3 – Implementation
+
+- Shared codec [temperature_protocol.hpp](../../lib/common/temperature_protocol.hpp) and client state [temperature_client_core.hpp](../../lib/common/temperature_client_core.hpp).
+- ATtiny responder [temperature_link.cpp](../../src/temperature/temperature_link.cpp), USART0 ALT1 in [main.cpp](../../src/temperature/main.cpp).
+- RP poller [temperature_bridge.cpp](../../src/controller/temperature_bridge.cpp), Serial2 GPIO8/9 initialization in [main.cpp](../../src/controller/main.cpp).
+- Four native C++ test suites and repeatable [test runner](../../tools/test_temperature_uart.py). Safe [isolated controller build](../../tools/build_controller_isolated.py) prevents tracked OpenKNX header modifications.
+- [README](../../README.md), [firmware roadmap](../FIRMWARE_SOFTWARE_FIRST.md) and [ROADMAP](../ROADMAP.md) updated.
+
+### ASH Gate 4 – Validation
+
+- **ATtiny PlatformIO temperature PASS**, 983/2048 bytes RAM, program 8480/32768 bytes.
+- **RP2040 PlatformIO controller PASS** in isolated copy; RAM 52,008/262,144, flash 154,320/1,048,576, UF2 generated. SHA256 comparison confirmed original include/knxprod.hpp unchanged. Initial repository test-script attempt built successfully but cleanup failed on a read-only Windows Git pack; script cleanup was hardened and full repeat PASS (Exit 0).
+- **Four KNX014 native C++ suites PASS**: golden CRC/frame/endian/parser, sequence/timeout/offline and rollover, real ATtiny UART responder with 9 mocked sensors/backpressure, real RP2040 UART adapter with mocked hardware serial.
+- **Two KNX013 regression suites PASS**: 1Wire core and actual 9-sensor mocked adapters.
+- **Strict sensor+UART static audit PASS**, zero mismatches. **ASH audit PASS (30 checks, 222 local Markdown links before closing)**. **PCB static audit PASS (0 new invariant failures)**, with pre-existing BOM/power/ETS warnings. Python compile check PASS; staged Git diff --check PASS.
+- Closing checks after removing marker confirm only closed slice, current HEAD, Git clean and no push.
+
+### Remaining restrictions / next slice
+
+- Never flashed either chip; ATtiny U25 actual populated part, supplied 3.3 V and true end-to-end UART waveforms/OneWire behavior remain unverified.
+- OpenKNXproducer output still warns about macro redefinitions / malformed Ko names in the existing product XML. Generator/build success is **not** ETS6 import or bus Telegram proof.
+- **KNX015 planned (NOT started):** Consume the cached, validity-checked T0..T8 snapshots and publish KNX DPT9.001 temperatures with configurable scheduling and diagnostics, after repairing KNX product identifier macros without silently renumbering active projects.
+- Hardware checks KNX002/003/004/005 remain mandatory for motor/supply work. No remote push.
