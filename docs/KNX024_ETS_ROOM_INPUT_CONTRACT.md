@@ -2,6 +2,8 @@
 
 **Stand:** 12.10.2026. **Abnahmetyp:** nur Software-/Schema-Tests plus isolierter RP2040-Firmware-Build. Keine produktive ETS-AppVersion3, keine echten KNX-Telegramme, keine Motor-GPIO, kein Flash.
 
+**KNX025 Weiterfuehrung:** [Fault-/Recovery-Supervisor](KNX025_FAULT_RECOVERY_DIAGNOSTICS.md) prueft im portablen Simulator KNX024-Telegrammfehler, Stale-Quellen, softwareseitige ACK-Leases und manuell quittierten Wiederanlauf. Keine ETS6-/KNX- oder Motorfreigabe.
+
 Die [KNX008-Zonenplanung](KNX008_ZONE_CHANNEL_DESIGN.md) wird in einen portablen, strikt typisierten KNX-Eingangsadapter umgesetzt und mit dem [KNX023-Regler](KNX023_FIRMWARE_SOFTWARE_RUNTIME.md) offline verbunden.
 
 ## 1. ETS-KO- und Parametervorschlag

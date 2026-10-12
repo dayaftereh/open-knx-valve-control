@@ -9,6 +9,7 @@
 #include "temperature_publisher.hpp"
 #include "room_control_runtime.hpp"
 #include "knx024_room_dpt_adapter.hpp"
+#include "knx025_fault_supervisor.hpp"
 
 TemperatureBridge temperatureBridge;
 TemperaturePublisher temperaturePublisher;
@@ -21,6 +22,9 @@ static_assert(Knx024::FirstRoomObject == 36 &&
 // KNX023: software-only PI/zone target engine. RP2040 build has no motor
 // mock backend, cannot arm simulation, and never touches motor GPIO pins.
 RoomControlRuntime::Pipeline roomControlRuntime;
+// KNX025: passive software fault diagnostics only; no ETS V3 listener,
+// motor GPIO, physical watchdog or KNX diagnostic object is connected.
+Knx025::Supervisor roomFaultSupervisor;
 uint32_t lastRoomSoftwareTickMs = 0;
 
 void setupKnx()
@@ -59,6 +63,7 @@ void setup()
     // ETS-input adapter and independent KNX004 hardware safety gate exist.
     lastRoomSoftwareTickMs = millis();
     roomControlRuntime.reset(lastRoomSoftwareTickMs);
+    roomFaultSupervisor.reset(lastRoomSoftwareTickMs);
 
     setupTemperatureLink();
     setupKnx();
@@ -81,6 +86,16 @@ void loop()
     {
         lastRoomSoftwareTickMs = softwareNow;
         roomControlRuntime.tick(softwareNow);
+        // The ATtiny T0..T8 source is manifold TELEMETRY only. Neither
+        // an ETS commissioning flag nor probe-online proves room transport
+        // health: future KNX018 must add verified ETS group access.
+        Knx025::Signals softwareSignals{};
+        softwareSignals.manifoldTelemetryObserved =
+            temperatureBridge.hasSnapshot();
+        softwareSignals.manifoldTelemetryOnline =
+            temperatureBridge.online(softwareNow);
+        roomFaultSupervisor.observeFirmware(
+            roomControlRuntime, softwareSignals, softwareNow);
     }
 
     if (!knx.configured())

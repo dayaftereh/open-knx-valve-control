@@ -17,9 +17,11 @@ Dieses Projekt arbeitet nach dem **ASH Slice-Konzept** aus dem ChatGPT-Space `/A
 - [Alle sieben originalen ASH-v1-Workflowquellen (vollstaendig, mit Herkunft)](docs/reference/ash/README.md) - darunter [Slice-Protokoll](docs/reference/ash/SLICE_PROTOCOL.md), [Vorlage](docs/reference/ash/SLICE_TEMPLATE.md), [Recovery/Handoff](docs/reference/ash/RECOVERY_HANDOFF.md) und [Quell-Hash-Manifest](docs/reference/ash/MANIFEST.sha256)
 - **Checks:** `python tools/audit_ash_workflow.py` fuer Referenzen, ASH-Regeln und Markdown-Links; `python tools/audit_design.py` fuer die bestehende statische KNX-/PCB-/ETS-Baseline
 
+**KNX025 Software-Faults:** [Faultsupervisor/Recovery-Dokumentation](docs/KNX025_FAULT_RECOVERY_DIAGNOSTICS.md) beschreibt den simulierten KNX-Raum-Input-/Zeit-/ACK-Faultpfad mit sticky Alarm, expliziter ACK-Recovery und der separaten, nicht sperrenden ATtiny-Verteilertelemetrie-Warnung. RP2040 besitzt weiterhin nur einen **passiven** RAM-Diagnosebeobachter: keine V3-KO-Live-Bindung, kein echter Motor-Watchdog und kein kontrollierbares TB6612-STBY auf V1.2.
+
 **KNX024 ETS-Datentypen:** [Offline-KO-Adapter](docs/KNX024_ETS_ROOM_INPUT_CONTRACT.md) testet den KNX008-Vorschlag KO36..67, DPT9.001, DPT5.001, Timeouts und Konfigurationswechsel, ohne echte V3-ETS-KOs zu publizieren. Legacy KO17..24 bleiben DPT5.004, Motoren bleiben gesperrt.
 
-**Laptop-Plan:** [KNX018](docs/KNX018_LAPTOP_UPDI_TESTBENCH.md) beschreibt das separate LLO-Laptop-Agent/KNX-IP/USB-RP2040/CH340G-RTS-UPDI/Test-Sensor-Setup einschliesslich CN1.1-5V-Rueckspeisepruefung. Der Desktop behaelt die ungepushten Commits, der Laptop ist noch nicht umgezogen. [KNX023](docs/KNX023_FIRMWARE_SOFTWARE_RUNTIME.md) integriert die Software-PI-/Queue-Modelle in die RP2040-Firmware **mit ARDUINO-Hardlock gegen jegliche Motorfreigabe**. Noch KEIN ETS-Raumeingangsadapter und kein echter Motor-Output.
+**Laptop-Plan:** [KNX018](docs/KNX018_LAPTOP_UPDI_TESTBENCH.md) beschreibt das separate LLO-Laptop-Agent/KNX-IP/USB-RP2040/CH340G-RTS-UPDI/Test-Sensor-Setup einschliesslich CN1.1-5V-Rueckspeisepruefung. Der Desktop behaelt die ungepushten Commits, der Laptop ist noch nicht umgezogen. [KNX023](docs/KNX023_FIRMWARE_SOFTWARE_RUNTIME.md) integriert die Software-PI-/Queue-Modelle in die RP2040-Firmware **mit ARDUINO-Hardlock gegen jegliche Motorfreigabe**. KNX024 besitzt einen Offline-ETS-Raumeingangsadapter, aber weiterhin **KEIN LIVE ETS-/KNX-Raumeingang** und keinen echten Motor-Output.
 
 **Hardware-Readiness:** [KNX022](docs/KNX022_STATIC_HW_READINESS.md) prueft die V1.2-Netze und Teile-Attribute reproduzierbar. Die bestueckte Platine bleibt wegen offener R29-/U25-/F1-, STBY-/Versorgungs- und ERC/DRC-Nachweise **NICHT zum motorischen Betrieb freigegeben**. Dies schliesst die physischen KNX002/003/004/005/006-Gates nicht ab.
 
@@ -39,6 +41,7 @@ Dieses Projekt arbeitet nach dem **ASH Slice-Konzept** aus dem ChatGPT-Space `/A
 - [KNX022: statischer Hardware-Preflight V1.2, BOM-Konflikte, Motorversorgung nicht freigegeben](docs/KNX022_STATIC_HW_READINESS.md)
 - [KNX023: RAM-only RP2040-Raumregelungs-Runtime, ARDUINO-Armierung gesperrt](docs/KNX023_FIRMWARE_SOFTWARE_RUNTIME.md)
 - [KNX024: typisierter Offline-ETS-Eingangsadapter fuer KNX-Raumwerte DPT9.001 und Direktstellwerte DPT5.001, KOs36..67 vorgeschlagen](docs/KNX024_ETS_ROOM_INPUT_CONTRACT.md)
+- [KNX025: Software-Fehlerdiagnose, sticky fault, Stoppquittung und kontrollierter Wiederanlauf ohne Motorhardware](docs/KNX025_FAULT_RECOVERY_DIAGNOSTICS.md)
 - [KNX018: geplanter Laptop-Teststand mit KNX/IP, RTS-UPDI/UART, RP2040-USB, DS18B20 und M1](docs/KNX018_LAPTOP_UPDI_TESTBENCH.md)
 - [KNX-Hardwaretest auf eigenständige Laborumgebung verschoben: Testbench-Konzept](docs/KNX_TESTBENCH_PLAN.md)
 - [Schematic V1.2 electrical review and open findings](docs/SCHEMATIC_V1_2_REVIEW.md)
