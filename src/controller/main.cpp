@@ -10,6 +10,7 @@
 #include "room_control_runtime.hpp"
 #include "knx024_room_dpt_adapter.hpp"
 #include "knx025_fault_supervisor.hpp"
+#include "knx026_hmi_diagnostics.hpp"
 
 TemperatureBridge temperatureBridge;
 TemperaturePublisher temperaturePublisher;
@@ -26,6 +27,8 @@ RoomControlRuntime::Pipeline roomControlRuntime;
 // motor GPIO, physical watchdog or KNX diagnostic object is connected.
 Knx025::Supervisor roomFaultSupervisor;
 uint32_t lastRoomSoftwareTickMs = 0;
+// Read-only HMI snapshot, not connected to unverified display/encoder pins.
+Knx026::Snapshot hmiSnapshot;
 
 void setupKnx()
 {
@@ -96,6 +99,30 @@ void loop()
             temperatureBridge.online(softwareNow);
         roomFaultSupervisor.observeFirmware(
             roomControlRuntime, softwareSignals, softwareNow);
+        // KNX026 passive sample: no display driver, GPIO input, KNX write,
+        // operator recovery, queue arm, or motor-side effect.
+        Knx026::WaterInput hmiWater{};
+        hmiWater.observed = temperatureBridge.hasSnapshot();
+        hmiWater.online = temperatureBridge.online(softwareNow);
+        if (hmiWater.observed)
+        {
+            const auto& cached = temperatureBridge.lastSnapshot();
+            for (uint8_t i = 0; i < TemperatureProtocol::Channels; ++i)
+            {
+                auto& display = hmiWater.channels[i];
+                const auto& channel = cached.channels[i];
+                display.centiC = channel.centiC;
+                display.fault = channel.fault;
+                display.ageSeconds = temperatureBridge.ageSeconds(i, softwareNow);
+                display.quality = temperatureBridge.channelValid(i, softwareNow)
+                    ? Knx026::Quality::Fresh
+                    : (hmiWater.online ? Knx026::Quality::Invalid
+                                       : Knx026::Quality::Stale);
+            }
+        }
+        hmiSnapshot = Knx026::capture(
+            roomControlRuntime, roomFaultSupervisor.diagnostics(),
+            hmiWater, softwareNow);
     }
 
     if (!knx.configured())

@@ -99,3 +99,8 @@ Fuer die ASH-Abfolge siehe [ROADMAP](docs/ROADMAP.md): **KNX013/014/015 Software
 6. Import-test the isolated KNX product generation candidate in ETS6, validate group objects, then verify telegrams end-to-end when hardware is ready.
 
 **Audit status:** PCB und Schaltplan unveraendert. **KNX015** hat die ETS-XML auf ApplicationVersion 2 erweitert (KO1..33 unveraendert nummeriert, neu KO34/35 und P20/P21) sowie [knxprod.hpp](include/knxprod.hpp) reproduzierbar regeneriert. [Preservation-Audit](tools/audit_knx015_product.py) prueft die historische ETS-ABI; [isolierter RP-Build](tools/build_controller_isolated.py) hat die Quell-Header nicht implizit veraendert. Keine Hardware geflasht, keine Motoren bewegt. Run the standard-library-only static checks with `python tools/audit_design.py`. A test `.knxprod` was generated **outside the repository**; no ETS6 import or firmware build is claimed.
+
+
+## KNX026 – Read-only HMI/Diagnose (12.10.2026)
+
+Die [KNX026-HMI-Dokumentation](docs/KNX026_HMI_DIAGNOSTICS.md) beschreibt das neue portable Anzeige-/Menue-Snapshot-Modell fuer T0/T1..T8, Raum-/Heizkreis-Zuordnung, PI/Direktvorgaben, KNX025-Faults, Offline-/Alterdiagnose sowie getrennte synthetische und unbekannte reale Motorposition. Der RP2040 sampelt die Daten ausschliesslich passiv im RAM. Die V1.2-HMI-Pins sind bekannt, ein getesteter LCD-Treiber/physischer Encoder jedoch nicht. **Keine Motorfreigabe, kein physischer LCD-Betrieb, kein KNX-Bus-/ETS6-Test.**

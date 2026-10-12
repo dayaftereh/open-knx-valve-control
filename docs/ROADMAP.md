@@ -84,3 +84,8 @@
 ## Historische Arbeiten vor Einfuehrung des ASH-Protokolls
 
 Die Commits `53b308a` (Antrieb/ETS-Konzept), `4fa28c1` (Schaltplan), `0045a45` (PCB/ETS), `c2e4bee` (5-V-Versorgung) bilden eine **bereits dokumentierte Ausgangsbasis**. Sie werden nicht nachtraeglich in fiktive, formal gate-validierte Slices umetikettiert.
+
+
+## KNX026 – HMI/Diagnose (Software-Slice, 12.10.2026)
+
+KNX026 wurde auf der KNX025-Basis fuer eine rein lesende [portable HMI und Diagnose](KNX026_HMI_DIAGNOSTICS.md) umgesetzt. Sie zeigt T0..T8 (Wasser, nicht Raum), gueltige externe Raumsoll-/-istwerte, PI und direkte Prozentvorgabe, Zonen-/Motorzuordnung, virtuelle Ziel-/Positionswerte nur aus der Hostsimulation, KNX025-Faults und getrennte Kommunikationsqualitaet; in echter Firmware nur passive RAM-Beobachtung. Ein Display-/Encoder-Hardwaretreiber und alle unabhaengigen Motor-Safety-Gates bleiben offen. **KNX011 ist damit nicht abgeschlossen.**
