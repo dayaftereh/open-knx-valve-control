@@ -1,6 +1,6 @@
 # ETS application, heating zones and valve-control concept
 
-**Status:** Requirement capture and proposed design, not implemented or verified. Date: 2026-10-09. The [ETS product-data audit](ETS_PRODUCT_AUDIT.md) distinguishes the existing XML objects from this future zone-based design.
+**Status:** Historical requirement capture (2026-10-09); not a record of current firmware execution or hardware acceptance. **Update 2026-10-12:** The concrete [KNX008 zone/channel ETS design](KNX008_ZONE_CHANNEL_DESIGN.md) now specifies a PROPOSED ApplicationVersion 3 object/parameter layout and a native-tested, hardware-independent target router. The current real ETS XML remains Version 2 with 35 KO / 21 parameters. The historical sections below were not retrospectively rewritten. [ETS product-data audit](ETS_PRODUCT_AUDIT.md) documents the original inventory.
 
 ## Goal and definitions
 

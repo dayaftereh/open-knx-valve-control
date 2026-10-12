@@ -1,0 +1,950 @@
+{
+  "schema": "openknxvalve.knx008.zone-proposal.v1",
+  "status": "PROPOSAL_ONLY__NOT_IN_ETS_XML_OR_FIRMWARE",
+  "baseline": {
+    "verifiedGitHead": "c171d17",
+    "existingApplicationVersion": 2,
+    "proposedApplicationVersion": 3,
+    "existingCommunicationObjects": 35,
+    "existingParameters": 21,
+    "preserveKoRange": [
+      1,
+      35
+    ],
+    "preserveParameterRange": [
+      1,
+      21
+    ],
+    "origin": "assets/open-knx-valve-control.xml"
+  },
+  "limits": {
+    "motorCount": 8,
+    "zoneCount": 8,
+    "zone0MeansUnassigned": true,
+    "maxZoneAssignmentsPerMotor": 1,
+    "physicalMotorConcurrency": 1
+  },
+  "controlModes": {
+    "0": "Disabled",
+    "1": "RoomTemperature - external KNX setpoint+room actual; controller output generated in future KNX010",
+    "2": "DirectPercent - external KNX DPT5.001 position raw0..255"
+  },
+  "percentage": {
+    "canonicalDpt": "5.001",
+    "rawMin": 0,
+    "rawMax": 255,
+    "internalMinPermille": 0,
+    "internalMaxPermille": 1000,
+    "rounding": "raw*1000/255 rounded nearest",
+    "legacyDptToPreserve": "5.004",
+    "legacyObjects": [
+      17,
+      24
+    ],
+    "warning": "DPT5.004 is NOT equivalent to DPT5.001; never reinterpret raw bytes silently"
+  },
+  "temperature": {
+    "canonicalDpt": "9.001",
+    "roomActualSource": "external KNX room-air sensor per zone",
+    "notRoomActualSensors": [
+      "T0: shared supply water temperature",
+      "T1..T8: eight return-water temperatures"
+    ],
+    "temperatureBoundsAreFutureConfig": true
+  },
+  "constraints": {
+    "unassignedMotor": "not eligible for target",
+    "disabledZone": "not eligible for target",
+    "staleInputs": "no new motor target; downstream KNX004 scheduler cancels queued stale commands",
+    "temperatureController": "not implemented; only route externally computed valid output",
+    "etsMigration": "No XML/header mutation until separate ETS product migration and real KNX testbench KNX018"
+  },
+  "proposedComObjects": [
+    {
+      "number": 36,
+      "name": "Zone1RoomSetpoint",
+      "zone": 1,
+      "dpt": "9.001",
+      "sizeBytes": 2,
+      "direction": "rx",
+      "description": "External KNX room-temperature setpoint in degree Celsius (temperature mode only)"
+    },
+    {
+      "number": 37,
+      "name": "Zone1RoomActual",
+      "zone": 1,
+      "dpt": "9.001",
+      "sizeBytes": 2,
+      "direction": "rx",
+      "description": "External KNX ROOM-AIR actual temperature, never T0..T8 manifolds"
+    },
+    {
+      "number": 38,
+      "name": "Zone1DirectDemand",
+      "zone": 1,
+      "dpt": "5.001",
+      "sizeBytes": 1,
+      "direction": "rx",
+      "description": "Direct 0..100 percent demand, raw 0..255 scaled (direct mode only)"
+    },
+    {
+      "number": 39,
+      "name": "Zone1RequestedOutput",
+      "zone": 1,
+      "dpt": "5.001",
+      "sizeBytes": 1,
+      "direction": "tx",
+      "description": "Zone requested stroke target only (not actual hydraulic flow or measured position)"
+    },
+    {
+      "number": 40,
+      "name": "Zone2RoomSetpoint",
+      "zone": 2,
+      "dpt": "9.001",
+      "sizeBytes": 2,
+      "direction": "rx",
+      "description": "External KNX room-temperature setpoint in degree Celsius (temperature mode only)"
+    },
+    {
+      "number": 41,
+      "name": "Zone2RoomActual",
+      "zone": 2,
+      "dpt": "9.001",
+      "sizeBytes": 2,
+      "direction": "rx",
+      "description": "External KNX ROOM-AIR actual temperature, never T0..T8 manifolds"
+    },
+    {
+      "number": 42,
+      "name": "Zone2DirectDemand",
+      "zone": 2,
+      "dpt": "5.001",
+      "sizeBytes": 1,
+      "direction": "rx",
+      "description": "Direct 0..100 percent demand, raw 0..255 scaled (direct mode only)"
+    },
+    {
+      "number": 43,
+      "name": "Zone2RequestedOutput",
+      "zone": 2,
+      "dpt": "5.001",
+      "sizeBytes": 1,
+      "direction": "tx",
+      "description": "Zone requested stroke target only (not actual hydraulic flow or measured position)"
+    },
+    {
+      "number": 44,
+      "name": "Zone3RoomSetpoint",
+      "zone": 3,
+      "dpt": "9.001",
+      "sizeBytes": 2,
+      "direction": "rx",
+      "description": "External KNX room-temperature setpoint in degree Celsius (temperature mode only)"
+    },
+    {
+      "number": 45,
+      "name": "Zone3RoomActual",
+      "zone": 3,
+      "dpt": "9.001",
+      "sizeBytes": 2,
+      "direction": "rx",
+      "description": "External KNX ROOM-AIR actual temperature, never T0..T8 manifolds"
+    },
+    {
+      "number": 46,
+      "name": "Zone3DirectDemand",
+      "zone": 3,
+      "dpt": "5.001",
+      "sizeBytes": 1,
+      "direction": "rx",
+      "description": "Direct 0..100 percent demand, raw 0..255 scaled (direct mode only)"
+    },
+    {
+      "number": 47,
+      "name": "Zone3RequestedOutput",
+      "zone": 3,
+      "dpt": "5.001",
+      "sizeBytes": 1,
+      "direction": "tx",
+      "description": "Zone requested stroke target only (not actual hydraulic flow or measured position)"
+    },
+    {
+      "number": 48,
+      "name": "Zone4RoomSetpoint",
+      "zone": 4,
+      "dpt": "9.001",
+      "sizeBytes": 2,
+      "direction": "rx",
+      "description": "External KNX room-temperature setpoint in degree Celsius (temperature mode only)"
+    },
+    {
+      "number": 49,
+      "name": "Zone4RoomActual",
+      "zone": 4,
+      "dpt": "9.001",
+      "sizeBytes": 2,
+      "direction": "rx",
+      "description": "External KNX ROOM-AIR actual temperature, never T0..T8 manifolds"
+    },
+    {
+      "number": 50,
+      "name": "Zone4DirectDemand",
+      "zone": 4,
+      "dpt": "5.001",
+      "sizeBytes": 1,
+      "direction": "rx",
+      "description": "Direct 0..100 percent demand, raw 0..255 scaled (direct mode only)"
+    },
+    {
+      "number": 51,
+      "name": "Zone4RequestedOutput",
+      "zone": 4,
+      "dpt": "5.001",
+      "sizeBytes": 1,
+      "direction": "tx",
+      "description": "Zone requested stroke target only (not actual hydraulic flow or measured position)"
+    },
+    {
+      "number": 52,
+      "name": "Zone5RoomSetpoint",
+      "zone": 5,
+      "dpt": "9.001",
+      "sizeBytes": 2,
+      "direction": "rx",
+      "description": "External KNX room-temperature setpoint in degree Celsius (temperature mode only)"
+    },
+    {
+      "number": 53,
+      "name": "Zone5RoomActual",
+      "zone": 5,
+      "dpt": "9.001",
+      "sizeBytes": 2,
+      "direction": "rx",
+      "description": "External KNX ROOM-AIR actual temperature, never T0..T8 manifolds"
+    },
+    {
+      "number": 54,
+      "name": "Zone5DirectDemand",
+      "zone": 5,
+      "dpt": "5.001",
+      "sizeBytes": 1,
+      "direction": "rx",
+      "description": "Direct 0..100 percent demand, raw 0..255 scaled (direct mode only)"
+    },
+    {
+      "number": 55,
+      "name": "Zone5RequestedOutput",
+      "zone": 5,
+      "dpt": "5.001",
+      "sizeBytes": 1,
+      "direction": "tx",
+      "description": "Zone requested stroke target only (not actual hydraulic flow or measured position)"
+    },
+    {
+      "number": 56,
+      "name": "Zone6RoomSetpoint",
+      "zone": 6,
+      "dpt": "9.001",
+      "sizeBytes": 2,
+      "direction": "rx",
+      "description": "External KNX room-temperature setpoint in degree Celsius (temperature mode only)"
+    },
+    {
+      "number": 57,
+      "name": "Zone6RoomActual",
+      "zone": 6,
+      "dpt": "9.001",
+      "sizeBytes": 2,
+      "direction": "rx",
+      "description": "External KNX ROOM-AIR actual temperature, never T0..T8 manifolds"
+    },
+    {
+      "number": 58,
+      "name": "Zone6DirectDemand",
+      "zone": 6,
+      "dpt": "5.001",
+      "sizeBytes": 1,
+      "direction": "rx",
+      "description": "Direct 0..100 percent demand, raw 0..255 scaled (direct mode only)"
+    },
+    {
+      "number": 59,
+      "name": "Zone6RequestedOutput",
+      "zone": 6,
+      "dpt": "5.001",
+      "sizeBytes": 1,
+      "direction": "tx",
+      "description": "Zone requested stroke target only (not actual hydraulic flow or measured position)"
+    },
+    {
+      "number": 60,
+      "name": "Zone7RoomSetpoint",
+      "zone": 7,
+      "dpt": "9.001",
+      "sizeBytes": 2,
+      "direction": "rx",
+      "description": "External KNX room-temperature setpoint in degree Celsius (temperature mode only)"
+    },
+    {
+      "number": 61,
+      "name": "Zone7RoomActual",
+      "zone": 7,
+      "dpt": "9.001",
+      "sizeBytes": 2,
+      "direction": "rx",
+      "description": "External KNX ROOM-AIR actual temperature, never T0..T8 manifolds"
+    },
+    {
+      "number": 62,
+      "name": "Zone7DirectDemand",
+      "zone": 7,
+      "dpt": "5.001",
+      "sizeBytes": 1,
+      "direction": "rx",
+      "description": "Direct 0..100 percent demand, raw 0..255 scaled (direct mode only)"
+    },
+    {
+      "number": 63,
+      "name": "Zone7RequestedOutput",
+      "zone": 7,
+      "dpt": "5.001",
+      "sizeBytes": 1,
+      "direction": "tx",
+      "description": "Zone requested stroke target only (not actual hydraulic flow or measured position)"
+    },
+    {
+      "number": 64,
+      "name": "Zone8RoomSetpoint",
+      "zone": 8,
+      "dpt": "9.001",
+      "sizeBytes": 2,
+      "direction": "rx",
+      "description": "External KNX room-temperature setpoint in degree Celsius (temperature mode only)"
+    },
+    {
+      "number": 65,
+      "name": "Zone8RoomActual",
+      "zone": 8,
+      "dpt": "9.001",
+      "sizeBytes": 2,
+      "direction": "rx",
+      "description": "External KNX ROOM-AIR actual temperature, never T0..T8 manifolds"
+    },
+    {
+      "number": 66,
+      "name": "Zone8DirectDemand",
+      "zone": 8,
+      "dpt": "5.001",
+      "sizeBytes": 1,
+      "direction": "rx",
+      "description": "Direct 0..100 percent demand, raw 0..255 scaled (direct mode only)"
+    },
+    {
+      "number": 67,
+      "name": "Zone8RequestedOutput",
+      "zone": 8,
+      "dpt": "5.001",
+      "sizeBytes": 1,
+      "direction": "tx",
+      "description": "Zone requested stroke target only (not actual hydraulic flow or measured position)"
+    },
+    {
+      "number": 68,
+      "name": "Motor1EstimatedPosition",
+      "motor": 1,
+      "dpt": "5.001",
+      "sizeBits": 8,
+      "direction": "tx",
+      "description": "Estimated physical actuator stroke 0..100%; no encoder"
+    },
+    {
+      "number": 69,
+      "name": "Motor2EstimatedPosition",
+      "motor": 2,
+      "dpt": "5.001",
+      "sizeBits": 8,
+      "direction": "tx",
+      "description": "Estimated physical actuator stroke 0..100%; no encoder"
+    },
+    {
+      "number": 70,
+      "name": "Motor3EstimatedPosition",
+      "motor": 3,
+      "dpt": "5.001",
+      "sizeBits": 8,
+      "direction": "tx",
+      "description": "Estimated physical actuator stroke 0..100%; no encoder"
+    },
+    {
+      "number": 71,
+      "name": "Motor4EstimatedPosition",
+      "motor": 4,
+      "dpt": "5.001",
+      "sizeBits": 8,
+      "direction": "tx",
+      "description": "Estimated physical actuator stroke 0..100%; no encoder"
+    },
+    {
+      "number": 72,
+      "name": "Motor5EstimatedPosition",
+      "motor": 5,
+      "dpt": "5.001",
+      "sizeBits": 8,
+      "direction": "tx",
+      "description": "Estimated physical actuator stroke 0..100%; no encoder"
+    },
+    {
+      "number": 73,
+      "name": "Motor6EstimatedPosition",
+      "motor": 6,
+      "dpt": "5.001",
+      "sizeBits": 8,
+      "direction": "tx",
+      "description": "Estimated physical actuator stroke 0..100%; no encoder"
+    },
+    {
+      "number": 74,
+      "name": "Motor7EstimatedPosition",
+      "motor": 7,
+      "dpt": "5.001",
+      "sizeBits": 8,
+      "direction": "tx",
+      "description": "Estimated physical actuator stroke 0..100%; no encoder"
+    },
+    {
+      "number": 75,
+      "name": "Motor8EstimatedPosition",
+      "motor": 8,
+      "dpt": "5.001",
+      "sizeBits": 8,
+      "direction": "tx",
+      "description": "Estimated physical actuator stroke 0..100%; no encoder"
+    },
+    {
+      "number": 76,
+      "name": "Motor1Fault",
+      "motor": 1,
+      "dpt": "1.005",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Alarm flag for motor safety, not an endstop measurement"
+    },
+    {
+      "number": 77,
+      "name": "Motor2Fault",
+      "motor": 2,
+      "dpt": "1.005",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Alarm flag for motor safety, not an endstop measurement"
+    },
+    {
+      "number": 78,
+      "name": "Motor3Fault",
+      "motor": 3,
+      "dpt": "1.005",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Alarm flag for motor safety, not an endstop measurement"
+    },
+    {
+      "number": 79,
+      "name": "Motor4Fault",
+      "motor": 4,
+      "dpt": "1.005",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Alarm flag for motor safety, not an endstop measurement"
+    },
+    {
+      "number": 80,
+      "name": "Motor5Fault",
+      "motor": 5,
+      "dpt": "1.005",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Alarm flag for motor safety, not an endstop measurement"
+    },
+    {
+      "number": 81,
+      "name": "Motor6Fault",
+      "motor": 6,
+      "dpt": "1.005",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Alarm flag for motor safety, not an endstop measurement"
+    },
+    {
+      "number": 82,
+      "name": "Motor7Fault",
+      "motor": 7,
+      "dpt": "1.005",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Alarm flag for motor safety, not an endstop measurement"
+    },
+    {
+      "number": 83,
+      "name": "Motor8Fault",
+      "motor": 8,
+      "dpt": "1.005",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Alarm flag for motor safety, not an endstop measurement"
+    },
+    {
+      "number": 84,
+      "name": "Motor1Referenced",
+      "motor": 1,
+      "dpt": "1.002",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Calibration/ref status, not a physical position sensor"
+    },
+    {
+      "number": 85,
+      "name": "Motor2Referenced",
+      "motor": 2,
+      "dpt": "1.002",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Calibration/ref status, not a physical position sensor"
+    },
+    {
+      "number": 86,
+      "name": "Motor3Referenced",
+      "motor": 3,
+      "dpt": "1.002",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Calibration/ref status, not a physical position sensor"
+    },
+    {
+      "number": 87,
+      "name": "Motor4Referenced",
+      "motor": 4,
+      "dpt": "1.002",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Calibration/ref status, not a physical position sensor"
+    },
+    {
+      "number": 88,
+      "name": "Motor5Referenced",
+      "motor": 5,
+      "dpt": "1.002",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Calibration/ref status, not a physical position sensor"
+    },
+    {
+      "number": 89,
+      "name": "Motor6Referenced",
+      "motor": 6,
+      "dpt": "1.002",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Calibration/ref status, not a physical position sensor"
+    },
+    {
+      "number": 90,
+      "name": "Motor7Referenced",
+      "motor": 7,
+      "dpt": "1.002",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Calibration/ref status, not a physical position sensor"
+    },
+    {
+      "number": 91,
+      "name": "Motor8Referenced",
+      "motor": 8,
+      "dpt": "1.002",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Calibration/ref status, not a physical position sensor"
+    },
+    {
+      "number": 92,
+      "name": "Motor1Moving",
+      "motor": 1,
+      "dpt": "1.001",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Moving/not moving, reporting after motor-safety gate"
+    },
+    {
+      "number": 93,
+      "name": "Motor2Moving",
+      "motor": 2,
+      "dpt": "1.001",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Moving/not moving, reporting after motor-safety gate"
+    },
+    {
+      "number": 94,
+      "name": "Motor3Moving",
+      "motor": 3,
+      "dpt": "1.001",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Moving/not moving, reporting after motor-safety gate"
+    },
+    {
+      "number": 95,
+      "name": "Motor4Moving",
+      "motor": 4,
+      "dpt": "1.001",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Moving/not moving, reporting after motor-safety gate"
+    },
+    {
+      "number": 96,
+      "name": "Motor5Moving",
+      "motor": 5,
+      "dpt": "1.001",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Moving/not moving, reporting after motor-safety gate"
+    },
+    {
+      "number": 97,
+      "name": "Motor6Moving",
+      "motor": 6,
+      "dpt": "1.001",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Moving/not moving, reporting after motor-safety gate"
+    },
+    {
+      "number": 98,
+      "name": "Motor7Moving",
+      "motor": 7,
+      "dpt": "1.001",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Moving/not moving, reporting after motor-safety gate"
+    },
+    {
+      "number": 99,
+      "name": "Motor8Moving",
+      "motor": 8,
+      "dpt": "1.001",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Moving/not moving, reporting after motor-safety gate"
+    },
+    {
+      "number": 100,
+      "name": "DeviceMotionBusy",
+      "dpt": "1.002",
+      "sizeBits": 1,
+      "direction": "tx",
+      "description": "Single shared actuator scheduler token in use, independent of zone grouping"
+    }
+  ],
+  "proposedParameters": [
+    {
+      "number": 22,
+      "name": "Zone1Mode",
+      "memoryByteOffset": 11,
+      "sizeBits": 8,
+      "type": "enum",
+      "allowed": [
+        {
+          "value": 0,
+          "label": "Disabled"
+        },
+        {
+          "value": 1,
+          "label": "RoomTemperature"
+        },
+        {
+          "value": 2,
+          "label": "DirectPercent"
+        }
+      ],
+      "default": 0,
+      "comment": "Disabled is safe default; zone mode must be explicitly commissioned"
+    },
+    {
+      "number": 23,
+      "name": "Zone2Mode",
+      "memoryByteOffset": 12,
+      "sizeBits": 8,
+      "type": "enum",
+      "allowed": [
+        {
+          "value": 0,
+          "label": "Disabled"
+        },
+        {
+          "value": 1,
+          "label": "RoomTemperature"
+        },
+        {
+          "value": 2,
+          "label": "DirectPercent"
+        }
+      ],
+      "default": 0,
+      "comment": "Disabled is safe default; zone mode must be explicitly commissioned"
+    },
+    {
+      "number": 24,
+      "name": "Zone3Mode",
+      "memoryByteOffset": 13,
+      "sizeBits": 8,
+      "type": "enum",
+      "allowed": [
+        {
+          "value": 0,
+          "label": "Disabled"
+        },
+        {
+          "value": 1,
+          "label": "RoomTemperature"
+        },
+        {
+          "value": 2,
+          "label": "DirectPercent"
+        }
+      ],
+      "default": 0,
+      "comment": "Disabled is safe default; zone mode must be explicitly commissioned"
+    },
+    {
+      "number": 25,
+      "name": "Zone4Mode",
+      "memoryByteOffset": 14,
+      "sizeBits": 8,
+      "type": "enum",
+      "allowed": [
+        {
+          "value": 0,
+          "label": "Disabled"
+        },
+        {
+          "value": 1,
+          "label": "RoomTemperature"
+        },
+        {
+          "value": 2,
+          "label": "DirectPercent"
+        }
+      ],
+      "default": 0,
+      "comment": "Disabled is safe default; zone mode must be explicitly commissioned"
+    },
+    {
+      "number": 26,
+      "name": "Zone5Mode",
+      "memoryByteOffset": 15,
+      "sizeBits": 8,
+      "type": "enum",
+      "allowed": [
+        {
+          "value": 0,
+          "label": "Disabled"
+        },
+        {
+          "value": 1,
+          "label": "RoomTemperature"
+        },
+        {
+          "value": 2,
+          "label": "DirectPercent"
+        }
+      ],
+      "default": 0,
+      "comment": "Disabled is safe default; zone mode must be explicitly commissioned"
+    },
+    {
+      "number": 27,
+      "name": "Zone6Mode",
+      "memoryByteOffset": 16,
+      "sizeBits": 8,
+      "type": "enum",
+      "allowed": [
+        {
+          "value": 0,
+          "label": "Disabled"
+        },
+        {
+          "value": 1,
+          "label": "RoomTemperature"
+        },
+        {
+          "value": 2,
+          "label": "DirectPercent"
+        }
+      ],
+      "default": 0,
+      "comment": "Disabled is safe default; zone mode must be explicitly commissioned"
+    },
+    {
+      "number": 28,
+      "name": "Zone7Mode",
+      "memoryByteOffset": 17,
+      "sizeBits": 8,
+      "type": "enum",
+      "allowed": [
+        {
+          "value": 0,
+          "label": "Disabled"
+        },
+        {
+          "value": 1,
+          "label": "RoomTemperature"
+        },
+        {
+          "value": 2,
+          "label": "DirectPercent"
+        }
+      ],
+      "default": 0,
+      "comment": "Disabled is safe default; zone mode must be explicitly commissioned"
+    },
+    {
+      "number": 29,
+      "name": "Zone8Mode",
+      "memoryByteOffset": 18,
+      "sizeBits": 8,
+      "type": "enum",
+      "allowed": [
+        {
+          "value": 0,
+          "label": "Disabled"
+        },
+        {
+          "value": 1,
+          "label": "RoomTemperature"
+        },
+        {
+          "value": 2,
+          "label": "DirectPercent"
+        }
+      ],
+      "default": 0,
+      "comment": "Disabled is safe default; zone mode must be explicitly commissioned"
+    },
+    {
+      "number": 30,
+      "name": "Motor1Zone",
+      "memoryByteOffset": 19,
+      "sizeBits": 8,
+      "type": "unsignedInt",
+      "min": 0,
+      "max": 8,
+      "default": 0,
+      "comment": "0=unassigned; 1..8 each motor assigned to at most one zone"
+    },
+    {
+      "number": 31,
+      "name": "Motor2Zone",
+      "memoryByteOffset": 20,
+      "sizeBits": 8,
+      "type": "unsignedInt",
+      "min": 0,
+      "max": 8,
+      "default": 0,
+      "comment": "0=unassigned; 1..8 each motor assigned to at most one zone"
+    },
+    {
+      "number": 32,
+      "name": "Motor3Zone",
+      "memoryByteOffset": 21,
+      "sizeBits": 8,
+      "type": "unsignedInt",
+      "min": 0,
+      "max": 8,
+      "default": 0,
+      "comment": "0=unassigned; 1..8 each motor assigned to at most one zone"
+    },
+    {
+      "number": 33,
+      "name": "Motor4Zone",
+      "memoryByteOffset": 22,
+      "sizeBits": 8,
+      "type": "unsignedInt",
+      "min": 0,
+      "max": 8,
+      "default": 0,
+      "comment": "0=unassigned; 1..8 each motor assigned to at most one zone"
+    },
+    {
+      "number": 34,
+      "name": "Motor5Zone",
+      "memoryByteOffset": 23,
+      "sizeBits": 8,
+      "type": "unsignedInt",
+      "min": 0,
+      "max": 8,
+      "default": 0,
+      "comment": "0=unassigned; 1..8 each motor assigned to at most one zone"
+    },
+    {
+      "number": 35,
+      "name": "Motor6Zone",
+      "memoryByteOffset": 24,
+      "sizeBits": 8,
+      "type": "unsignedInt",
+      "min": 0,
+      "max": 8,
+      "default": 0,
+      "comment": "0=unassigned; 1..8 each motor assigned to at most one zone"
+    },
+    {
+      "number": 36,
+      "name": "Motor7Zone",
+      "memoryByteOffset": 25,
+      "sizeBits": 8,
+      "type": "unsignedInt",
+      "min": 0,
+      "max": 8,
+      "default": 0,
+      "comment": "0=unassigned; 1..8 each motor assigned to at most one zone"
+    },
+    {
+      "number": 37,
+      "name": "Motor8Zone",
+      "memoryByteOffset": 26,
+      "sizeBits": 8,
+      "type": "unsignedInt",
+      "min": 0,
+      "max": 8,
+      "default": 0,
+      "comment": "0=unassigned; 1..8 each motor assigned to at most one zone"
+    },
+    {
+      "number": 38,
+      "name": "RoomTemperatureInputTimeoutSeconds",
+      "memoryByteOffset": 27,
+      "sizeBits": 16,
+      "type": "unsignedInt",
+      "min": 30,
+      "max": 3600,
+      "default": 900,
+      "comment": "Global freshness for each zone setpoint and room actual input; both must be fresh"
+    },
+    {
+      "number": 39,
+      "name": "DirectDemandInputTimeoutSeconds",
+      "memoryByteOffset": 29,
+      "sizeBits": 16,
+      "type": "unsignedInt",
+      "min": 30,
+      "max": 3600,
+      "default": 300,
+      "comment": "Global freshness for direct-zone percent demand"
+    }
+  ],
+  "notes": [
+    "All proposed names are unique ASCII C++ identifiers.",
+    "KO 36..100 and P22..P39 are RESERVED IN THIS PROPOSAL only; not yet declared in ETS.",
+    "KNX016/009 ETS import and hardware validation are deferred by user.",
+    "KNX004/005/006 motor safety/current characterization/referencing must precede physical motion."
+  ]
+}
