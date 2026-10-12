@@ -17,6 +17,8 @@ Dieses Projekt arbeitet nach dem **ASH Slice-Konzept** aus dem ChatGPT-Space `/A
 - [Alle sieben originalen ASH-v1-Workflowquellen (vollstaendig, mit Herkunft)](docs/reference/ash/README.md) - darunter [Slice-Protokoll](docs/reference/ash/SLICE_PROTOCOL.md), [Vorlage](docs/reference/ash/SLICE_TEMPLATE.md), [Recovery/Handoff](docs/reference/ash/RECOVERY_HANDOFF.md) und [Quell-Hash-Manifest](docs/reference/ash/MANIFEST.sha256)
 - **Checks:** `python tools/audit_ash_workflow.py` fuer Referenzen, ASH-Regeln und Markdown-Links; `python tools/audit_design.py` fuer die bestehende statische KNX-/PCB-/ETS-Baseline
 
+**Hardware-Readiness:** [KNX022](docs/KNX022_STATIC_HW_READINESS.md) prueft die V1.2-Netze und Teile-Attribute reproduzierbar. Die bestueckte Platine bleibt wegen offener R29-/U25-/F1-, STBY-/Versorgungs- und ERC/DRC-Nachweise **NICHT zum motorischen Betrieb freigegeben**. Dies schliesst die physischen KNX002/003/004/005/006-Gates nicht ab.
+
 **Aktueller Arbeitsfortschritt:** Unter `docs/slices/_OPEN_*.md` steht nur der tatsaechlich gestartete Slice; ansonsten gilt die [Roadmap](docs/ROADMAP.md) als Plan, nicht als Implementierungs- oder Hardwarefreigabe. Vorherige commits `53b308a` .. `c2e4bee` sind historischer Baseline-Stand, nicht rueckwirkend formal geschlossene Slices.
 
 ## Documentation
@@ -30,6 +32,7 @@ Dieses Projekt arbeitet nach dem **ASH Slice-Konzept** aus dem ChatGPT-Space `/A
 - [KNX019: simulierter PI-Raumtemperaturregler, 8-Zonen-Bank, Sensor-Failsafe und Modelltests](docs/KNX019_ROOM_PI_SIMULATION.md)
 - [KNX020: Exklusive Motor-Fahrqueue, nur native Software-Simulation mit Start/Stop-Quittungen](docs/KNX020_MOTOR_QUEUE_SIMULATION.md)
 - [KNX021: Durchgängige PI-zu-Motorfeedback-Simulation mit Abbruch-/Stopp-Faults](docs/KNX021_END_TO_END_SIMULATION.md)
+- [KNX022: statischer Hardware-Preflight V1.2, BOM-Konflikte, Motorversorgung nicht freigegeben](docs/KNX022_STATIC_HW_READINESS.md)
 - [KNX-Hardwaretest auf eigenständige Laborumgebung verschoben: Testbench-Konzept](docs/KNX_TESTBENCH_PLAN.md)
 - [Schematic V1.2 electrical review and open findings](docs/SCHEMATIC_V1_2_REVIEW.md)
 - [5-V-Externversorgung, Jumper und KNX-Leistungsbudget](docs/POWER_SUPPLY_CONCEPT.md)

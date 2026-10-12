@@ -1,0 +1,166 @@
+{
+  "basis": "Repository sources only; populated board not inspected",
+  "blocker_count": 10,
+  "design_revision": "V1.2",
+  "drivers_stby_pad19_nets": {
+    "U34": "3.3V",
+    "U35": "3.3V",
+    "U36": "3.3V",
+    "U37": "3.3V"
+  },
+  "findings": [
+    {
+      "id": "R29_PART_METADATA",
+      "priority": "P0",
+      "required_action": "Measure/identify installed R29, confirm assembly BOM and calibrate INA219.",
+      "source_observation": "Schematic R29 = 200mOhm / 1W; PCB manufacturer part = SCR1206F1M1. Conflicting source metadata.",
+      "status": "BLOCKED_UNTIL_EVIDENCE"
+    },
+    {
+      "id": "U25_PART_METADATA",
+      "priority": "P0",
+      "required_action": "Read real IC marking and UPDI signature before flashing.",
+      "source_observation": "Schematic+firmware ATtiny3216; PCB supplier part = ATTINY1616-SN (mismatch).",
+      "status": "BLOCKED_UNTIL_EVIDENCE"
+    },
+    {
+      "id": "F1_PART_METADATA",
+      "priority": "P0",
+      "required_action": "Confirm actual fuse marking, current/time characteristic and voltage rating.",
+      "source_observation": "Schematic F1 = 630mA 275V; PCB part = S1032-F-60.0A.",
+      "status": "BLOCKED_UNTIL_EVIDENCE"
+    },
+    {
+      "id": "TB6612_STBY_TIED_HIGH",
+      "priority": "P0",
+      "required_action": "Define/test independent hardware all-off and safe boot/brownout logic before any motor operation; revise PCB if required.",
+      "source_observation": "U34/U36/U37/U35 pin19 STBY all directly on 3.3V. There is NO independent RP2040-controlled global TB6612 standby shutdown.",
+      "status": "BLOCKED_UNTIL_EVIDENCE"
+    },
+    {
+      "id": "U6_TWO_DIODE_HEADROOM",
+      "priority": "P0",
+      "required_action": "Measure U6 VIN/3.3V under no-motor KNX-only and USB-only load.",
+      "source_observation": "PCB USB_VCC -> D6 -> F1 -> D1 -> U6 VIN -> 3.3V. U6 min VIN 4.75V; margin with two Schottkys is unmeasured.",
+      "status": "BLOCKED_UNTIL_EVIDENCE"
+    },
+    {
+      "id": "KNX_USB_SOURCE_BACKFEED",
+      "priority": "P0",
+      "required_action": "Qualify source ORing/backfeed, isolation and a protected supply entry design before applying any external 5V.",
+      "source_observation": "JMP1 links KNX_VCC to R9_2, Q1 selects source on USB_VCC/5V_. JMP1 is NOT an external 5-V input. Source isolation and backfeed have no actual measurement.",
+      "status": "BLOCKED_UNTIL_EVIDENCE"
+    },
+    {
+      "id": "STKNX_POWER_BUDGET",
+      "priority": "P0",
+      "required_action": "Record KNX extraction/load and worst-case 3.3V supply behavior.",
+      "source_observation": "STKNX bus-side draw and buck load budget have not been measured with RP2040, LCD, ATtiny and one 3.3V HmIP-VDMOT.",
+      "status": "BLOCKED_UNTIL_EVIDENCE"
+    },
+    {
+      "id": "MOTOR_OUTPUT_BOOT_UNKNOWN",
+      "priority": "P0",
+      "required_action": "Specify independent output default-low and watchdog/stop mechanism; qualify on safe bench before connecting an actuator.",
+      "source_observation": "Controller main.cpp has no motor-specific GPIO initialization or verified boot/brownout all-off sequence.",
+      "status": "BLOCKED_UNTIL_EVIDENCE"
+    },
+    {
+      "id": "SHARED_INA219_AND_DIRECTION",
+      "priority": "P1",
+      "required_action": "Single-motor arbitration and motor-specific reference/current tests remain mandatory (KNX004/005/006).",
+      "source_observation": "Exactly one R29/INA219 motor-current channel and shared IN_1/IN_2 for all four dual drivers; no per-motor independent measurement.",
+      "status": "BLOCKED_UNTIL_EVIDENCE"
+    },
+    {
+      "id": "EASYEDA_MANUFACTURING_GATE",
+      "priority": "P0",
+      "required_action": "Export valid board revision BOM, manufacturing/netlist evidence and actual native ERC/DRC; reconcile with the populated PCB.",
+      "source_observation": "Only design JSON/PDF exports found; native EasyEDA electrical ERC, PCB DRC, approved assembly BOM and physical PCB-to-design proof absent. Additional similarly named files: [].",
+      "status": "BLOCKED_UNTIL_EVIDENCE"
+    }
+  ],
+  "hardware_readiness": "BLOCKED_NOT_SAFE_TO_ENERGIZE_MOTOR",
+  "input_sha256": {
+    "schematic/pcb_knx-valve-control_v1.2.json": "626d74295522285c99088a9ca0286108b7e9cc3b43f11101dcba317d29425081",
+    "schematic/sch_knx-valve-control_v1.2.json": "3c36ba0775ec04b5798b3084b04206ac4e7e4b07a125af9c1239a3e8c7deb367",
+    "src/controller/config.hpp": "fefa07b4ba8d178fe3354e5ee9f5cfc80aeaf920908677fc0dad717b1f78e85f",
+    "src/controller/main.cpp": "be1f657b2f948ff8633c930ef75d78b1f269a3aa7ba95e79a7ac9d3bf6cde9f8",
+    "src/temperature/temperature.ini": "c2d599f4b2cfe770b9696ae16109267f746ce38a249e5af6d8a8c2a99eed1a56"
+  },
+  "known_metadata_conflicts": {
+    "F1": true,
+    "R29": true,
+    "U25": true
+  },
+  "limits": [
+    "Not EasyEDA native ERC, PCB DRC, copper-connectivity proof or BOM approval.",
+    "Not proof of physical IC type, shunt value, fuse rating, voltage or motor behavior.",
+    "Simulator KNX020/021 lease/AllOff ACK is NOT an electrical shutdown.",
+    "Motor output supply remains 3.3V; never apply external 5V to M_VCC."
+  ],
+  "pcb_inventory": {
+    "pcb_lib_records": 191,
+    "pcb_track_records": 736,
+    "pcb_via_records": 347,
+    "schematic_lib_records": 192
+  },
+  "physical_evidence": {
+    "jmp1_open_or_closed": null,
+    "manufacturer_erc_drc_and_pcb_bom": null,
+    "one_motor_current_curve_and_reference": null,
+    "populated_f1_marking": null,
+    "populated_r29_measured_mohm": null,
+    "populated_u25_marking": null,
+    "power_source_and_backfeed_measurement": null,
+    "reset_and_brownout_motor_output_measurement": null,
+    "u6_pin1_minimum_voltage_under_load": null
+  },
+  "physical_hardware_checks_performed": 0,
+  "schema": "openknxvalve.knx022.static-readiness.v1",
+  "static_checks": [
+    "U34 has 24 TB6612 footprint pads",
+    "U34 STBY pin 19 tied to logic 3.3V; NOT GPIO controlled",
+    "U34 has both distinct PWM enables",
+    "U34 has both motor output pairs",
+    "U34 uses shared direction nets",
+    "U34 VM supplied from common shunt rail",
+    "U36 has 24 TB6612 footprint pads",
+    "U36 STBY pin 19 tied to logic 3.3V; NOT GPIO controlled",
+    "U36 has both distinct PWM enables",
+    "U36 has both motor output pairs",
+    "U36 uses shared direction nets",
+    "U36 VM supplied from common shunt rail",
+    "U37 has 24 TB6612 footprint pads",
+    "U37 STBY pin 19 tied to logic 3.3V; NOT GPIO controlled",
+    "U37 has both distinct PWM enables",
+    "U37 has both motor output pairs",
+    "U37 uses shared direction nets",
+    "U37 VM supplied from common shunt rail",
+    "U35 has 24 TB6612 footprint pads",
+    "U35 STBY pin 19 tied to logic 3.3V; NOT GPIO controlled",
+    "U35 has both distinct PWM enables",
+    "U35 has both motor output pairs",
+    "U35 uses shared direction nets",
+    "U35 VM supplied from common shunt rail",
+    "RP2040 exposes all eight M1_EN..M8_EN nets",
+    "RP2040 exposes only common IN_1/IN_2 direction",
+    "RP2040 config.hpp D10..D17 and D18/D19 align with PCB nets",
+    "Current RP2040 main loop does not configure/drive motor pins",
+    "Shared R29/INA219 high-side measurement path matches V1.2",
+    "USB/KNX selection and two Schottkys before 3.3V U6 recorded",
+    "ATtiny U25 20-pad PCB component provides nine T0..T8 inputs",
+    "R29 schematic nominal value reads 200mOhm",
+    "U25 schematic symbol reads ATTINY3216",
+    "F1 schematic nominal current reads 630mA",
+    "PlatformIO ATtiny board target is ATtiny3216"
+  ],
+  "static_checks_passed": 35,
+  "static_evidence_parsing": "PASS",
+  "supplier_part_metadata": {
+    "F1": "S1032-F-60.0A",
+    "R29": "SCR1206F1M1",
+    "U25": "ATTINY1616-SN"
+  },
+  "verified_baseline_git": "4d12890"
+}

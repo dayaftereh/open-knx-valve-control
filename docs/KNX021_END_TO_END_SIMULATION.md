@@ -67,6 +67,8 @@ Befehle aus dem Repository-Root:
     C:\ASH\Tools\python-3.13.15\python.exe tools\test_knx008_zones.py
     C:\ASH\Tools\python-3.13.15\python.exe tools\audit_ash_workflow.py
 
+**Statischer V1.2-Hardwareabgleich:** [KNX022 Preflight](KNX022_STATIC_HW_READINESS.md) dokumentiert reproduzierbar Bestueckungs-/STBY-/Power-Blocker. Keine Hardwarefreigabe.
+
 **Noch offen für reale Hardware:** KNX002 As-built, KNX003 KNX-/5-V-/3,3-V-Stromversorgung, KNX004 Hardware-All-off und Ein-Motor-Interlock, KNX005/006 reale Lauf-/Strom-/Referenzmessungen, KNX018 eigenständiger KNX-Testplatz. KNX009/016 sind bis dahin vom Nutzer bewusst zurückgestellt. KNX010 produktive Raum-/Motorregelung ist nicht abgeschlossen.
 
 KNX021 ist nur die sichere *Software-Schichtübergreifende Mock-Abnahme* und darf nicht als Freigabe zum Flashen oder Ansteuern echter Motoren interpretiert werden.

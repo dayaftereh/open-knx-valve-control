@@ -1,5 +1,7 @@
 # PCB V1.2 static audit - layout versus schematic
 
+**Update 2026-10-12:** Der getrennte [KNX022 Hardware-Preflight](KNX022_STATIC_HW_READINESS.md) erstellt einen maschinenlesbaren Blockerstatus mit reproduzierbarem PCB-/Firmware-/BOM-Check. Diese Seite bleibt historische V1.2-Analyse und belegt keine reale Motorsicherheit.
+
 **Date:** 2026-10-09
 
 **Source:** [EasyEDA PCB JSON V1.2](../schematic/pcb_knx-valve-control_v1.2.json), cross-checked with [schematic JSON V1.2](../schematic/sch_knx-valve-control_v1.2.json) and the [visually reviewed PDF](../schematic/sch_knx-valve-control_v1.2.pdf).
