@@ -68,7 +68,17 @@ public:
         return settings_;
     }
 
+    const HeatingZone::Settings& settings() const
+    {
+        return settings_;
+    }
+
     HeatingZone::Inputs& inputs()
+    {
+        return inputs_;
+    }
+
+    const HeatingZone::Inputs& inputs() const
     {
         return inputs_;
     }

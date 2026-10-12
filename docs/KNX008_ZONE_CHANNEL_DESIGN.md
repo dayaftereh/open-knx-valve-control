@@ -2,6 +2,8 @@
 
 **Stand:** 12.10.2026. **Status:** ASH Design-/Offline-Software-Slice, **nicht in die produktive ETS XML, knxprod.hpp, RP2040-main oder die KNX/Antriebs-Hardware übernommen**.
 
+**KNX024 Offline-Weiterentwicklung:** [KNX024 DPT-/RX-Telegrammadapter](KNX024_ETS_ROOM_INPUT_CONTRACT.md) prueft den unveraenderten KNX008-KO36..67/P22..39-Entwurf inklusive 9.001-Decoder, 5.001-Skalierung, Zeitstempel-/Modus-Sperren und des bewusst unveraenderten produktiven 5.004-Motor-KO. Kein ETS6-Import oder echte Busverarbeitung.
+
 **Maschinenlesbarer Entwurf:** [KNX008 ETS Proposal JSON](../assets/knx008_zone_ets_proposal.json). **Testbare, KNX-unabhängige Referenzlogik:** [heating_zone_model.hpp](../lib/common/heating_zone_model.hpp). **Tests:** [native C++](../tests/native/test_knx008_zone_model.cpp), [Produktkontrakt-Audit](../tools/audit_knx008_zone_contract.py).
 
 ## 1. Anforderungen und bewusst gewählte Grenzen

@@ -8,9 +8,16 @@
 #include "temperature_bridge.hpp"
 #include "temperature_publisher.hpp"
 #include "room_control_runtime.hpp"
+#include "knx024_room_dpt_adapter.hpp"
 
 TemperatureBridge temperatureBridge;
 TemperaturePublisher temperaturePublisher;
+// KNX024: compile-check the PROPOSED AppVersion3 room KO parser but do
+// not bind any AppVersion2 KNX bus communication object, because KO36+
+// exist in the currently generated product). No bus or motor writes.
+static_assert(Knx024::FirstRoomObject == 36 &&
+              Knx024::LastRoomObject == 67,
+              "KNX024 proposed room KO ABI changed");
 // KNX023: software-only PI/zone target engine. RP2040 build has no motor
 // mock backend, cannot arm simulation, and never touches motor GPIO pins.
 RoomControlRuntime::Pipeline roomControlRuntime;

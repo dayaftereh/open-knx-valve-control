@@ -1,5 +1,7 @@
 # KNX023 – Fail-closed RP2040-Regelpfad ohne Motor-Ausgänge
 
+**Weiterfuehrung KNX024:** [ETS-DPT-Raumeingangsadapter](KNX024_ETS_ROOM_INPUT_CONTRACT.md) ergaenzt das typed RX-/TX-Simulationsformat fuer vorgeschlagene KOs36..67, ohne den bestehenden ETS-V2-/KNX-TP-Firmwarepfad auf echte Raum-KOs umzubiegen.
+
 **Stand:** 12.10.2026. **Abnahmetyp: nur Software auf Host und isolierter RP2040-Firmware-Build. Keine neue KNX/ETS-Motorsteuerung, keine Motor-GPIO.**
 
 ## 1. Was tatsächlich eingebunden wurde
