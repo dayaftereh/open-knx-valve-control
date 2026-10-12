@@ -2,6 +2,8 @@
 
 **Stand:** 2026-10-12
 **Status:** Konzept / **nicht aufgebaut**, kein realer Bus-, ETS6- oder Platinenfunktionstest erfolgt.
+
+**Aktualisierung 12.10.2026:** Das konkrete Laptop-/USB-/RTS-UPDI-/CN1-Aufbauschema steht in [KNX018_LAPTOP_UPDI_TESTBENCH.md](KNX018_LAPTOP_UPDI_TESTBENCH.md); dort stehen auch Programmer-V1.2-Quellpfade aus dem separaten Units-Repo, reale 5-V-/3,3-V-Pegelrisiken und der sichere Git-Umzug mit ungepushten Desktop-Commits. Diese Details ersetzen **keine** KNX002/003-Hardwarefreigabe.
 **Bezug:** [KNX015](KNX015_TEMPERATURE_PUBLISH.md), [KNX016/018 in der Roadmap](ROADMAP.md), [Stromversorgungskonzept](POWER_SUPPLY_CONCEPT.md), [As-built- und Safety-Gates](ROADMAP.md).
 
 ## Entscheidung

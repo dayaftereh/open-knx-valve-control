@@ -7,9 +7,14 @@
 #include "knxprod.hpp"
 #include "temperature_bridge.hpp"
 #include "temperature_publisher.hpp"
+#include "room_control_runtime.hpp"
 
 TemperatureBridge temperatureBridge;
 TemperaturePublisher temperaturePublisher;
+// KNX023: software-only PI/zone target engine. RP2040 build has no motor
+// mock backend, cannot arm simulation, and never touches motor GPIO pins.
+RoomControlRuntime::Pipeline roomControlRuntime;
+uint32_t lastRoomSoftwareTickMs = 0;
 
 void setupKnx()
 {
@@ -43,6 +48,11 @@ void setup()
     Serial.begin(DefaultSerialBaud);
     ArduinoPlatform::SerialDebug = &Serial;
 
+    // Completely inert, DISARMED reference model until a future verified
+    // ETS-input adapter and independent KNX004 hardware safety gate exist.
+    lastRoomSoftwareTickMs = millis();
+    roomControlRuntime.reset(lastRoomSoftwareTickMs);
+
     setupTemperatureLink();
     setupKnx();
     temperaturePublisher.begin(millis());
@@ -54,6 +64,17 @@ void loop()
 
     // UART remains active for internal diagnosis before ETS commissioning.
     temperatureBridge.update();
+
+    // Run the portable KNX019/KNX008 room computation at a bounded
+    // cadence. All modes are DISABLED and all inputs invalid by default.
+    // Compile-time ARDUINO fence keeps KNX020 permanently DISARMED and
+    // emits NO Start/Stop, PWM, GPIO or KNX group-object side effects.
+    const uint32_t softwareNow = millis();
+    if (static_cast<uint32_t>(softwareNow - lastRoomSoftwareTickMs) >= 100UL)
+    {
+        lastRoomSoftwareTickMs = softwareNow;
+        roomControlRuntime.tick(softwareNow);
+    }
 
     if (!knx.configured())
         return;
