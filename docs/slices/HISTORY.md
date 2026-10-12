@@ -186,3 +186,28 @@ Keep KO1..33 and P1..19 numbered/layout- and metadata-compatible. Add ETS P20 pe
 - Existing valve position KO17..24 remain DPT5.004 (not revised to 5.001); single motor/current-sensor safety and 5V power gating remain untested/blocked until separate hardware slices.
 - **Next planned software slice KNX016:** isolated ETS6 import of version-2 KNXprod, inspect KO25..35 and P19..21 and perform product/GA visibility validation. Must start with fresh write session and Git/session check; do not auto-start.
 - Not a production release, no hardware flash, no motor movement, no GitHub push.
+
+
+## KNX017 – KNX-Hardwaretest zurückgestellt, eigenständige Testumgebung geplant
+
+- **Status:** closed (Planungs-/Dokumentationsslice, keine Hardwareaktivität).
+- **Datum:** 2026-10-12.
+- **Ausgangs-HEAD:** `8b404a3`, `main` clean, 14 lokale Commits vor `origin/main`.
+- **Planungs-Commit:** `63283c8` – KNX-Abnahme auf eigenständige Testbench verschoben.
+- **Closing-Commit:** separater Commit für HISTORY, Roadmap-Status closed und Entfernung des offenen KNX017-Markers.
+- **Entscheidungsdokument:** [KNX-Testbench-Plan](../KNX_TESTBENCH_PLAN.md).
+
+### Gate 1 – Checkup
+LLO Desktop Agent online; Git/Session/Marker geprüft. KNX015 technisch offline abgeschlossen, KNX016 **nicht geöffnet**. Reale ETS6-Import-, KNX-Bus-, Controller-Flash-, UART- und Antriebsmessungen weiterhin nicht erbracht.
+
+### Gate 2 – Decision
+Auf Nutzerwunsch KNX016 (ETS6-Temperatur-Import) und KNX009 (späterer ETS6-Produkt-Import) **deferred**, ohne offene Write-Slices. Echte ETS-/KNX-Integration soll nicht am bisherigen LLO Desktop Agent abgeschlossen werden, sondern später mit eigenem ETS-Testrechner, separatem KNX-Bus/Interface und der real angeschlossenen OpenKNXValveControl-Platine stattfinden. KNX018 als geplanter Testbench-Slice vorgemerkt; vorher elektrische As-built-/Power-Gates KNX002/003. Keine Datumszusage und kein Hardwaretest in KNX017.
+
+### Gate 3 – Implementation
+Roadmap und [README](../../README.md) aktualisiert; dedizierte [Testbench-Anforderungen](../KNX_TESTBENCH_PLAN.md) und passive/aktive Abnahmereihenfolge dokumentiert. **KNX008** (ETS-Raum-/Heizkreis-Zonenmodell und Soll-/Ist- vs. Prozent-Regelmodus) als nächste hardwareunabhängige Aufgabe empfohlen, nicht gestartet.
+
+### Gate 4 – Validation
+ASH-Workflow-Audit **PASS, 30 Checks**, **271 Markdown-Links** vor Closing; unveränderte PCB-/ETS-Statik **PASS mit 0 Invariant-Fehlern** (bestehende Power-/Bestückungswarnungen); gestagter `git diff --check` **PASS**. Nach dem Closing Roadmap/Marker/Git-Status erneut geprüft. Kein Push, keine Platinen-/KNX-/ETS6-Aktion, kein Motorbetrieb.
+
+### Wiederanlauf
+Nach Aufbau der dedizierten Testumgebung über **KNX018** die Hardware-/Schnittstellenfreigaben dokumentieren, dann **KNX016/KNX009** in frischen Write-Sessions fortsetzen. Bis dahin Softwarearbeiten wie KNX008 möglich, aber nur nach separatem Slice-Start und Checkup.
