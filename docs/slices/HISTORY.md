@@ -401,3 +401,42 @@ KNX022 trennt konsequent Quellenbefunde von realen Hardwarefreigaben: BLOCKED_NO
 ### Next Exact Action
 
 **KNX002 bleibt planned**, ohne neuen automatischen Slice. Für reale Freigabe zuerst stromlose Fotos der Revision, R29/U25/F1/JMP1/Power-Pfad und tatsächliche Bestückungs-BOM, native EasyEDA ERC/DRC-/Netzlisten-Daten sowie eine geplante, qualifizierte **motorlose** KNX003-Versorgungsmessung. Für reale Fahrten zusätzlich KNX004-Hardware-All-off und KNX005/006 Motor-Strom-/Referenzabnahmen. V1.2 ist weiterhin nicht zur motorischen Inbetriebnahme freigegeben. KNX009/016 bleiben deferred bis KNX018.
+
+
+## KNX023 – Laptop-/RTS-UPDI-Handover und hardwareinaktive RP2040-Softwareintegration
+
+- **Status:** closed, Stand 2026-10-12 – **nur Softwaremodell und echter isolierter PlatformIO-Firmware-Build; KEINE Hardware-Motorfreigabe**
+- **Repo:** C:\ASH\Workspace\Projects\open-knx-valve-control, main, Baseline 3b47fa7 (clean, 26 lokale Commits vor origin/main)
+- **Eigentümer / Session:** ChatGPT-OpenKNXValveControl-KNX023-20261012 / ses-20261012T110701-938ee188aa65
+- **Implementierungscommit:** 7796b5a – feat(knx023): add disarmed firmware room pipeline and laptop UPDI testbench plan
+- **ASH Closing-Commit:** separater HISTORY/ROADMAP-Commit mit Entfernung des KNX023-Markers
+- **Doku:** [KNX023_FIRMWARE_SOFTWARE_RUNTIME.md](../KNX023_FIRMWARE_SOFTWARE_RUNTIME.md), [KNX018_LAPTOP_UPDI_TESTBENCH.md](../KNX018_LAPTOP_UPDI_TESTBENCH.md)
+
+### Gate 1 – Ausgangslage und Live-Verifikation
+
+Desktop Agent 0.8.1 erreichbar, alle vorherigen KNX-Sessions geschlossen, keine fremde Write-Session. Git main sauber HEAD 3b47fa7; genau null vorhandene _OPEN Marker. Produktiv-RP2040 (KNX014/015) sendet Temperaturtelemetrie/Diagnosen und hat noch keine externe KNX008/019-Raumeingangsumsetzung oder Motor-GPIO-Treiber. KNX008/019/020/021 liegen als getrennte C++-Referenzmodelle vor. KNX022 V1.2 HW preflight zeigt zehn offene elektrotechnische Risiken, u.a. STBY aller vier TB6612 fest auf 3.3V. KNX002/003/004/005/006 und KNX018 real ungeprüft.
+
+### Gate 2 – Freigegebener rein softwareseitiger Scope
+
+Persistenter **geplanter Laptop-KNX018-Teststand**: Laptop mit eigenem ASH Agent im KNX/IP-Netz; RP2040 per USB; ATtiny per zweitem USB-Port durch selbst entwickelten Units-V1.2-CH340G-Programmer mit RTS-gesteuerten U2/U7 SN74LVC1G3157 Umschaltern zwischen UPDI und UART. ATtiny mit DS18B20 T0 (Vorlauf) und T1..T8 (Rückläufe); interner Temperatur-Link verwendet **andere USART0-ALT1-Pins** als Debug CN1. Motor M1 erst nach separater Hardwarefreigabe. Dokumentiert **beidseitigen sechspoligen CN1-Netzvergleich**, insbesondere **Programmer CN1.1 USB-Versorgung/D1 ↔ Target CN1.1 5V**, Target-U25-VCC 3.3V, Signallevel-/Backfeed-Prüfung und mechanische Pin1-Auslesung zwingend vor Direktverbinden. Programmiertarget ATtiny3216 lt. Firmware vs. ATtiny1616-SN PCB-Metadaten: echte Signatur zuerst non-destructive. Laptop Units altes Repo/Branch, OpenKNX noch nicht auf Laptop; unpushed Desktop-Commits per Git-Bundle sicher übertragen, nicht durch altes origin/main ersetzen.
+
+### Gate 3 – Implementierung
+
+- [Firmware-RAM-Pipeline](../../lib/common/room_control_runtime.hpp) integriert **echte** RoomPi::Bank (KNX019), HeatingZone::resolve (KNX008), MotorQueueSim::Queue (KNX020) und ausschließlich in *nativen* C++-Hosttests VirtualMotor::Backend (KNX021). Default alle Modi disabled/alle Motoren unzugeordnet/Inputs invalid und Queue Disarmed. **Beim kompilierten ARDUINO-RP2040 wird der virtuelle Backend ausgeschlossen, Arm- und Position-Injektionsaufrufe liefern IMMER false.** Keine echte Queue-Fahrfreigabe.
+- [controller main.cpp](../../src/controller/main.cpp) initialisiert RoomControlRuntime in Setup, berechnet PI/Targets **nur im RAM** alle mindestens 100 ms, ohne GroupObject-Änderung oder Motor-GPIO-Zugriff. Temperatur-UART/KNX-TP-Schnittstellen und KNX015-Produkt unverändert.
+- [Laufzeittests](../../tests/native/test_knx023_room_control_runtime.cpp) mit drei synthetischen Motoren (M1/M2 direkt = 502 Promille, M3 Raum-PI = 30 Promille), drei synthetischen Start-/AllOff-Quittungen, Safe-Rearm-/Stale-/Timeout-/Reboot-Fällen.
+- [Arduino-Preprocessor-Hardlock](../../tests/native/test_knx023_firmware_hardlock.cpp) prüft native mit ARDUINO-Definition, dass keine synthetische Motor-Armierung oder Position-Injektion überhaupt möglich ist.
+- [Test-Runner](../../tools/test_knx023_room_control_runtime.py) kompiliert beide Suites mit C++17 -Wall/-Wextra/-Werror/-pedantic; [Nichtansteuerungs-Quellenaudit](../../tools/audit_knx023_firmware_offline.py) verifiziert nur additiv verändertes main.cpp, ARDUINO compile-fence und unveränderte ETS-/PCB-/ATtiny-Dateien gegen 3b47fa7.
+- [Laptop-Teststand](../KNX018_LAPTOP_UPDI_TESTBENCH.md) und bestehender [KNX-Testbenchplan](../KNX_TESTBENCH_PLAN.md), README/Roadmap ergänzt.
+
+### Gate 4 – Tatsächliche Abnahmetests
+
+- **Isolierter controller PlatformIO RP2040 Build PASS**, native OpenKNXproducer-Komponente; UF2 erzeugt unter temporärem, NICHT gepushtem C:\Users\LLO\AppData\Local\Temp\openknx-controller-isolated-bi62ip4j\.pio\build\controller\firmware.uf2. Kanonisches include/knxprod.hpp unverändert. RAM **53.452 / 262.144 (20,4 %)**, Flash **192.708 / 1.048.576 (18,4 %)**.
+- **KNX023 zwei neue Native-C++-Suites PASS**, einschließlich Arduino-compile-hardlock. **13 zuvor bestehende** Native-C++-Suites KNX008(1), KNX019(1), KNX020(2), KNX021(1), KNX013(2), KNX014(4), KNX015(2) alle PASS; insgesamt **15 Suites**.
+- KNX023 Nichtansteuerungs- und ABI-Quellenaudit **PASS**, KNX008 ETS v3 Entwurf **PASS**, KNX015 Produkt V2 KO/P-ABI **PASS**, PCB/ETS static 0 Invariant-Fails mit weiterhin bekannten Hardwarewarnungen. KNX022 Live-Quellenaudit **35 PASS, 10 BLOCKED** (historischer JSON-Hash-Stand vor KNX023; bei gewolltem neuen main.cpp nicht --check-report gegen altes KNX022-Snapshot anwenden).
+- ASH vor Closing **30 Prüfungen / 396 lokale Markdown-Links PASS**, Python-Syntax PASS, git diff --cached --check PASS; Closing-Audit nach Markerentfernung gesondert.
+- **Nicht durchgeführt:** Laptop-Repo-Migration, Netz-KNX-IP-Discovery, USB-/UPDI-Signatur/Flash, Boardstromversorgung, KNX-Bustelegramme, ETS6-Import, Motorfahrt, Bestellungen oder GitHub-Push.
+
+### Nächste abgrenzte Aufgaben
+
+KNX023 SOFTWARE-only ist abgeschlossen. **Keinen automatischen Folge-Slice starten.** Als weiterer softwareseitiger Slice ist die offline ETS-Raumeingangs-/DPT5.001-Kontraktbindung mit eigenem Simulationsadapter denkbar, aber produktive KO17..24 sind noch DPT5.004 und dürften nicht stillschweigend umgedeutet werden. Der physische KNX018-Laptop-Teststand benötigt zunächst sicheren Git-Transport einschließlich der lokalen Commit-Historie und danach KNX-/USB-Inventur. CN1.1 5V-Rückspeisepfad und UPDI 3.3V-Pegel prüfen, keine Direktverkabelung aus Netznamen ableiten. KNX002–006 Hardware-Qualifikation bleibt Voraussetzung vor jeder realen Motorbewegung. ETS6 KNX009/016 deferred.
