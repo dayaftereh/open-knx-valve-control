@@ -143,3 +143,46 @@ Bei Gate 4 fuer jeden echten Slice mindestens ID, Datum, Objective/Result, Profi
 - OpenKNXproducer output still warns about macro redefinitions / malformed Ko names in the existing product XML. Generator/build success is **not** ETS6 import or bus Telegram proof.
 - **KNX015 planned (NOT started):** Consume the cached, validity-checked T0..T8 snapshots and publish KNX DPT9.001 temperatures with configurable scheduling and diagnostics, after repairing KNX product identifier macros without silently renumbering active projects.
 - Hardware checks KNX002/003/004/005 remain mandatory for motor/supply work. No remote push.
+
+
+## KNX015 – KNX DPT9.001 telemetry and ETS minimum product
+
+- **State:** closed (offline software and product-generator gates)
+- **Closed:** 2026-10-12
+- **Baseline:** e2e54c6, main clean, 12 local commits ahead origin/main; no foreign write session or open marker.
+- **Implementation commit:** f73b61c (feat(knx015): publish ETS-configurable KNX temperature telemetry)
+- **Closing commit:** separate commit to close ROADMAP/HISTORY and remove _OPEN_KNX015_KNX_TEMPERATURE.md; see Git history.
+- **Detailed engineering record:** [KNX015_TEMPERATURE_PUBLISH.md](../KNX015_TEMPERATURE_PUBLISH.md).
+
+### Gate 1 – Checkup
+
+Verified via LLO Desktop Agent: KNX013+014 sessions completed, repository clean and no current open Slice. Confirmed KOs **25..33** carry T0..T8 DPT9.001; earlier ETS baseline contains 33 KOs/19 params. KNX getGroupObject(ASAP) is **1-based**, DPT_Value_Temp is Dpt(9,1). Source-XML KO names and generator double-defined C++ macros were defective; old application version was 1. Physical hardware/bus remained untested.
+
+### Gate 2 – Decision
+
+Keep KO1..33 and P1..19 numbered/layout- and metadata-compatible. Add ETS P20 periodic send interval 10..3600 s (default 60) at memory offset 7 and P21 temperature change threshold 0..1000 centiC (default 50=0.5C) at offset 9. Retain P19 as global temperature-output enable. Append KO34 UART connection online, DPT1.002 and KO35 T0..T8 9-bit validity mask, DPT7.001; bump application version to 2. Implement safe DPT9.001 publish from valid cached KNX014 samples, one event per loop, 250 ms shared bus gap and >=5s per channel on change. No motor actuation or ETS6/live-bus commissioning.
+
+### Gate 3 – Implementation
+
+- [Publisher](../../src/controller/temperature_publisher.cpp) reads generated ETS parameters, transfers real negative or 0 C sensor values as DPT9.001 on KO25..33, and sends KO34/35 diagnostic changes; gate on knx.configured and P19, never send stale/missing samples.
+- [Pure schedule](../../lib/common/temperature_telemetry_policy.hpp) applies periodic/delta and per-KO throttling, priority diagnostics, fairness and revalidation after sensor return.
+- [XML](../../assets/open-knx-valve-control.xml) preserves original KO IDs/numbers, DPT and visible descriptions plus parameter memory layout. Only internal names normalized. App version 2; now 35 KOs and 21 parameters.
+- OpenKNXproducer pre-script was hardened to fail on generator errors, and [KO header normalizer](../../assets/knxprod_header_fix.py) retains numeric macros while giving KNX accessor aliases unique Object suffixes. Canonical [generated header](../../include/knxprod.hpp) updated from verified isolated output. Independent [ETS ABI audit](../../tools/audit_knx015_product.py) guards against silent historic KO/P changes.
+- Updated README, [software plan](../FIRMWARE_SOFTWARE_FIRST.md), ETS historical baseline and [roadmap](../ROADMAP.md).
+
+### Gate 4 – Validation
+
+- **RP2040 controller PlatformIO isolated build PASS**, 52,240 / 262,144 RAM, 186,268 / 1,048,576 flash. UF2 created, original canonical header SHA unchanged during isolated build; copied deliberately only after validation. No duplicate/illegal KO macros in newly generated header.
+- **ATtiny3216 PlatformIO regression build PASS**, no new ATtiny source modifications.
+- **All 8 native C++ test suites PASS**: two KNX015 (full scheduler, production TemperaturePublisher plus actual TemperatureBridge with simulated serial and KNX GroupObjects), four KNX014 (CRC/sequence/timeout and both real adapters), two KNX013 (sampler and 9-probe mocks). Includes negative/0 C, offline, missing/returning sensor, throttling and no stale-temperature publishing.
+- **ETS ABI auditor PASS**, explicitly compares historic KO1..33 and P1..19 with immutable KNX014 baseline e2e54c6, validates appVersion2/KO35/P21, generator header and diagnostic DPTs.
+- **Generated .knxprod integrity PASS**: 6 ZIP entries, CRC clean, application XML version 2, 35 communication objects and 21 parameters. **No ETS6 import performed**; producer reported unavailable local XSD and historical channel-number placeholder warning.
+- **Bridge/Pins audit PASS** (0 mismatches), **PCB/ETS static audit PASS** (0 invariant failures, existing 5 V/BOM/DPT5.004 warnings remain), **ASH workflow PASS** (30 checks, 252 Markdown links pre-close), Python syntax PASS, staged Git diff --check PASS.
+- Post-closing ASH/ABI audits run again with no open Slice and clean Git tree. No remote push.
+
+### Open risks and next step
+
+- No actual KNX Telegram Monitor proof, ETS6 import, KNX associations or UART/OneWire physical verification. Current KO values can retain **last historical reading** after fault; consumers need KO34/35 quality state.
+- Existing valve position KO17..24 remain DPT5.004 (not revised to 5.001); single motor/current-sensor safety and 5V power gating remain untested/blocked until separate hardware slices.
+- **Next planned software slice KNX016:** isolated ETS6 import of version-2 KNXprod, inspect KO25..35 and P19..21 and perform product/GA visibility validation. Must start with fresh write session and Git/session check; do not auto-start.
+- Not a production release, no hardware flash, no motor movement, no GitHub push.
