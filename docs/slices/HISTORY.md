@@ -327,3 +327,41 @@ Ein reiner C++-Zustandsautomat reserviert den exklusiven Motor-Lease **vor** ein
 ### Nächste echte Voraussetzungen
 
 KNX002/003: Bestückung, 5-V-/3,3-V-/KNX-Pfad und sichere Leistungsreserve prüfen; KNX004: Hardware-Interlock, Off-Annahme und Watchdog bauen; KNX005/006: Motorstrom-/Endlagenkurve, Laufzeit und Positionsreferenz vermessen; KNX018: unabhängigen KNX-Bus mit echter Platine aufbauen, dann KNX009/016; KNX010-Regelung später integrieren. Folge-Slices nur nach neuem ASH-Checkup. Hier wurden nur Hardware-**unabhängige** C++-Tests durchgeführt.
+
+
+## KNX021 – End-to-End-Integrationstest als reines Softwaremodell
+
+- **State:** closed – nur native Software-/Mock-Abnahme; **keine reale KNX-/Motor-Freigabe**
+- **Datum:** 2026-10-12
+- **Baseline:** 8dc7577, main clean, 22 lokale Commits ahead origin/main; keine fremde Write-Session/kein offener Marker
+- **Implementierungscommit:** e9a82d2 – test(knx021): integrate room PI zones and exclusive virtual motor feedback
+- **Closing-Commit:** gesonderter HISTORY-/ROADMAP-Commit mit Entfernung des KNX021-Markers
+- **Technische Dokumentation:** [KNX021_END_TO_END_SIMULATION.md](../KNX021_END_TO_END_SIMULATION.md)
+
+### Gate 1 – Live-Baselineprüfung
+
+LLO Desktop Agent 0.8.1 erreichbar; KNX020 sauber geschlossen und Git HEAD 8dc7577. Vorhandene KNX019-Raumregelung, KNX008-Zonenrouter, KNX020-Exklusivfahrqueue separat getestet. KNX002/003 echte Bestückungs-/Versorgungsgates, KNX004–006 Motorhardwaregates, KNX018 separater KNX-Testplatz und KNX009/016 ETS-Import weiter **nicht** abgenommen.
+
+### Gate 2 – Scope / Entscheidung
+
+Nur die vorhandenen portablen C++-Klassen **in einem gemeinsamen Testpfad** verwenden und eine neue, streng hardwarefreie Feedback-Schicht ergänzen. Die virtuellen Positionsdaten werden beim angenommenen planmäßigen Ende **erst nach STOP-All-off-ACK** aktualisiert; bei unplanmäßigem Abbruch sind valid/referenced falsch und ein weiterer Start benötigt explizit neue Referenzevidenz. Fehlende Stopp-Quittung oder ein als belegt simulierter Motorplatz blockiert neue Motorstarts. Keine Produktion-XML/Header-/Firmware-/PCB-Änderungen oder Hardwarebewegung.
+
+### Gate 3 – Umsetzung
+
+- [VirtualMotor::Backend](../../lib/common/virtual_motor_feedback.hpp) konsumiert abstrakte KNX020-Events, produziert tokenisierte simulierte START-/STOP-AllOff-ACKs, hält abstraktes Ausgangsbelegungsbit und Positions-Evidenz mit Revisionsnummer; simuliert abgebrochene Fahrt, fehlende STOP-Quittung und blockiertes Abschalten.
+- [KNX021 Native Test](../../tests/native/test_knx021_end_to_end.cpp) führt **tatsächliche KNX019 PI-Klasse → KNX008 resolve → KNX020 Queue → VirtualMotor Backend** als gemeinsames Programm aus, einschließlich Sensor-Stale, Referenzverlust, manuellem Re-Arm, fehlendem All-off-ACK, ausgangsseitig blockiertem STOP und 32-Bit-Zeitüberlauf. Ergebnis M1/M2/M3 = 502/502/30 Promille nach **3 simulierten Starts und 3 Off-ACKs**; die Ergebnisse sind fiktive Sollpositionen, nicht gemessen.
+- [Native Runner](../../tools/test_knx021_end_to_end.py) kompiliert C++17 mit -Wall/-Wextra/-Werror/-pedantic und führt den Test isoliert aus.
+- [Quellschutz-Audit](../../tools/audit_knx021_e2e.py) sichert ETS/XML/knxprod.hpp, PCB V1.2 und die produktiven RP2040-/ATtiny-Quellen plus alte KNX008/019/020-Libs byteweise (LF/CRLF-normalisiert) gegen Baseline 8dc7577 ab; verbietet im virtuellen Backend jegliche KNX/UART/GPIO/PWM-Zugriffe.
+- README, KNX020-Querverweis und Roadmap aktualisiert.
+
+### Gate 4 – Qualitätsnachweis und Einschränkungen
+
+- **KNX021 native End-to-End-C++-Simulation PASS**, einschließlich aller Ausfallszenarien; die virtuelle Ausgangs-Bitmaske belegt bei jedem Schritt höchstens einen Motor und ist immer durch den aktuellen exklusiven Queue-Lease gedeckt.
+- **Zwölf bisherige native Regressionstestsuites PASS:** KNX008 1, KNX019 1, KNX020 2, KNX013 2, KNX014 4, KNX015 2. Zusammen mit KNX021 sind **13 native Suites PASS**.
+- KNX021 produktiver Quellschutz PASS; KNX008 ETS-Entwurf und KNX015 aktuelle ETS V2-Produkt-ABI PASS. ETS XML AppVersion2, 35 KOs/P1..21 bleiben unverändert.
+- ASH-Workflow **30 Prüfungen, 347 lokale Markdownlinks vor Closing PASS**, PCB-/ETS-Statikaudit 0 Invariant-Fehler (bekannte 5-V-/U25-/R29-/DPT5.004-Warnungen bestehen), Python-Syntaxprüfung PASS und gestagter git diff --check PASS. Nach Markerentfernung erneuter ASH-Audit.
+- Keine Platine versorgt, kein Motor angesteuert, kein Firmwareflash, keine KNX-Bustelegramme oder ETS6-Importe, kein GitHub-Push.
+
+### Folgearbeit bleibt hardware-gated
+
+KNX002 Bestückung und KNX003 KNX-/5-V-/3,3-V-Schutz prüfen; KNX004 unabhängigen HW-All-off-/Watchdog-/STBY-Interlock implementieren; KNX005/006 Motorpolung, HmIP-VDMOT-Strom-/Endlagen-/Referenzmessungen durchführen. KNX018 echte KNX-Testbench separat bereitstellen und KNX009/016 ETS6-/Bustests dort wieder aufnehmen. KNX010 volle produktive Raum-/Motorregelung folgt erst nach den Abhängigkeiten. Ein **virtueller** Quittungstest darf nie als reale Hardware-Sicherheitsfreigabe verwendet werden.
