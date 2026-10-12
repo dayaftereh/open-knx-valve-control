@@ -96,4 +96,6 @@ Im Repo-Root ausführen:
 4. **KNX005/006:** HmIP-VDMOT-Polung, Stromkurven, Blockade-/Endlagenreaktion, tatsächliche Hubzeiten, Referenz und Positionsunsicherheit messen. Keine willkürlichen Vollhubzeiten aus diesem Simulator übernehmen.
 5. **KNX018:** Eigenständige KNX- und Controller-Testumgebung errichten. ETS-/KNX-Importtests KNX009 und KNX016 bleiben bis dahin zurückgestellt.
 
+**Weiterführung:** [KNX021](KNX021_END_TO_END_SIMULATION.md) verknüpft die bestehende KNX020-Queue mit KNX019/KNX008 und einem rein virtuellen Motorfeedback, das unvollständig gestoppte Fahrten als Positions-unsicher markiert. Auch dieser Test führt **keinen** realen Motorlauf aus.
+
 **ASH-Scope:** KNX020 darf als Offline-Simulator abgeschlossen werden. KNX004, KNX005, KNX006 und KNX010 bleiben geplante, nicht durch KNX020 hardwareseitig freigegebene Slices. Es gab keinen ETS6-Import, keine KNX-Bustelegramme, keine GPIO-Aktionen, keinen Motorlauf und keinen Firmwareflash.
