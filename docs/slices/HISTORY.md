@@ -487,3 +487,45 @@ Portabler Offline-Adapter für die je acht vorgeschlagenen KOs:
 KNX024 nur als **reiner Software-Slice** geschlossen. Für spätere echte Verarbeitung müssen über KNX018 (separater Laptop-Agent mit KNX/IP und UPDI-RTS) real geprüft werden: Stromversorgung, typisierte ETS-Kommunikationsobjekte und parametrierte Gruppenadressbindungen, neue AppVersion und Erhaltung der 35 Alt-KOs, dann Live-GroupValueWrite und später rein virtuelle Bus-Tests. Nachfolgende KI-Software-Slices können weitere Offline-Fehlerzustände/HMI vorbereiten, dürfen aber keine echten Motoren freigeben.
 
 KNX002/003/004/005/006 bleiben physisch nicht abgenommen; TB6612-STBY auf V1.2 ist fest an 3,3 V und der virtuelle AllOff-ACK keine Hardware-Sicherheitsfreigabe. KNX009/016 bleiben deferred, KNX018 geplant. **Kein automatischer Folge-Slice**, keine externen Repository-Pushs.
+
+
+## KNX025 – Software-Faultsupervisor und kontrollierter Wiederanlauf ohne Motorhardware
+
+- **Stand / State:** 2026-10-12 / closed, ausschließlich portables Software-/Build-Gate. **Keine** echte KNX-/ETS6-, Watchdog- oder elektrische Motor-Abnahme.
+- **Root:** C:\ASH\Workspace\Projects\open-knx-valve-control, main, clean baseline 044eac5 (30 lokale Commits ahead origin/main) vor KNX025.
+- **Owner / Write-Session:** ChatGPT-OpenKNXValveControl-KNX025-20261012 / ses-20261012T124927-24a78824053f
+- **Implementierungscommit:** 335d7e4 – feat(knx025): add fail-closed software fault recovery and passive RP2040 diagnostics
+- **ASH Closing Commit:** gesonderter Commit für HISTORY / ROADMAP und Entfernung des KNX025-Markers
+- **Technischer Bericht:** [KNX025_FAULT_RECOVERY_DIAGNOSTICS.md](../KNX025_FAULT_RECOVERY_DIAGNOSTICS.md)
+
+### Gate 1 – Live verifizierter Ausgangszustand
+
+Desktop-Agent 0.8.1 aktiv, Git main auf 044eac5 sauber und 30 lokale unpublizierte Commits voraus, null aktive Fremd-Writes, KNX024 geschlossen, kein offener Slice-Marker. Vorhandene KNX024-ETS-V3-KOs36..100 nur vorgeschlagen; aktuelles produktives ETS XML unverändert AppV2 (35 KO/P21, Alt-KO17..24 DPT5.004). KNX023 ist ein realer, aber **RAM-only** Firmware-Tick mit ARDUINO-hardcoded Motor-Disarmed. KNX022 zehn physische Hardwareblocker einschließlich TB6612-STBY permanent an 3.3V, KNX018 Laptop-Labor nicht aufgebaut, KNX009/016 echte ETS-Importtests deferred.
+
+### Gate 2 – Abgesperrter Softwareumfang
+
+KNX025 ergänzt nur einen Software-Wächter für den bereits getesteten reinen C++-PI/Zone/Queue/virtuellen Backend: Quelle fehlend/ungültig, DPT-Mismatch, Eingangstimeout, Konfig-/Motorzuordnungswechsel, explizit simulierter KNX-Raum-Transportverlust, manuelles Stoppsignal, Softwareloop-Verzug über 2000 ms und virtuelle Start-/Stop-/All-off-ACK-/Motor-Queue-Fehler. Der Anfangszustand **Unconfigured** ist kein Fehler. Manifold T0..T8-Temperatur-UART-Offline erzeugt **nur diagnostische Warnung**, da Rohr-/Rücklaufwerte keine externen Raumluft-Istwerte sind.
+
+### Gate 3 – Eigentliche Implementierung
+
+- [KNX025 Supervisor](../../lib/common/knx025_fault_supervisor.hpp) mit Phase Unconfigured/WaitingForFreshInputs/HealthySoftwareInputs/FaultLatched, enum Fault (InvalidConfiguration, InvalidRoomTelegram, RoomSourceExpired, DirectDemandExpired, RoomTransportLost, SoftwareLoopStalled, SoftwareConfigurationChanged, MotorQueueFault, MockBackendProtocolFault, OperatorEmergencyStop), sticky first fault mit Zone/Zeit, Countern, Masken der acht Zonen und virtueller Lease-/Queue-Diagnose. physicalOutputsVerifiedOff ist **immer FALSE**.
+- Ein aktiver Fault setzt alle vorherigen **Software-Inputs** ungültig und ruft ausschließlich im nativen Simulator Queue-cancel auf. Bei laufender virtueller Fahrt bleibt die **gleiche lease/token** erhalten, STOP wird bis zum richtigen AllOff ACK wiederholt. Ein Timeout oder alter externer Room-Frame gibt keine Fahrt frei; im Test bleibt Re-Arm bis zur sicheren virtuellen Freigabe gesperrt.
+- Nur ausdrückliche operatorAcknowledgement plus null leasedMotor und virtuell AllOff/kein Protokollfehler erlaubt **RAM-only** Recovery; auch dann geht der Supervisor auf Unconfigured zurück, verwirft Position, Zonenzuordnung, Soll-/Istwerte und fordert neue Konfiguration **und** neue Telegramme. Kein Auto-Rearm oder persistierter falscher Istwert.
+- Schutz vor extern geänderter Konfiguration vergleicht sämtliche acht Zonenmodi, Motorzuordnung, Timings und maskierte Zone. Ein ausdrücklich als offline gekennzeichneter KNX-Raumtransport sperrt **auch beim allerersten** konfigurierten Steuerungstick.
+- Die tatsächliche RP2040-Firmware [main.cpp](../../src/controller/main.cpp) instanziiert den Supervisor und ruft im bestehenden, disarmed 100ms-Takt nur observeFirmware() auf. Er liest die ATtiny-Telemetrie via hasSnapshot()/online() zur WARNUNG und ein passives Software-Tick-Deadline-Signal. **Keine** Empfangsbinding von V3-Raum-KOs, kein gesicherter KNX-IP-Status, kein motorischer GPIO, kein Hardware-Watchdog, keine ETS XML/knxprod Mutation.
+- [KNX025 nativer Szenariotest](../../tests/native/test_knx025_fault_supervisor.cpp) und [ARDUINO Hardlock](../../tests/native/test_knx025_firmware_hardlock.cpp), [Runner](../../tools/test_knx025_fault_supervisor.py), [Produkt-/Sicherheitsscope-Audit](../../tools/audit_knx025_fault_scope.py) sowie README, Roadmap, KNX024 Querverweis und dieses HISTORY ergänzt.
+
+### Gate 4 – Tatsächlich durchgeführte Tests
+
+- **KNX025 neue 2 Native-C++-Suites PASS**, mit 11 Szenarien: Boot ohne Fehlalarm, frischer 5.001-Direktwert verliert Quelle nach Timeout und löst sticky Fault aus, Raum PI-Setpoint/Actual plus 0x7FFF/-/30s Stale, Manifold-Warnung getrennt, expliziter KNX-Raumtransport erstmalig offline sowie online-zu-offline, falscher 5.004-DPT und ungeprüfte Konfigänderung, Loop-2000ms-Timeout und millis-Rollover, verlorenes Stop-ACK und Lease-Blockade, aktive ETS-Umbindung während Motorlease, Start-ACK-Fault mit Recovery, Not-Stopp und passive RP2040-Diagnose. ARDUINO-Pfad kompiliert ohne virtuelles Backend: Motor-Arm/Position-Injektion **dauerhaft FALSE**.
+- **17 bisherige Native-C++-Suites PASS:** KNX008 (1), 013 (2), 014 (4), 015 (2), 019 (1), 020 (2), 021 (1), 023 (2), 024 (2). Zusammen **19 Native-Suites PASS**. 13 separate KNX024-Kontrakt-Negativtests PASS.
+- **Echter isolierter RP2040 PlatformIO-Firmware-Build PASS**, UF2 nur temporär unter C:\Users\LLO\AppData\Local\Temp\openknx-controller-isolated-kqax_puy\.pio\build\controller\firmware.uf2, Source-include/knxprod.hpp unverändert. RAM **53.532/262.144 Bytes = 20,4 %**, Flash **193.604/1.048.576 Bytes = 18,5 %**. Keine USB-Verbindung oder Firmwareprogrammierung.
+- KNX025 strikter No-Hardware-I/O-/Unverändertheits-Audit PASS. Historische KNX023-/KNX024-Scope-Audits PASS, ETS/KNX008 Vorschlag und tatsächliche KNX015-Produkt-ABI PASS; PCB statischer Audit 0 Invariant-Fails, bekannte Versorgungs-/BOM-DPT-Warnungen bestehen.
+- KNX022 Hardwarequellenaudit: 35 Invarianten PASS, aber **10 ungeklärte Hardware-Blocker**, Status BLOCKED_NOT_SAFE_TO_ENERGIZE_MOTOR unverändert.
+- ASH vor Closing **30 Checks / 456 lokale Markdownlinks PASS**, staged git diff --check PASS. Nach HISTORY / Markerentfernung Schluss-Audit wiederholen.
+
+### Nächster Schritt und wichtige Grenze
+
+KNX025 abgeschlossen und mit Git-History dokumentiert, **kein automatischer nächster Slice**. KNX026 LCD/Encoder-Diagnose/Statusansicht oder KNX018 Laptop-Vorbereitung sind sinnvolle nächste getrennte Aufgaben. Der vollständige vorgeschlagene ETS-V3-Raumdatenweg ist weiterhin OFFLINE; KNX009/016 bleiben deferred bis zum separaten KNX018-Laptop-/RTS-UPDI-/KNX-TP-Testplatz.
+
+**Kein echter Motor-/H-Brücken-Sicherheitsabschluss:** Das simulierte STOP-ACK ist keine unabhängige elektrische Freischaltung, ein Software-Deadline-Monitor kein Hardware-Watchdog. KNX002/003/004/005/006 müssen echte Bestückung, Stromversorgung, Abschaltwege, Motorströme und Referenzbewegung nachweisen. Keine Geräte angeschlossen, geflasht oder bewegt, keine KNX-Gruppenadressen geschrieben und kein GitHub-Push.
