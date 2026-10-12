@@ -1,6 +1,6 @@
 # OpenKNXValveControl - ASH Slice Roadmap
 
-**Stand:** 2026-10-10. **Version:** Software-first Repriorisierung KNX012: Erst ATtiny -> UART -> RP2040 -> KNX-Temperaturen; danach Motor-Safety und Raumregelung. Geplante IDs/Abhaengigkeiten sind **keine Implementierungsfreigabe**.
+**Stand:** 2026-10-12. **Version:** Software-first Repriorisierung KNX012 und KNX015-Temperatur-MVP: Erst ATtiny -> UART -> RP2040 -> KNX-Temperaturen; danach Motor-Safety und Raumregelung. Geplante IDs/Abhaengigkeiten sind **keine Implementierungsfreigabe**.
 
 **Workflow:** [ASH Slice Protocol v1](reference/ash/SLICE_PROTOCOL.md) und [lokale Regeln](../.ash/WORKFLOW.md).
 
@@ -38,12 +38,12 @@
 | **KNX012** Software-First Pin-/Protokollplan | **closed, 2026-10-10** | ATtiny/RP2040-Quell- und PCB-Pin-Review, T0 Vorlauf/T1..T8 Ruecklauf, UART-Protokollentwurf und Roadmap | KNX001; Schaltplan/PCB V1.2 und Source-Code | Pin-Audit reproduzierbar, Konzept und Folge-Slices dokumentiert, QA + ASH Close; keine voreilige Hardware-/KNX-Funktionsbehauptung |
 | **KNX013** ATtiny nichtblockierender Sampler | **closed, 2026-10-11** | Neun korrekte OneWire-Pins, 12-/11-Bit-Aufloesung, nichtblockierende Messungen und Snapshot mit Valid/Alter/Fehler | KNX012, vorhandener Source; Hardware spaeter fuer Realtest | ATtiny Build/Host-Tests, neun Pins korrekt, gueltiges 0 C und negative T, keine Loop-Blockierung, Timeout/CRC/Sentinel-Tests |
 | **KNX014** UART ATtiny<->RP2040 | **closed, 2026-10-11** | USART0 ALT1 PA1/PA2, RP GPIO8/9 Serial2, framing+CRC, GET_SNAPSHOT und Kommunikations-Timeout | KNX013, KNX012 Interface-Contract | Host-Frame-/CRC-/Stale-Tests, Builds beider Targets, gefaehrdungsfreie UART-Simulation; echte Hardware spaeter |
-| **KNX015** KNX-Sensordaten MVP | planned | T0..T8 DPT9.001 ueber RP2040 KNX publizieren, konfigurierbare Mindest-/Zyklusintervalle und Aenderungsschwelle, Status/Fault | KNX014; vorhandene 9 KO, erforderlicher ETS-Minimalvertrag | synthetische neun Temperaturwerte -> KNX-Encoder, keine ungueltigen/stale Telegramme, Throttling, Build; echter Bus noch separat |
+| **KNX015** KNX-Sensordaten MVP | **open, Gate 3/4 (2026-10-12)** | T0..T8 DPT9.001 ueber RP2040 KNX publizieren, konfigurierbare Mindest-/Zyklusintervalle und Aenderungsschwelle, Status/Fault | KNX014; vorhandene 9 KO, erforderlicher ETS-Minimalvertrag | synthetische neun Temperaturwerte -> KNX-Encoder, keine ungueltigen/stale Telegramme, Throttling, Build; echter Bus noch separat |
 | **KNX016** ETS6-Temperatur-Importtest | planned | Nur Temperatur-MVP-Produkt versioniert erzeugen, sichere KO-Identifiers und ETS6-Testprojekt-Import/GA-Pruefung | KNX015; OpenKNXproducer vorhanden | Generator/ZIP/Header-Pruefung, ETS6-Import in isoliertes Projekt und 9 Temperatur-KO nachgewiesen; kein produktives KNX-Download |
 
 ## Reihenfolge und Sicherheitsabhaengigkeiten
 
-- **Jetzt software-first:** KNX012 Design, KNX013 ATtiny-Sampler und **KNX014 UART-Snapshot-Bruecke** sind als Offline-Software-Slices abgeschlossen. **Naechster geplanter Slice: KNX015 KNX-DPT9.001-Publikation**, danach KNX016 ETS6-Temperaturtest. Reale UART-/KNX-Hardware bleibt ungetestet. Sie koennen ohne Motorbewegung mit Host-Tests und Offline-Builds vorbereitet werden. Sie ersetzen nicht spaetere Hardware-/Bus-Abnahmetests.
+- **Jetzt software-first:** KNX012 Design, KNX013 ATtiny-Sampler und **KNX014 UART-Snapshot-Bruecke** sind als Offline-Software-Slices abgeschlossen. **KNX015 DPT9.001-Publikation ist als Offline-Software-Gate implementiert**, danach KNX016 ETS6-Temperaturtest. Reale UART-/KNX-Hardware bleibt ungetestet. Sie koennen ohne Motorbewegung mit Host-Tests und Offline-Builds vorbereitet werden. Sie ersetzen nicht spaetere Hardware-/Bus-Abnahmetests.
 - **Naechster zweckmaessiger Hardware-Slice (separat):** KNX002. Ohne Fotos/Bestueckung kann er `blocked` werden; das darf nicht als Erfolg gewertet werden.
 - **Auch ohne laufende Hardwaretests moegliche konzeptionelle Arbeit:** KNX008 (ETS-Zonenmodell), aber fuer den ersten KNX-Temperatur-MVP ist die Reihenfolge KNX013..016 vorrangig. **Kein zweiter paralleler Write-Slice**.
 - KNX003 und KNX005 duerfen keine gefaehrlichen Blindversuche mit 5 V/3,3 V, Netzteilen oder Antrieben ausloesen. Stromversorgung, Diodenpfad, Schutz und reale Bestueckung muessen vorher freigegeben sein.

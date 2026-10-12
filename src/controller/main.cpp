@@ -6,8 +6,10 @@
 #include "config.hpp"
 #include "knxprod.hpp"
 #include "temperature_bridge.hpp"
+#include "temperature_publisher.hpp"
 
 TemperatureBridge temperatureBridge;
+TemperaturePublisher temperaturePublisher;
 
 void setupKnx()
 {
@@ -43,16 +45,20 @@ void setup()
 
     setupTemperatureLink();
     setupKnx();
+    temperaturePublisher.begin(millis());
 }
 
 void loop()
 {
     knx.loop();
 
-    // Poll even before ETS commissioning so the link can be diagnosed.
-    // This only fills RAM; the first KNX T0..T8 telegrams belong to KNX015.
+    // UART remains active for internal diagnosis before ETS commissioning.
     temperatureBridge.update();
 
     if (!knx.configured())
         return;
+
+    // KNX015: transmit only valid cached T0..T8 and quality diagnostics;
+    // at most one KNX GroupObject per loop, bounded by ETS parameters.
+    temperaturePublisher.update(temperatureBridge, millis());
 }

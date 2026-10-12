@@ -120,8 +120,19 @@ def main() -> int:
     objects = [e for e in xml.iter() if short_tag(e) == "ComObject"]
     params = [e for e in xml.iter() if short_tag(e) == "Parameter"]
     channels = [e for e in xml.iter() if short_tag(e) == "Channel"]
-    report(len(objects) == 33 and len(params) == 19,
-           "Existing ETS XML: 33 static communication objects, 19 parameters")
+    legacy_xml = len(objects) == 33 and len(params) == 19
+    knx015_xml = len(objects) == 35 and len(params) == 21
+    report(legacy_xml or knx015_xml,
+           "ETS XML expected legacy 33 KO/19 parameters or KNX015 35 KO/21 parameters")
+    if knx015_xml:
+        report([e.get("Number") for e in objects] ==
+               [str(i) for i in range(1, 36)],
+               "KNX015 ETS KO1..KO35 remain consecutive, with no renumbering")
+        report(objects[33].get("Name") == "TemperatureBridgeOnline" and
+               objects[33].get("DatapointType") == "DPST-1-2" and
+               objects[34].get("Name") == "TemperatureValidMask" and
+               objects[34].get("DatapointType") == "DPST-7-1",
+               "KNX015 diagnostics KO34/35 have the expected DPTs")
     report(len(channels) == 1, "Existing ETS XML: only one dynamic ETS channel")
     positions = [e for e in objects if e.get("Name", "").startswith(("Stell-Wert", "Stell_Wert"))]
     report(len(positions) == 8, "Existing ETS XML: eight position communication objects")

@@ -10,7 +10,7 @@
                 </CatalogSection>
             </Catalog>
             <ApplicationPrograms>
-                <ApplicationProgram Id="%AID%" ApplicationNumber="55531" ApplicationVersion="1"
+                <ApplicationProgram Id="%AID%" ApplicationNumber="55531" ApplicationVersion="2"
                     ReplacesVersions="0" ProgramType="ApplicationProgram" MaskVersion="MV-07B0"
                     Name="open-knx-valve-control" LoadProcedureStyle="MergedProcedure" PeiType="0"
                     DefaultLanguage="de" DynamicTableManagement="false" Linkable="true"
@@ -85,6 +85,12 @@
                                     maxInclusive="670760" />
                             </ParameterType>
 
+                            <ParameterType Id="%AID%_PT-TemperatureSendIntervalSeconds" Name="TemperatureSendIntervalSeconds">
+                                <TypeNumber SizeInBit="16" Type="unsignedInt" minInclusive="10" maxInclusive="3600" />
+                            </ParameterType>
+                            <ParameterType Id="%AID%_PT-TemperatureChangeThresholdCenti" Name="TemperatureChangeThresholdCenti">
+                                <TypeNumber SizeInBit="16" Type="unsignedInt" minInclusive="0" maxInclusive="1000" />
+                            </ParameterType>
                         </ParameterTypes>
                         <Parameters>
 
@@ -210,6 +216,17 @@
                                 <Memory CodeSegment="%AID%_RS-04-00000" Offset="6" BitOffset="0" />
                             </Parameter>
 
+                            <!-- KNX015 temperature telemetry settings: append without shifting P1..P19 -->
+                            <Parameter Id="%AID%_P-20" Name="TemperatureSendIntervalSeconds"
+                                ParameterType="%AID%_PT-TemperatureSendIntervalSeconds"
+                                Text="Temperaturen zyklisch senden (Sekunden)" Value="60">
+                                <Memory CodeSegment="%AID%_RS-04-00000" Offset="7" BitOffset="0" />
+                            </Parameter>
+                            <Parameter Id="%AID%_P-21" Name="TemperatureChangeThresholdCenti"
+                                ParameterType="%AID%_PT-TemperatureChangeThresholdCenti"
+                                Text="Senden ab Temperaturänderung (0,01 Grad; 0 = aus)" Value="50">
+                                <Memory CodeSegment="%AID%_RS-04-00000" Offset="9" BitOffset="0" />
+                            </Parameter>
                         </Parameters>
                         <ParameterRefs>
                             <!-- Startup Delay -->
@@ -237,6 +254,8 @@
                             <!-- Temperatures -->
                             <ParameterRef Id="%AID%_P-19_R-19" RefId="%AID%_P-19" />
                         
+                            <ParameterRef Id="%AID%_P-20_R-20" RefId="%AID%_P-20" />
+                            <ParameterRef Id="%AID%_P-21_R-21" RefId="%AID%_P-21" />
                         </ParameterRefs>
                         <ComObjectTable>
 
@@ -244,7 +263,7 @@
 
                             <!-- Soll-Temperatures -->
 
-                            <ComObject Id="%AID%_O-1" Name="Soll-Temperatur 1" Number="1"
+                            <ComObject Id="%AID%_O-1" Name="Soll_Temperatur_1" Number="1"
                                 Text="Die Soll-Temperatur für die Steuerung von Stellmotor 1"
                                 FunctionText="Eingang" ObjectSize="2 Bytes" ReadFlag="Disabled"
                                 WriteFlag="Enabled"
@@ -252,7 +271,7 @@
                                 UpdateFlag="Enabled"
                                 ReadOnInitFlag="Disabled" DatapointType="DPST-9-1" />
 
-                            <ComObject Id="%AID%_O-2" Name="Soll-Temperatur 2" Number="2"
+                            <ComObject Id="%AID%_O-2" Name="Soll_Temperatur_2" Number="2"
                                 Text="Die Soll-Temperatur für die Steuerung von Stellmotor 2"
                                 FunctionText="Eingang" ObjectSize="2 Bytes" ReadFlag="Disabled"
                                 WriteFlag="Enabled"
@@ -260,7 +279,7 @@
                                 UpdateFlag="Enabled"
                                 ReadOnInitFlag="Disabled" DatapointType="DPST-9-1" />
 
-                            <ComObject Id="%AID%_O-3" Name="Soll-Temperatur 3" Number="3"
+                            <ComObject Id="%AID%_O-3" Name="Soll_Temperatur_3" Number="3"
                                 Text="Die Soll-Temperatur für die Steuerung von Stellmotor 3"
                                 FunctionText="Eingang" ObjectSize="2 Bytes" ReadFlag="Disabled"
                                 WriteFlag="Enabled"
@@ -268,7 +287,7 @@
                                 UpdateFlag="Enabled"
                                 ReadOnInitFlag="Disabled" DatapointType="DPST-9-1" />
 
-                            <ComObject Id="%AID%_O-4" Name="Soll-Temperatur 4" Number="4"
+                            <ComObject Id="%AID%_O-4" Name="Soll_Temperatur_4" Number="4"
                                 Text="Die Soll-Temperatur für die Steuerung von Stellmotor 4"
                                 FunctionText="Eingang" ObjectSize="2 Bytes" ReadFlag="Disabled"
                                 WriteFlag="Enabled"
@@ -276,7 +295,7 @@
                                 UpdateFlag="Enabled"
                                 ReadOnInitFlag="Disabled" DatapointType="DPST-9-1" />
 
-                            <ComObject Id="%AID%_O-5" Name="Soll-Temperatur 5" Number="5"
+                            <ComObject Id="%AID%_O-5" Name="Soll_Temperatur_5" Number="5"
                                 Text="Die Soll-Temperatur für die Steuerung von Stellmotor 5"
                                 FunctionText="Eingang" ObjectSize="2 Bytes" ReadFlag="Disabled"
                                 WriteFlag="Enabled"
@@ -284,7 +303,7 @@
                                 UpdateFlag="Enabled"
                                 ReadOnInitFlag="Disabled" DatapointType="DPST-9-1" />
 
-                            <ComObject Id="%AID%_O-6" Name="Soll-Temperatur 6" Number="6"
+                            <ComObject Id="%AID%_O-6" Name="Soll_Temperatur_6" Number="6"
                                 Text="Die Soll-Temperatur für die Steuerung von Stellmotor 6"
                                 FunctionText="Eingang" ObjectSize="2 Bytes" ReadFlag="Disabled"
                                 WriteFlag="Enabled"
@@ -292,7 +311,7 @@
                                 UpdateFlag="Enabled"
                                 ReadOnInitFlag="Disabled" DatapointType="DPST-9-1" />
 
-                            <ComObject Id="%AID%_O-7" Name="Soll-Temperatur 7" Number="7"
+                            <ComObject Id="%AID%_O-7" Name="Soll_Temperatur_7" Number="7"
                                 Text="Die Soll-Temperatur für die Steuerung von Stellmotor 7"
                                 FunctionText="Eingang" ObjectSize="2 Bytes" ReadFlag="Disabled"
                                 WriteFlag="Enabled"
@@ -300,7 +319,7 @@
                                 UpdateFlag="Enabled"
                                 ReadOnInitFlag="Disabled" DatapointType="DPST-9-1" />
 
-                            <ComObject Id="%AID%_O-8" Name="Soll-Temperatur 8" Number="8"
+                            <ComObject Id="%AID%_O-8" Name="Soll_Temperatur_8" Number="8"
                                 Text="Die Soll-Temperatur für die Steuerung von Stellmotor 8"
                                 FunctionText="Eingang" ObjectSize="2 Bytes" ReadFlag="Disabled"
                                 WriteFlag="Enabled"
@@ -310,7 +329,7 @@
 
                             <!-- Ist-Temperatures -->
 
-                            <ComObject Id="%AID%_O-9" Name="Ist-Temperatur 1" Number="9"
+                            <ComObject Id="%AID%_O-9" Name="Ist_Temperatur_1" Number="9"
                                 Text="Die Ist-Temperatur für die Steuerung von Stellmotor 1"
                                 FunctionText="Eingang" ObjectSize="2 Bytes" ReadFlag="Disabled"
                                 WriteFlag="Enabled"
@@ -318,7 +337,7 @@
                                 UpdateFlag="Enabled"
                                 ReadOnInitFlag="Disabled" DatapointType="DPST-9-1" />
 
-                            <ComObject Id="%AID%_O-10" Name="Ist-Temperatur 2"  Number="10"
+                            <ComObject Id="%AID%_O-10" Name="Ist_Temperatur_2"  Number="10"
                                 Text="Die Ist-Temperatur für die Steuerung von Stellmotor 2"
                                 FunctionText="Eingang" ObjectSize="2 Bytes" ReadFlag="Disabled"
                                 WriteFlag="Enabled"
@@ -326,7 +345,7 @@
                                 UpdateFlag="Enabled"
                                 ReadOnInitFlag="Disabled" DatapointType="DPST-9-1" />
 
-                            <ComObject Id="%AID%_O-11" Name="Ist-Temperatur 3" Number="11"
+                            <ComObject Id="%AID%_O-11" Name="Ist_Temperatur_3" Number="11"
                                 Text="Die Ist-Temperatur für die Steuerung von Stellmotor 3"
                                 FunctionText="Eingang" ObjectSize="2 Bytes" ReadFlag="Disabled"
                                 WriteFlag="Enabled"
@@ -334,7 +353,7 @@
                                 UpdateFlag="Enabled"
                                 ReadOnInitFlag="Disabled" DatapointType="DPST-9-1" />
 
-                            <ComObject Id="%AID%_O-12" Name="Ist-Temperatur 4" Number="12"
+                            <ComObject Id="%AID%_O-12" Name="Ist_Temperatur_4" Number="12"
                                 Text="Die Ist-Temperatur für die Steuerung von Stellmotor 4"
                                 FunctionText="Eingang" ObjectSize="2 Bytes" ReadFlag="Disabled"
                                 WriteFlag="Enabled"
@@ -342,7 +361,7 @@
                                 UpdateFlag="Enabled"
                                 ReadOnInitFlag="Disabled" DatapointType="DPST-9-1" />
 
-                            <ComObject Id="%AID%_O-13" Name="Ist-Temperatur 5"  Number="13"
+                            <ComObject Id="%AID%_O-13" Name="Ist_Temperatur_5"  Number="13"
                                 Text="Die Ist-Temperatur für die Steuerung von Stellmotor 5"
                                 FunctionText="Eingang" ObjectSize="2 Bytes" ReadFlag="Disabled"
                                 WriteFlag="Enabled"
@@ -350,7 +369,7 @@
                                 UpdateFlag="Enabled"
                                 ReadOnInitFlag="Disabled" DatapointType="DPST-9-1" />
 
-                            <ComObject Id="%AID%_O-14" Name="Ist-Temperatur 6" Number="14"
+                            <ComObject Id="%AID%_O-14" Name="Ist_Temperatur_6" Number="14"
                                 Text="Die Ist-Temperatur für die Steuerung von Stellmotor 6"
                                 FunctionText="Eingang" ObjectSize="2 Bytes" ReadFlag="Disabled"
                                 WriteFlag="Enabled"
@@ -358,7 +377,7 @@
                                 UpdateFlag="Enabled"
                                 ReadOnInitFlag="Disabled" DatapointType="DPST-9-1" />
 
-                            <ComObject Id="%AID%_O-15" Name="Ist-Temperatur 7" Number="15"
+                            <ComObject Id="%AID%_O-15" Name="Ist_Temperatur_7" Number="15"
                                 Text="Die Ist-Temperatur für die Steuerung von Stellmotor 7"
                                 FunctionText="Eingang" ObjectSize="2 Bytes" ReadFlag="Disabled"
                                 WriteFlag="Enabled"
@@ -366,7 +385,7 @@
                                 UpdateFlag="Enabled"
                                 ReadOnInitFlag="Disabled" DatapointType="DPST-9-1" />
 
-                            <ComObject Id="%AID%_O-16" Name="Ist-Temperatur 8" Number="16"
+                            <ComObject Id="%AID%_O-16" Name="Ist_Temperatur_8" Number="16"
                                 Text="Die Ist-Temperatur für die Steuerung von Stellmotor 8"
                                 FunctionText="Eingang" ObjectSize="2 Bytes" ReadFlag="Disabled"
                                 WriteFlag="Enabled"
@@ -376,7 +395,7 @@
 
                             <!-- Percent for Drives -->
 
-                            <ComObject Id="%AID%_O-17" Name="Stell-Wert 1" Number="17"
+                            <ComObject Id="%AID%_O-17" Name="Stell_Wert_1" Number="17"
                                 Text="Der prozentuale Stell-Wert für Stellmotor 1"
                                 FunctionText="Eingang" ObjectSize="1 Byte" ReadFlag="Disabled"
                                 WriteFlag="Enabled"
@@ -384,7 +403,7 @@
                                 UpdateFlag="Enabled"
                                 ReadOnInitFlag="Disabled" DatapointType="DPST-5-4" />
 
-                            <ComObject Id="%AID%_O-18" Name="Stell-Wert 2" Number="18"
+                            <ComObject Id="%AID%_O-18" Name="Stell_Wert_2" Number="18"
                                 Text="Der prozentuale Stell-Wert für Stellmotor 2"
                                 FunctionText="Eingang" ObjectSize="1 Byte" ReadFlag="Disabled"
                                 WriteFlag="Enabled"
@@ -392,7 +411,7 @@
                                 UpdateFlag="Enabled"
                                 ReadOnInitFlag="Disabled" DatapointType="DPST-5-4" />
 
-                            <ComObject Id="%AID%_O-19" Name="Stell-Wert 3"  Number="19"
+                            <ComObject Id="%AID%_O-19" Name="Stell_Wert_3"  Number="19"
                                 Text="Der prozentuale Stell-Wert für Stellmotor 3"
                                 FunctionText="Eingang" ObjectSize="1 Byte" ReadFlag="Disabled"
                                 WriteFlag="Enabled"
@@ -400,7 +419,7 @@
                                 UpdateFlag="Enabled"
                                 ReadOnInitFlag="Disabled" DatapointType="DPST-5-4" />
 
-                            <ComObject Id="%AID%_O-20" Name="Stell-Wert 4" Number="20"
+                            <ComObject Id="%AID%_O-20" Name="Stell_Wert_4" Number="20"
                                 Text="Der prozentuale Stell-Wert für Stellmotor 4"
                                 FunctionText="Eingang" ObjectSize="1 Byte" ReadFlag="Disabled"
                                 WriteFlag="Enabled"
@@ -408,7 +427,7 @@
                                 UpdateFlag="Enabled"
                                 ReadOnInitFlag="Disabled" DatapointType="DPST-5-4" />
 
-                            <ComObject Id="%AID%_O-21" Name="Stell-Wert 5"  Number="21"
+                            <ComObject Id="%AID%_O-21" Name="Stell_Wert_5"  Number="21"
                                 Text="Der prozentuale Stell-Wert für Stellmotor 5"
                                 FunctionText="Eingang" ObjectSize="1 Byte" ReadFlag="Disabled"
                                 WriteFlag="Enabled"
@@ -416,7 +435,7 @@
                                 UpdateFlag="Enabled"
                                 ReadOnInitFlag="Disabled" DatapointType="DPST-5-4" />
 
-                            <ComObject Id="%AID%_O-22" Name="Stell_Wert 6" Number="22"
+                            <ComObject Id="%AID%_O-22" Name="Stell_Wert_6" Number="22"
                                 Text="Der prozentuale Stell-Wert für Stellmotor 6"
                                 FunctionText="Eingang" ObjectSize="1 Byte" ReadFlag="Disabled"
                                 WriteFlag="Enabled"
@@ -424,7 +443,7 @@
                                 UpdateFlag="Enabled"
                                 ReadOnInitFlag="Disabled" DatapointType="DPST-5-4" />
 
-                            <ComObject Id="%AID%_O-23" Name="Stell_Wert 7"  Number="23"
+                            <ComObject Id="%AID%_O-23" Name="Stell_Wert_7"  Number="23"
                                 Text="Der prozentuale Stell-Wert für Stellmotor 7"
                                 FunctionText="Eingang" ObjectSize="1 Byte" ReadFlag="Disabled"
                                 WriteFlag="Enabled"
@@ -432,7 +451,7 @@
                                 UpdateFlag="Enabled"
                                 ReadOnInitFlag="Disabled" DatapointType="DPST-5-4" />
 
-                            <ComObject Id="%AID%_O-24" Name="Stell_Wert 8" Number="24"
+                            <ComObject Id="%AID%_O-24" Name="Stell_Wert_8" Number="24"
                                 Text="Der prozentuale Stell-Wert für Stellmotor 8"
                                 FunctionText="Eingang" ObjectSize="1 Byte" ReadFlag="Disabled"
                                 WriteFlag="Enabled"
@@ -516,6 +535,17 @@
 
                             <!--  -->
 
+                            <!-- KNX015 diagnostics; KO1..KO33 retain stable numbers/IDs/DPTs -->
+                            <ComObject Id="%AID%_O-34" Name="TemperatureBridgeOnline" Number="34"
+                                Text="ATtiny-Temperaturverbindung online" FunctionText="Ausgang"
+                                ObjectSize="1 Bit" ReadFlag="Enabled" WriteFlag="Disabled"
+                                CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled"
+                                ReadOnInitFlag="Disabled" DatapointType="DPST-1-2" />
+                            <ComObject Id="%AID%_O-35" Name="TemperatureValidMask" Number="35"
+                                Text="Gültige Temperaturkanäle T0 bis T8 (Bitmaske)" FunctionText="Ausgang"
+                                ObjectSize="2 Bytes" ReadFlag="Enabled" WriteFlag="Disabled"
+                                CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled"
+                                ReadOnInitFlag="Disabled" DatapointType="DPST-7-1" />
                         </ComObjectTable>
                         <ComObjectRefs>
                             <!-- Soll-Temperatures -->
@@ -556,6 +586,8 @@
                             <ComObjectRef Id="%AID%_O-32_R-32" RefId="%AID%_O-32" />
                             <ComObjectRef Id="%AID%_O-33_R-33" RefId="%AID%_O-33" />
                                                     
+                            <ComObjectRef Id="%AID%_O-34_R-34" RefId="%AID%_O-34" />
+                            <ComObjectRef Id="%AID%_O-35_R-35" RefId="%AID%_O-35" />
                         </ComObjectRefs>
                         <AddressTable MaxEntries="65535" />
                         <AssociationTable MaxEntries="65535" />
@@ -612,6 +644,8 @@
                                 <ParameterSeparator Id="%AID%_PS-4" Text="Temperaturen:" />
 
                                 <ParameterRefRef RefId="%AID%_P-19_R-19" />
+                                <ParameterRefRef RefId="%AID%_P-20_R-20" />
+                                <ParameterRefRef RefId="%AID%_P-21_R-21" />
 
                                 <choose ParamRefId="%AID%_P-19_R-19">
                                     <when test="1">
@@ -624,6 +658,8 @@
                                         <ComObjectRefRef RefId="%AID%_O-31_R-31" />
                                         <ComObjectRefRef RefId="%AID%_O-32_R-32" />
                                         <ComObjectRefRef RefId="%AID%_O-33_R-33" />
+                                        <ComObjectRefRef RefId="%AID%_O-34_R-34" />
+                                        <ComObjectRefRef RefId="%AID%_O-35_R-35" />
                                     </when>
                                 </choose>
 

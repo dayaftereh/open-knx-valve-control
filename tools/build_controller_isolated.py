@@ -22,6 +22,7 @@ PIO_FALLBACK = Path(r"C:\Users\LLO\.platformio\penv\Scripts\pio.exe")
 PRODUCER_FALLBACK = Path(r"C:\ASH\Tools\OpenKNXproducer-3.12.2\OpenKNXproducer.exe")
 ASSET_FILES = (
     "open-knx-producer.py",
+    "knxprod_header_fix.py",
     "open-knx-valve-control.xml",
     "init_updi.py",
     "autodetect_port.py",

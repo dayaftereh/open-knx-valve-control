@@ -62,6 +62,8 @@
 #define PrePostTemperaturesOutput            6      // 1 Bit, Bit 7
 #define     PrePostTemperaturesOutputMask 0x80
 #define     PrePostTemperaturesOutputShift 7
+#define TemperatureSendIntervalSeconds       7      // uint16_t
+#define TemperatureChangeThresholdCenti      9      // uint16_t
 
 //         Zeit (Sekundengenau)
 #define ParamStartupDelay                        (knx.paramWord(StartupDelay))
@@ -101,108 +103,118 @@
 #define ParamDrive8ControlLoop                   ((bool)(knx.paramByte(Drive8ControlLoop) & Drive8ControlLoopMask))
 // Vor- und Rücklauf-Temperaturen Ausgeben
 #define ParamPrePostTemperaturesOutput           ((bool)(knx.paramByte(PrePostTemperaturesOutput) & PrePostTemperaturesOutputMask))
+// Temperaturen zyklisch senden (Sekunden)
+#define ParamTemperatureSendIntervalSeconds      (knx.paramWord(TemperatureSendIntervalSeconds))
+// Senden ab Temperaturänderung (0,01 Grad; 0 = aus)
+#define ParamTemperatureChangeThresholdCenti     (knx.paramWord(TemperatureChangeThresholdCenti))
 
 // Communication objects with single occurrence
-#define KoSoll-Temperatur_1 
-#define KoSoll-Temperatur_2 
-#define KoSoll-Temperatur_3 
-#define KoSoll-Temperatur_4 
-#define KoSoll-Temperatur_5 
-#define KoSoll-Temperatur_6 
-#define KoSoll-Temperatur_7 
-#define KoSoll-Temperatur_8 
-#define KoIst-Temperatur_1 
-#define KoIst-Temperatur_2 
-#define KoIst-Temperatur_3 
-#define KoIst-Temperatur_4 
-#define KoIst-Temperatur_5 
-#define KoIst-Temperatur_6 
-#define KoIst-Temperatur_7 
-#define KoIst-Temperatur_8 
-#define KoStell-Wert_1 
-#define KoStell-Wert_2 
-#define KoStell-Wert_3 
-#define KoStell-Wert_4 
-#define KoStell-Wert_5 
-#define KoStell_Wert_6 
-#define KoStell_Wert_7 
-#define KoStell_Wert_8 
-#define KoT0 
-#define KoT1 
-#define KoT2 
-#define KoT3 
-#define KoT4 
-#define KoT5 
-#define KoT6 
-#define KoT7 
-#define KoT8 
+#define KoSoll_Temperatur_1 1
+#define KoSoll_Temperatur_2 2
+#define KoSoll_Temperatur_3 3
+#define KoSoll_Temperatur_4 4
+#define KoSoll_Temperatur_5 5
+#define KoSoll_Temperatur_6 6
+#define KoSoll_Temperatur_7 7
+#define KoSoll_Temperatur_8 8
+#define KoIst_Temperatur_1 9
+#define KoIst_Temperatur_2 10
+#define KoIst_Temperatur_3 11
+#define KoIst_Temperatur_4 12
+#define KoIst_Temperatur_5 13
+#define KoIst_Temperatur_6 14
+#define KoIst_Temperatur_7 15
+#define KoIst_Temperatur_8 16
+#define KoStell_Wert_1 17
+#define KoStell_Wert_2 18
+#define KoStell_Wert_3 19
+#define KoStell_Wert_4 20
+#define KoStell_Wert_5 21
+#define KoStell_Wert_6 22
+#define KoStell_Wert_7 23
+#define KoStell_Wert_8 24
+#define KoT0 25
+#define KoT1 26
+#define KoT2 27
+#define KoT3 28
+#define KoT4 29
+#define KoT5 30
+#define KoT6 31
+#define KoT7 32
+#define KoT8 33
+#define KoTemperatureBridgeOnline 34
+#define KoTemperatureValidMask 35
 
 // Die Soll-Temperatur für die Steuerung von Stellmotor 1
-#define KoSoll-Temperatur_1                   (knx.getGroupObject(KoSoll-Temperatur_1))
+#define KoSoll_Temperatur_1Object                   (knx.getGroupObject(KoSoll_Temperatur_1))
 // Die Soll-Temperatur für die Steuerung von Stellmotor 2
-#define KoSoll-Temperatur_2                   (knx.getGroupObject(KoSoll-Temperatur_2))
+#define KoSoll_Temperatur_2Object                   (knx.getGroupObject(KoSoll_Temperatur_2))
 // Die Soll-Temperatur für die Steuerung von Stellmotor 3
-#define KoSoll-Temperatur_3                   (knx.getGroupObject(KoSoll-Temperatur_3))
+#define KoSoll_Temperatur_3Object                   (knx.getGroupObject(KoSoll_Temperatur_3))
 // Die Soll-Temperatur für die Steuerung von Stellmotor 4
-#define KoSoll-Temperatur_4                   (knx.getGroupObject(KoSoll-Temperatur_4))
+#define KoSoll_Temperatur_4Object                   (knx.getGroupObject(KoSoll_Temperatur_4))
 // Die Soll-Temperatur für die Steuerung von Stellmotor 5
-#define KoSoll-Temperatur_5                   (knx.getGroupObject(KoSoll-Temperatur_5))
+#define KoSoll_Temperatur_5Object                   (knx.getGroupObject(KoSoll_Temperatur_5))
 // Die Soll-Temperatur für die Steuerung von Stellmotor 6
-#define KoSoll-Temperatur_6                   (knx.getGroupObject(KoSoll-Temperatur_6))
+#define KoSoll_Temperatur_6Object                   (knx.getGroupObject(KoSoll_Temperatur_6))
 // Die Soll-Temperatur für die Steuerung von Stellmotor 7
-#define KoSoll-Temperatur_7                   (knx.getGroupObject(KoSoll-Temperatur_7))
+#define KoSoll_Temperatur_7Object                   (knx.getGroupObject(KoSoll_Temperatur_7))
 // Die Soll-Temperatur für die Steuerung von Stellmotor 8
-#define KoSoll-Temperatur_8                   (knx.getGroupObject(KoSoll-Temperatur_8))
+#define KoSoll_Temperatur_8Object                   (knx.getGroupObject(KoSoll_Temperatur_8))
 // Die Ist-Temperatur für die Steuerung von Stellmotor 1
-#define KoIst-Temperatur_1                    (knx.getGroupObject(KoIst-Temperatur_1))
+#define KoIst_Temperatur_1Object                    (knx.getGroupObject(KoIst_Temperatur_1))
 // Die Ist-Temperatur für die Steuerung von Stellmotor 2
-#define KoIst-Temperatur_2                    (knx.getGroupObject(KoIst-Temperatur_2))
+#define KoIst_Temperatur_2Object                    (knx.getGroupObject(KoIst_Temperatur_2))
 // Die Ist-Temperatur für die Steuerung von Stellmotor 3
-#define KoIst-Temperatur_3                    (knx.getGroupObject(KoIst-Temperatur_3))
+#define KoIst_Temperatur_3Object                    (knx.getGroupObject(KoIst_Temperatur_3))
 // Die Ist-Temperatur für die Steuerung von Stellmotor 4
-#define KoIst-Temperatur_4                    (knx.getGroupObject(KoIst-Temperatur_4))
+#define KoIst_Temperatur_4Object                    (knx.getGroupObject(KoIst_Temperatur_4))
 // Die Ist-Temperatur für die Steuerung von Stellmotor 5
-#define KoIst-Temperatur_5                    (knx.getGroupObject(KoIst-Temperatur_5))
+#define KoIst_Temperatur_5Object                    (knx.getGroupObject(KoIst_Temperatur_5))
 // Die Ist-Temperatur für die Steuerung von Stellmotor 6
-#define KoIst-Temperatur_6                    (knx.getGroupObject(KoIst-Temperatur_6))
+#define KoIst_Temperatur_6Object                    (knx.getGroupObject(KoIst_Temperatur_6))
 // Die Ist-Temperatur für die Steuerung von Stellmotor 7
-#define KoIst-Temperatur_7                    (knx.getGroupObject(KoIst-Temperatur_7))
+#define KoIst_Temperatur_7Object                    (knx.getGroupObject(KoIst_Temperatur_7))
 // Die Ist-Temperatur für die Steuerung von Stellmotor 8
-#define KoIst-Temperatur_8                    (knx.getGroupObject(KoIst-Temperatur_8))
+#define KoIst_Temperatur_8Object                    (knx.getGroupObject(KoIst_Temperatur_8))
 // Der prozentuale Stell-Wert für Stellmotor 1
-#define KoStell-Wert_1                        (knx.getGroupObject(KoStell-Wert_1))
+#define KoStell_Wert_1Object                        (knx.getGroupObject(KoStell_Wert_1))
 // Der prozentuale Stell-Wert für Stellmotor 2
-#define KoStell-Wert_2                        (knx.getGroupObject(KoStell-Wert_2))
+#define KoStell_Wert_2Object                        (knx.getGroupObject(KoStell_Wert_2))
 // Der prozentuale Stell-Wert für Stellmotor 3
-#define KoStell-Wert_3                        (knx.getGroupObject(KoStell-Wert_3))
+#define KoStell_Wert_3Object                        (knx.getGroupObject(KoStell_Wert_3))
 // Der prozentuale Stell-Wert für Stellmotor 4
-#define KoStell-Wert_4                        (knx.getGroupObject(KoStell-Wert_4))
+#define KoStell_Wert_4Object                        (knx.getGroupObject(KoStell_Wert_4))
 // Der prozentuale Stell-Wert für Stellmotor 5
-#define KoStell-Wert_5                        (knx.getGroupObject(KoStell-Wert_5))
+#define KoStell_Wert_5Object                        (knx.getGroupObject(KoStell_Wert_5))
 // Der prozentuale Stell-Wert für Stellmotor 6
-#define KoStell_Wert_6                        (knx.getGroupObject(KoStell_Wert_6))
+#define KoStell_Wert_6Object                        (knx.getGroupObject(KoStell_Wert_6))
 // Der prozentuale Stell-Wert für Stellmotor 7
-#define KoStell_Wert_7                        (knx.getGroupObject(KoStell_Wert_7))
+#define KoStell_Wert_7Object                        (knx.getGroupObject(KoStell_Wert_7))
 // Der prozentuale Stell-Wert für Stellmotor 8
-#define KoStell_Wert_8                        (knx.getGroupObject(KoStell_Wert_8))
+#define KoStell_Wert_8Object                        (knx.getGroupObject(KoStell_Wert_8))
 // Temperaturmesswert von T0
-#define KoT0                                  (knx.getGroupObject(KoT0))
+#define KoT0Object                                  (knx.getGroupObject(KoT0))
 // Temperaturmesswert von T1
-#define KoT1                                  (knx.getGroupObject(KoT1))
+#define KoT1Object                                  (knx.getGroupObject(KoT1))
 // Temperaturmesswert von T2
-#define KoT2                                  (knx.getGroupObject(KoT2))
+#define KoT2Object                                  (knx.getGroupObject(KoT2))
 // Temperaturmesswert von T3
-#define KoT3                                  (knx.getGroupObject(KoT3))
+#define KoT3Object                                  (knx.getGroupObject(KoT3))
 // Temperaturmesswert von T4
-#define KoT4                                  (knx.getGroupObject(KoT4))
+#define KoT4Object                                  (knx.getGroupObject(KoT4))
 // Temperaturmesswert von T5
-#define KoT5                                  (knx.getGroupObject(KoT5))
+#define KoT5Object                                  (knx.getGroupObject(KoT5))
 // Temperaturmesswert von T6
-#define KoT6                                  (knx.getGroupObject(KoT6))
+#define KoT6Object                                  (knx.getGroupObject(KoT6))
 // Temperaturmesswert von T7
-#define KoT7                                  (knx.getGroupObject(KoT7))
+#define KoT7Object                                  (knx.getGroupObject(KoT7))
 // Temperaturmesswert von T8
-#define KoT8                                  (knx.getGroupObject(KoT8))
+#define KoT8Object                                  (knx.getGroupObject(KoT8))
+// ATtiny-Temperaturverbindung online
+#define KoTemperatureBridgeOnlineObject             (knx.getGroupObject(KoTemperatureBridgeOnline))
+// Gültige Temperaturkanäle T0 bis T8 (Bitmaske)
+#define KoTemperatureValidMaskObject                (knx.getGroupObject(KoTemperatureValidMask))
 
 #ifdef MAIN_FirmwareRevision
 #ifndef FIRMWARE_REVISION

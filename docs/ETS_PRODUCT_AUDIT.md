@@ -1,5 +1,7 @@
 # ETS6 product-data baseline and generation audit
 
+**Historische Baseline (2026-10-09):** Diese Bestandsaufnahme beschreibt die Produkt-XML **vor** KNX015. Seit 12.10.2026 dokumentiert [KNX015_TEMPERATURE_PUBLISH.md](KNX015_TEMPERATURE_PUBLISH.md) die abgeleitete ApplicationVersion 2 mit zwei neuen Parametern, KO34/35 und Generator-Makrobereinigung. Das fruehere KO-/Parameterinventar bleibt bewusst zur Migrationspruefung erhalten.
+
 **Date:** 2026-10-09
 
 **Sources:** [existing OpenKNX product XML](../assets/open-knx-valve-control.xml), [generated header currently tracked](../include/knxprod.hpp), [OpenKNXproducer PlatformIO script](../assets/open-knx-producer.py), ETS6 detected on LLO Desktop (6.4.1). This is a product-generation review, **not** an ETS6 import or functional KNX telegram test.

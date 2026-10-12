@@ -1,6 +1,6 @@
 # Software-first: zwei Firmwares, Temperaturpfad und KNX-MVP
 
-**Stand:** 2026-10-11. **Typ:** software-first Architektur, urspruenglich aus **KNX012**, mit KNX013-Sampler und [KNX014-UART-Bruecke](KNX014_UART_BRIDGE.md) implementiert. **Achtung:** Die Tabellen zu Bestandsfirmware und Pinfehlern in Kapiteln 2/3 beschreiben den **Vor-KNX013-Ausgangszustand**. Der neue Stand steht in [KNX013_ATTINY_SAMPLER.md](KNX013_ATTINY_SAMPLER.md). Echte Hardware-/KNX-Integration nicht freigegeben.
+**Stand:** 2026-10-12. **Typ:** software-first Architektur, urspruenglich aus **KNX012**, mit KNX013-Sampler, [KNX014-UART-Bruecke](KNX014_UART_BRIDGE.md) und [KNX015-ETS-DPT9.001-Sendepfad](KNX015_TEMPERATURE_PUBLISH.md) implementiert. **Achtung:** Die Tabellen zu Bestandsfirmware und Pinfehlern in Kapiteln 2/3 beschreiben den **Vor-KNX013-Ausgangszustand**. Der neue Stand steht in [KNX013_ATTINY_SAMPLER.md](KNX013_ATTINY_SAMPLER.md). Echte Hardware-/KNX-Integration nicht freigegeben.
 
 ## 1. Ziel und Prioritaet
 
@@ -146,7 +146,7 @@ DS18B20-artige Fuehler T0..T8
 - **Hardware erforderlich:** Messen der realen DS18B20/sonstigen 1-Wire-Topologie, tatsaechlicher U25-Chiptyp, live PA1/PA2 UART, Stromversorgung unter Last; KNX-Busmonitor/ETS Download an physischem Geraet.
 - **Niemals behaupten:** Ein statischer PCB-Test sei ein echter DRC oder ein erfolgreich gebautes Produkt ein ETS Import. Keine laufenden Motoren, solange Safety- und Power-Gates ausstehen.
 - **KNX013 (implementiert):** Pin-Korrektur, nichtblockierende OneWire-Messungen und Sensor-Snapshots: [KNX013-Abnahme](KNX013_ATTINY_SAMPLER.md).
-- **KNX014 (implementiert, Softwaretests):** 115200-Baud-UART ALT1 PA1/PA2 zu RP Serial2 GPIO8/9, Request/Response-CRC16, Fallback/Stale/Sequenzpruefung, beide Firmware-Builds offline PASS: [KNX014-Dokumentation](KNX014_UART_BRIDGE.md). **Naechster Software-Slice: KNX015 KNX-DPT9.001-Publikation.** Noch keine Motoren/Hardwaretests.
+- **KNX014 (implementiert, Softwaretests):** 115200-Baud-UART ALT1 PA1/PA2 zu RP Serial2 GPIO8/9, Request/Response-CRC16, Fallback/Stale/Sequenzpruefung, beide Firmware-Builds offline PASS: [KNX014-Dokumentation](KNX014_UART_BRIDGE.md). **KNX015 Software implementiert:** KO25..33 DPT9.001 und KO34/35 Diagnosen, ETS-Intervall und Schwelle; siehe [KNX015](KNX015_TEMPERATURE_PUBLISH.md). **Naechster Slice: KNX016 ETS6-Importtest.** Noch keine Motoren/Hardwaretests.
 
 ## 10. Bereits ausgefuehrte Baseline-Softwarepruefungen (2026-10-10)
 
