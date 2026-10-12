@@ -365,3 +365,39 @@ Nur die vorhandenen portablen C++-Klassen **in einem gemeinsamen Testpfad** verw
 ### Folgearbeit bleibt hardware-gated
 
 KNX002 Bestückung und KNX003 KNX-/5-V-/3,3-V-Schutz prüfen; KNX004 unabhängigen HW-All-off-/Watchdog-/STBY-Interlock implementieren; KNX005/006 Motorpolung, HmIP-VDMOT-Strom-/Endlagen-/Referenzmessungen durchführen. KNX018 echte KNX-Testbench separat bereitstellen und KNX009/016 ETS6-/Bustests dort wieder aufnehmen. KNX010 volle produktive Raum-/Motorregelung folgt erst nach den Abhängigkeiten. Ein **virtueller** Quittungstest darf nie als reale Hardware-Sicherheitsfreigabe verwendet werden.
+
+
+## KNX022 – V1.2 Hardware Readiness / PCB-BOM-Firmware-Quellenabgleich
+
+- **State:** closed – nur ein nachvollziehbarer statischer Quellenprüf-Slice; bestückte Hardware und realer Motorbetrieb **NOT READY**
+- **Datum:** 2026-10-12
+- **Baseline:** 4d12890 / main clean, 24 lokale Commits vor origin/main, keine konkurrierenden Write-Sessions und keine offenen ASH-Marker
+- **Implementierungscommit:** 9adb183 – docs(knx022): audit V1.2 hardware blockers against schematic PCB and firmware
+- **Closing commit:** gesonderter Commit für HISTORY, Roadmap und Entfernung des offenen KNX022-Markers
+- **Technischer Bericht:** [KNX022_STATIC_HW_READINESS.md](../KNX022_STATIC_HW_READINESS.md), [JSON-Blockerregister](../KNX022_STATIC_HW_PREFLIGHT.json)
+
+### Gate 1 – Checkup
+
+LLO Desktop Agent 0.8.1 am Projekt-Root live verifiziert, Git HEAD 4d12890 clean. V1.2 EasyEDA-Schaltplan/PCB-JSON, Controller config/main, ATtiny-PlatformIO-Target und frühere Stromversorgungs-/PCB-Reviews geprüft. **Keine Fotos der tatsächlichen Bestückung, reale Motor-Strom-/Spannungs-Messkurven oder native EasyEDA ERC/DRC/BOM im vorliegenden Repo.** KNX002 bleibt geplant und physisch unabgenommen.
+
+### Gate 2 – Entscheidung
+
+KNX022 trennt konsequent Quellenbefunde von realen Hardwarefreigaben: BLOCKED_NOT_SAFE_TO_ENERGIZE_MOTOR ist das zwingende Ergebnis auch bei bestandenem Software-Audit. Keine Änderung an EasyEDA V1.2, KNX XML, RP2040-/ATtiny-Firmware, Platine oder externen Versorgungen; keine KNX-/GPIO-/Motoraktion.
+
+### Gate 3 – Implementation
+
+- [Quellenbasierter HW-Auditor](../../tools/audit_knx022_hw_preflight.py) liest PCB-Netze und Herstellerteilenummern aus JSON, Schaltplan-Anzeigewerte, RP2040-D10..D19-Pinbelegung und ATtiny3216-PlatformIO-Ziel; SHA256-Eingangsbelege im [JSON](../KNX022_STATIC_HW_PREFLIGHT.json). **35 statische Invarianten PASS**, bei weiter gesperrter Motor-Inbetriebnahme.
+- [In-memory Negativtests](../../tests/test_knx022_hw_preflight.py): 15 künstliche Designabweichungen (STBY, R29, Q1/JMP1/D6/U6, INA219, RP2040-Pinplan, ATtiny-Ziel, Schaltplanannotationen und neue Motor-GPIO-Nutzung) erkannt; Korrektur bloßer Einkaufsmetadaten bewirkt keine reale Freigabe.
+- [Readiness-Bericht](../KNX022_STATIC_HW_READINESS.md) priorisiert 10 Blocker (9 P0, 1 P1): R29 200mOhm vs SCR1206F1M1, U25 ATtiny3216 vs ATTINY1616-SN, F1 630mA vs S1032-F-60.0A, vier TB6612-STBY Pin19 fest an 3.3V statt unabhängigem MCU-Kill, KNX/USB-Headroom und Backfeed, STKNX-Leistungsbudget, fehlende Boot-All-off-Messungen, geteilte INA219/Richtung und fehlende native ERC/DRC-/As-built-BOM.
+- README, Roadmap, PCB-V1.2-Bericht und KNX021-Doku mit Verweis aktualisiert, ohne einen realen Gateabschluss vorzutäuschen.
+
+### Gate 4 – Validierung
+
+- Report-Reproduktion PASS, 35 PCB/Schaltplan/Firmware-Checks PASS, 15 Negativtests PASS; physischer Readiness-Status bleibt ausdrücklich BLOCKED.
+- PCB-/ETS-Statikaudit 0 Invariant-Fehler, bestehende 5V/U25/R29/DPT5.004-Warnungen bleiben. KNX020 (2 native Suites) und KNX021 (1 native Suite) PASS.
+- ASH-Workflow 30 Checks, 371 lokale Markdownlinks vor Closing PASS; Python Syntax PASS, gestagter git diff --check PASS. Audit nach Entfernen des Markers wiederholt.
+- Keine Bestromung, kein Motor, keine Firmware-Programmierung, kein ETS6-/KNX-Bustest, kein GitHub-Push.
+
+### Next Exact Action
+
+**KNX002 bleibt planned**, ohne neuen automatischen Slice. Für reale Freigabe zuerst stromlose Fotos der Revision, R29/U25/F1/JMP1/Power-Pfad und tatsächliche Bestückungs-BOM, native EasyEDA ERC/DRC-/Netzlisten-Daten sowie eine geplante, qualifizierte **motorlose** KNX003-Versorgungsmessung. Für reale Fahrten zusätzlich KNX004-Hardware-All-off und KNX005/006 Motor-Strom-/Referenzabnahmen. V1.2 ist weiterhin nicht zur motorischen Inbetriebnahme freigegeben. KNX009/016 bleiben deferred bis KNX018.
