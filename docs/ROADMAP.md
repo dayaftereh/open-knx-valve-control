@@ -89,3 +89,8 @@ Die Commits `53b308a` (Antrieb/ETS-Konzept), `4fa28c1` (Schaltplan), `0045a45` (
 ## KNX026 – HMI/Diagnose (Software-Slice, 12.10.2026)
 
 KNX026 wurde auf der KNX025-Basis fuer eine rein lesende [portable HMI und Diagnose](KNX026_HMI_DIAGNOSTICS.md) umgesetzt. Sie zeigt T0..T8 (Wasser, nicht Raum), gueltige externe Raumsoll-/-istwerte, PI und direkte Prozentvorgabe, Zonen-/Motorzuordnung, virtuelle Ziel-/Positionswerte nur aus der Hostsimulation, KNX025-Faults und getrennte Kommunikationsqualitaet; in echter Firmware nur passive RAM-Beobachtung. Ein Display-/Encoder-Hardwaretreiber und alle unabhaengigen Motor-Safety-Gates bleiben offen. **KNX011 ist damit nicht abgeschlossen.**
+
+
+## KNX027 – USB-Firmware-Upload (softwareseitig, 12.10.2026)
+
+**KNX027 closed (Host-Software only):** [USB-Auto-Upload/Recovery](KNX027_USB_FLASH_AUTOMATION.md) legt picotool fuer RP2040-PlatformIO fest, liefert ein bewusst gesperrtes USB-CLI (probe/plan/build/upload), validiert exakte COM-/VID:PID- und Git-HEAD-Zuordnung und baut den Controller in einem isolierten Verzeichnis. Acht synthetische Tests, Plattform-/ASH-Audit und echter isolierter Controllerbuild gehoeren zum Software-Gate. **KNX018 bleibt fuer den erstmals echten USB-Flash/1200-Baud-Reset, KNX/IP/ETS, Chip-/Power-Verifizierung offen**; KNX002–006 Motor-Safety, KNX009/016 ETS6 weiterhin deferred. Kein GitHub-Push oder USB-Gerateflash.

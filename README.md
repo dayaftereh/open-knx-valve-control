@@ -104,3 +104,8 @@ Fuer die ASH-Abfolge siehe [ROADMAP](docs/ROADMAP.md): **KNX013/014/015 Software
 ## KNX026 – Read-only HMI/Diagnose (12.10.2026)
 
 Die [KNX026-HMI-Dokumentation](docs/KNX026_HMI_DIAGNOSTICS.md) beschreibt das neue portable Anzeige-/Menue-Snapshot-Modell fuer T0/T1..T8, Raum-/Heizkreis-Zuordnung, PI/Direktvorgaben, KNX025-Faults, Offline-/Alterdiagnose sowie getrennte synthetische und unbekannte reale Motorposition. Der RP2040 sampelt die Daten ausschliesslich passiv im RAM. Die V1.2-HMI-Pins sind bekannt, ein getesteter LCD-Treiber/physischer Encoder jedoch nicht. **Keine Motorfreigabe, kein physischer LCD-Betrieb, kein KNX-Bus-/ETS6-Test.**
+
+
+## KNX027 – RP2040 USB-Flash-Automatisierung (12.10.2026)
+
+Das USB-Flash-Verfahren fuer die spaetere KNX018-Laptop-Testbank ist [softwareseitig vorbereitet](docs/KNX027_USB_FLASH_AUTOMATION.md). Der Controller verwendet ausdruecklich `upload_protocol = picotool`; das neue CLI unter [tools/usb_flash_controller.py](tools/usb_flash_controller.py) bietet passive USB-Port-Erkennung, Uploadplan, isolierten Firmwarebuild und **nur mit expliziten Teststand-/Port-/VID:PID-/Git-Freigaben** einen spaeteren USB-Upload. Arduino-Pico erlaubt bei bereits laufender kompatibler USB-CDC-Firmware ueblicherweise den 1200-Baud-Auto-Reset ohne BOOTSEL. Die Erstprogrammierung oder ein Recovery benoetigt weiterhin gegebenenfalls BOOTSEL und UF2. **Bisher kein RP2040 am LLO Desktop angeschlossen, kein echter Flash und keine Hardware-/Motorfreigabe.** Die KNX018-Testbank, alle ETS-/KNX-Bustests und elektrische Schutzpruefungen bleiben offen.

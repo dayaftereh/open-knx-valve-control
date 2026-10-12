@@ -83,3 +83,10 @@ M1+/M1- für **einen** späteren Antrieb bleiben bis KNX002–006 gesperrt. Acht
 **Nicht erledigt:** Hardware angeschlossen oder bestromt, UPDI Device ID gelesen, USB/KNX-IP live verifiziert, Firmware geflasht, DS18B20 am echten Board gelesen, KNX-ETS importiert oder Motor bewegt. KNX002/003/004/005/006 offen; KNX018 physisch geplant; KNX009 und KNX016 auf Nutzerwunsch deferred. Die aktuelle SOFTWARE-Arbeit kann unabhängig auf dem Desktop fortgesetzt werden, aber darf keine elektrische Freigabe simulieren.
 
 **Datei dient als persistentes Handover für KNX018 auf dem Laptop** und ist in [KNX_TESTBENCH_PLAN.md](KNX_TESTBENCH_PLAN.md) sowie im README zu verlinken.
+
+
+## KNX027-Nachtrag: RP2040 per USB ohne routinemaessige BOOTSEL-Taste
+
+Der RP2040-USB-Flash-Workflow ist im Desktop-Repo als [KNX027](KNX027_USB_FLASH_AUTOMATION.md) vorbereitet. Arduino-Pico 5.5.0 aktiviert USB-CDC mit Serial.begin; PlatformIO-Environment controller nutzt explizit picotool. Auf dem kuenftigen Laptop sollen passive USB-Erkennung (Port/VID:PID), isolierter Build, Git-HEAD-Bindung und erst nach Laborfreigabe ein einmaliger picotool-Upload ueber den ausgewaehlten COM-Port moeglich sein. Bei lauffaehigem USB-CDC kann der 1200-Baud-Reset den Bootloader automatisch starten. Erstflash, fehlender USB-Port oder Firmware-Haenger erfordern weiterhin BOOTSEL/ROM-UF2 oder spaeter SWD. Am LLO Desktop zeigte der Port-Scan nur COM1 und COM3 (kein RP2040); reale USB-Programmierung ist daher **nicht** verifiziert.
+
+KNX018 muss vor physischem Upload: (1) Repo mit **allen** lokalen Git-Commits auf Laptop sichern/uebertragen, (2) korrekte Windows-Treiber sowie PlatformIO/Python/OpenKNXproducer und COM-Port nachweisen, (3) bestueckten Flashchip, 16-MiB-Konfigurationsannahme und KNX-/USB-/3,3-V-/5-V-Spannungspfad sicher beurteilen und (4) alle Motoren abgeklemmt belassen. Die separate UPDI-CN1-Pegel-/Rueckspeiserisiko-Pruefung bleibt zwingend.
