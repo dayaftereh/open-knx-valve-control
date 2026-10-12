@@ -118,4 +118,6 @@ Auf dem LLO Desktop Agent, aus dem Repo-Root:
 
 **Nicht in KNX019:** Produktgenerierung Version 3, ETS-Zonenparametrierung, busseitiges Raum-Soll-/Ist-Empfangen und Stellwerttelegramme, persistenter PI-Zustand, KNX-/Busschnittstellen-Recovery, hydraulische Modellkalibrierung, Frostschutzfunktionen und Motor-Steuer-/Homing-Safety.
 
+**Weiterfuehrung:** [KNX020](KNX020_MOTOR_QUEUE_SIMULATION.md) simuliert auf Basis aktueller KNX008-Zielwerte die exklusive, hardwarelose Motor-Fahrqueue und Stop-ACK-Sperre. Sie ist keine Motorfreigabe.
+
 **Wiederanlauf:** Full [KNX010](ROADMAP.md) erst nach gesonderter Scope-/ASH-Entscheidung und Hardware-/ETS-Gates. KNX016/009 bleiben deferred bis zur [eigenständigen KNX018-Testbench](KNX_TESTBENCH_PLAN.md). Ein weiterer Software-Only-Slice könnte einen deterministischen Motor-Queue-Simulator ohne GPIO vorbereiten, darf jedoch **nicht** die KNX004-Hardwarefreigabe vorwegnehmen.
