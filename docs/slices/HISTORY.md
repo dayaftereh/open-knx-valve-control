@@ -440,3 +440,50 @@ Persistenter **geplanter Laptop-KNX018-Teststand**: Laptop mit eigenem ASH Agent
 ### Nächste abgrenzte Aufgaben
 
 KNX023 SOFTWARE-only ist abgeschlossen. **Keinen automatischen Folge-Slice starten.** Als weiterer softwareseitiger Slice ist die offline ETS-Raumeingangs-/DPT5.001-Kontraktbindung mit eigenem Simulationsadapter denkbar, aber produktive KO17..24 sind noch DPT5.004 und dürften nicht stillschweigend umgedeutet werden. Der physische KNX018-Laptop-Teststand benötigt zunächst sicheren Git-Transport einschließlich der lokalen Commit-Historie und danach KNX-/USB-Inventur. CN1.1 5V-Rückspeisepfad und UPDI 3.3V-Pegel prüfen, keine Direktverkabelung aus Netznamen ableiten. KNX002–006 Hardware-Qualifikation bleibt Voraussetzung vor jeder realen Motorbewegung. ETS6 KNX009/016 deferred.
+
+
+## KNX024 – ETS-V3-Raumeingangsvertrag und DPT9.001/5.001 Offline-Adapter
+
+- **Stand / Status:** 2026-10-12 / closed, ausschließlich Software-/Build-Abnahme. **KEIN** realer ETS6-Import, keine KNX-Gruppenadressbindung, keine Motorbewegung oder zusätzliche Firmware-GPIO-Freigabe.
+- **Repo:** C:\ASH\Workspace\Projects\open-knx-valve-control, main, saubere Baseline 99d7244 mit 28 lokalen unpublizierten Commits gegenüber origin/main.
+- **Session:** ses-20261012T115932-b5e39af35663, owner ChatGPT-OpenKNXValveControl-KNX024-20261012
+- **Implementierungscommit:** 23e29db – feat(knx024): add proposed room DPT9 and DPT5 typed offline KO adapter
+- **Closing-Commit:** gesonderter HISTORY/ROADMAP- und Markerentfernungs-Commit (Git HEAD danach verifizieren)
+- **Spezifikation:** [KNX024_ETS_ROOM_INPUT_CONTRACT.md](../KNX024_ETS_ROOM_INPUT_CONTRACT.md) und weiter unverändert [KNX008 ETS Proposal JSON](../../assets/knx008_zone_ets_proposal.json)
+
+### Gate 1 – Verifizierter Ausgangspunkt
+
+LLO Desktop Agent 0.8.1 live, Git clean HEAD 99d7244 main 28 ahead, null offene Slice-Marker, alle vorherigen Sessions closed. KNX023 RAM-Pipeline in echter RP2040 Firmware und Arduino-Motor-Hardlock vorhanden, ETS XML weiterhin V2/35 Kommunikationsobjekte KO1..35 und P1..21, vorgeschlagener KNX008 AppV3-Vertrag KO36..100/P22..39 nur JSON, KNX009/016 echte ETS/KNX-Gates bewusst deferred. KNX018 eigenständiger Laptop-/KNX-Bus-Teststand nicht aufgebaut; KNX022 V1.2 Hardware-Readiness weiterhin gesperrt.
+
+### Gate 2 – Ausschließlich Software-DPT-/ABI-Entscheidung
+
+Portabler Offline-Adapter für die je acht vorgeschlagenen KOs:
+- Z1: KO36 Soll Raum (DPT9.001 RX), KO37 Ist Raum (DPT9.001 RX), KO38 Direkt DPT5.001 (RX), KO39 RequestedOutput DPT5.001 (TX).
+- Z2..Z8 analog +4 bis KO64/65/66/67; 24 RX und 8 nur synthetische TX-Kodierungen.
+- DPT9.xxx nach KNX Association 2-Byte Float Vorzeichen/Exponent/Mantisse 0,01°C, 0x7FFF ist invalid. Raum-Soll 5..35°C, Raum-Ist -40..80°C aus bestehendem KNX008-Modell. DPT5.001 1 Byte 0..255 auf 0..100% (Permille), **nicht** DPT5.004 0..255% der alten produktiven KO17..24.
+- Bus-GroupValueWrite enthält kein DPT-Typfeld: Adapter erwartet eine spätere **trusted** ETS-/GA-gebundene KO-Nummer samt DPT-Metadaten und die bereits dekodierte Payload, keine ungesicherten Busrohbytes; noch KEIN echter Listener.
+- Keine Produktmigration vor isolierter ETS6-Prüfung, kein KNX-, GPIO-, UPDI- oder Motor-Hardware-Test.
+
+### Gate 3 – Umsetzung
+
+- [Portabler KNX024 Room Adapter](../../lib/common/knx024_room_dpt_adapter.hpp): in-memory AppV3-DPT-/KO-Parser mit KOs36..67, 24 RX-Mapping, TX-outbound Serializer nur als Bytes, DPT9-Sentinel-/Grenzenprüfung und exakte 5.001-Skalierung, Input-Frische, Modus-, Reassign- und Boot-Barrieren, invalidiert kaputte aktive Rauminputs statt letzte Werte heimlich weiterzubenutzen.
+- [Room Runtime](../../lib/common/room_control_runtime.hpp) nur mit zwei zusätzlichen const-Accessoren (Settings/Inputs); KNX023-PI/Queue/Aktor-Hardlock funktional unverändert.
+- [src/controller/main.cpp](../../src/controller/main.cpp) inkludiert das KNX024-Modul und prüft KO36–67 per static_assert. **Keine** Instanziierung von Live-V3-KO-Receivern, weil ETS-AppV2 diese Objekte nicht besitzt; keine neue Motor-GPIO-/KNX-Bus-Ansteuerung.
+- [2 Native-C++-Suites](../../tests/native/test_knx024_room_dpt_adapter.cpp) samt [Arduino-Hardlock-Suite](../../tests/native/test_knx024_firmware_hardlock.cpp) und [Runner](../../tools/test_knx024_room_dpt_adapter.py): acht Zonen, DPT9 negatives/positives Vorzeichen/Exponent/Invalid-Wert, 1/2-Byte-Fehler, 5.004-Wrong-DPT, Zeitablauf und millis-Wrap, PI in Z1 mit 2 Motoren, Konfig-/Reboot-Verlust, synthetischer KO39-Output, Compile-Sperre aller realen Motorstarts.
+- [ETS-/Quell-ABI-Audit](../../tools/audit_knx024_room_ets_contract.py) verifiziert die unveränderte KNX008-JSON-Proposal mit 65 KO36..100 und P22..39, unveränderte produktive ETS/ATtiny/PCB Dateien, nur additiv ergänzte Firmware und keinen Motor-I/O-Aufruf. [13 KO-/DPT-Regression-Negativfälle](../../tests/test_knx024_room_ets_contract.py) simulieren falsche DPT, direction, size, KO/Parameternummer, Alt-KO5.004 und unzulässige Promotion nur im RAM.
+- README, KNX008-/KNX023-Doku und Roadmap mit KNX024-Weiterführung ergänzt.
+
+### Gate 4 – Validierung und harte Grenzen
+
+- **KNX024 2 neue Native-C++-Suites PASS**, **15 bestehende** KNX008/013/014/015/019/020/021/023 Native-Suites PASS, zusammen **17**. **13 separate Python-Vertrag-Negativtests PASS**.
+- KNX024 strict ETS/ABI/No-Motor-IO-Audit PASS, KNX023 alter Non-Actuation-Audit PASS, KNX008 proposed ETS P22..39 und KNX015 produktives ETS-V2 KO1..35/P1..21 AUDIT PASS, Python py_compile PASS.
+- **Isolierter echter RP2040 PlatformIO-Controller-Build PASS**, UF2 erzeugt ausschließlich unter C:\Users\LLO\AppData\Local\Temp\openknx-controller-isolated-jq6g6jji\.pio\build\controller\firmware.uf2, Quell-knxprod.hpp unverändert, **RAM 53.452/262.144 = 20,4 %, Flash 192.708/1.048.576 = 18,4 %**. Kein USB-RP2040-Flash.
+- KNX022 Re-Preflight 35 statische PCB/Schaltplan/Firmware-Invarianten PASS mit weiterhin **10 offenen Hardware-Blockern** und Status BLOCKED_NOT_SAFE_TO_ENERGIZE_MOTOR. PCB/ETS-Statikaudit 0 Invariantfehler, elektrische/ETS-Importwarnungen unverändert.
+- ASH vor Schließen **30 Prüfungen mit 427 lokalen Markdownlinks PASS**, Closing-Validierung nach Markerentfernung wiederholt, git diff --cached --check PASS.
+- **Nicht getestet/verbunden:** keine Live-GAs, keine echte ETS6-Promotion von AppV2 zu AppV3, kein KNX-Testbus, kein RP2040/ATtiny-Flash oder USB-UPDI-Signatur, keine Motorsicherheit/Referenzfahrt, kein GitHub-Push.
+
+### Nächste konkrete Arbeit / Freigabegrenzen
+
+KNX024 nur als **reiner Software-Slice** geschlossen. Für spätere echte Verarbeitung müssen über KNX018 (separater Laptop-Agent mit KNX/IP und UPDI-RTS) real geprüft werden: Stromversorgung, typisierte ETS-Kommunikationsobjekte und parametrierte Gruppenadressbindungen, neue AppVersion und Erhaltung der 35 Alt-KOs, dann Live-GroupValueWrite und später rein virtuelle Bus-Tests. Nachfolgende KI-Software-Slices können weitere Offline-Fehlerzustände/HMI vorbereiten, dürfen aber keine echten Motoren freigeben.
+
+KNX002/003/004/005/006 bleiben physisch nicht abgenommen; TB6612-STBY auf V1.2 ist fest an 3,3 V und der virtuelle AllOff-ACK keine Hardware-Sicherheitsfreigabe. KNX009/016 bleiben deferred, KNX018 geplant. **Kein automatischer Folge-Slice**, keine externen Repository-Pushs.
