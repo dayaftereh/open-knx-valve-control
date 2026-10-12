@@ -289,3 +289,41 @@ Nur softwareseitige, native Regelungskernvorbereitung statt vollständige KNX010
 - Für echte KNX010-Raumregelung: ETS V3/KO-Nummerierung im KNX009-Slice und KNX018-Testbench nach Freigabe, echtes Telegramm- und Bus-Recovery, Frostschutz, hydraulische Kalibrierung und unabhängige Heizquellen-Schutzfunktionen.
 - Für Motoren: KNX002/003 as-built/Power, KNX004 sichere Einzelmotor-Fahrqueue, KNX005 Strom/Endlagenmessungen und KNX006 Homing/Position; der KNX019-Code ist **kein** Ersatz für Motor-Sicherheitsmaßnahmen.
 - Folge-Slices nur mit neuem ASH-Checkup und ausdrücklichem Start; KNX009/016 bleiben deferred.
+
+
+## KNX020 – Exklusive Motorfahrqueue nur als Offline-Simulator
+
+- **Status:** closed (Native-C++-Simulator, KEINE Hardware-Freigabe)
+- **Datum:** 2026-10-12
+- **Baseline:** 386d305, main clean, 20 lokale Commits ahead origin/main, kein offener fremder ASH-Slice
+- **Implementierungscommit:** 2e18813 – feat(knx020): simulate exclusive eight-motor motion queue
+- **Closing-Commit:** separater HISTORY/ROADMAP-Commit mit Entfernung des KNX020-Open-Markers
+- **Technischer Bericht:** [KNX020_MOTOR_QUEUE_SIMULATION.md](../KNX020_MOTOR_QUEUE_SIMULATION.md)
+
+### Gate 1 – Verifikation
+
+LLO Desktop Agent 0.8.1 live verfügbar. KNX019 und KNX008 abgeschlossen, HEAD 386d305 und sauberer Git-Tree. Produktion: acht Motor-Ausgänge an TB6612FNG mit gemeinsamen Richtungssignalen und einer geteilten INA219-Strommessung. Reales As-built, externes 5-V-/KNX-Strombudget, Motorpolung, Referenzzeiten und Hardware-All-off ungeprüft. KNX004 ist deshalb weiterhin planned und wird durch KNX020 ausdrücklich nicht geschlossen. KNX009/016 (ETS6/KNX-Bus) deferred für separate KNX018-Testumgebung.
+
+### Gate 2 – Konservativer Simulationsvertrag
+
+Ein reiner C++-Zustandsautomat reserviert den exklusiven Motor-Lease **vor** einem abstrakten Start-Event. Automatischer Start nach Boot deaktiviert; fünf simulierte Safety-Guards, ausdrückliche Testfreigabe und unabhängig bestätigtes All-off nötig. Jeweils neue KNX008-Zielintents, virtuelle Referenzpositionen und fiktive kalibrierte Motorlaufzeiten werden geprüft. Laufzeit/Position und Stromgrenzen sind Testparameter, keine Messwerte vom HmIP-VDMOT.
+
+### Gate 3 – Implementation
+
+- [Portable Motor Queue](../../lib/common/motor_queue_simulator.hpp): Disarmed, Idle, StartPending, Running, StopPending, FaultLatched; tokenisierte Start-/Stop-/All-off-Quittungen, Stop-Wiederholung, Timeout, blockierte Folgefahrten bis zum Off-ACK, Round-Robin und Totzeit, Re-Arm-Pflicht bei Target-Stale/Mode-Wechsel/Fault.
+- [Funktionstests](../../tests/native/test_motor_queue_simulator.cpp): alle acht Motoren sequenziell, ACK-Token-Mismatch, Stopp ohne Off-Bestätigung, Referenz-/Positionsrevisionen, Fault, Status und Stale, KNX008-Router-integrierter Zustand, Zeitüberlauf, Cancel, Start-/Stop-Timeout.
+- [Deterministischer Stress-Test](../../tests/native/test_motor_queue_stress.cpp): 20.000 Ticks mit veränderlichen Zielwerten, Guard-Ausfällen, ACKs und Motor-Exklusivitäts-Invariante (höchstens ein abstrakter Motor aktiv).
+- [Native Runner](../../tools/test_motor_queue_simulator.py), [Nonintegration-Quellcodeaudit](../../tools/audit_knx020_motion_offline.py), README/Roadmap/KNX019-Dokulinks aktualisiert.
+- Produktionsquellen und ETS V2 (35 KO/21 Parameter), KNX008/KNX019-Libs, RP2040-/ATtiny-Quellen, Controller-Config und PCB V1.2 wurden nicht verändert.
+
+### Gate 4 – Abnahme und Grenzen
+
+- KNX020 **2 Native-C++-Suites PASS**. Belastungsprobe 20.000 Ticks, 703 abstrakte Starts, 702 bestätigte Stopps und **maximal 1** simultan belegter Motor-Lease; eine unvollendete letzte Fahrt am Ende des Zeitfensters ist möglich.
+- KNX019 native1, KNX008 native1, KNX013 native2, KNX014 native4, KNX015 native2: alle **10 bestehenden** Suiten PASS. Zusammen **12 native C++ Suiten** mit KNX020.
+- KNX020 Offline-Source-/ETS-/PCB-Immutable-Audit PASS; KNX008 vorgeschlagener ETS V3 Kontrakt PASS, KNX015 produktive V2-ABI unverändert PASS.
+- ASH-Workflow **30 Checks und 331 Markdown-Links vor Closing PASS**; PCB-/ETS-Static 0 Invariant-Fehler mit den bekannten elektrischen 5-V-/U25-/R29- und DPT5.004-Warnungen. Python-Syntax und gestagter git diff --check PASS.
+- Kein physischer Start oder Stopp, keine realen GPIO-Pegel, kein gebrückter STBY, keine KNX-Telegramme, kein ETS6-Import, keine Firmwareänderung, kein Boardflash, kein Push. Simulation kann keine Hardware-Notabschaltung garantieren.
+
+### Nächste echte Voraussetzungen
+
+KNX002/003: Bestückung, 5-V-/3,3-V-/KNX-Pfad und sichere Leistungsreserve prüfen; KNX004: Hardware-Interlock, Off-Annahme und Watchdog bauen; KNX005/006: Motorstrom-/Endlagenkurve, Laufzeit und Positionsreferenz vermessen; KNX018: unabhängigen KNX-Bus mit echter Platine aufbauen, dann KNX009/016; KNX010-Regelung später integrieren. Folge-Slices nur nach neuem ASH-Checkup. Hier wurden nur Hardware-**unabhängige** C++-Tests durchgeführt.
