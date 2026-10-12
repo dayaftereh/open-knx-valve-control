@@ -62,6 +62,6 @@ Ein dedizierter ETS6-/Testrechner ist eine **Planungsanforderung**, nicht die Be
 
 ## Was bis dahin sinnvoll weitergeht
 
-**KNX008 – ETS-Zonen-/Heizkreis-Architektur ist softwareseitig abgeschlossen.** Die [Zonen-/Regelmodus-Spezifikation](KNX008_ZONE_CHANNEL_DESIGN.md) und der reine C++-Router sind getestet, mit vorgeschlagenen KNX-Objekten und Parametern. Das bedeutet ausdrücklich **keinen ETS6-Import oder reale KNX-/Motorintegration**.
+**KNX008 – ETS-Zonen-/Heizkreis-Architektur ist softwareseitig abgeschlossen.** Die [Zonen-/Regelmodus-Spezifikation](KNX008_ZONE_CHANNEL_DESIGN.md) und der reine C++-Router sind getestet, mit vorgeschlagenen KNX-Objekten und Parametern. Zusätzlich ist [KNX019 – PI-Regler-Simulation](KNX019_ROOM_PI_SIMULATION.md) als offline Modell vorbereitet, ohne Änderung an der produktiven Motor-/KNX-Firmware. Das bedeutet ausdrücklich **keinen ETS6-Import oder reale KNX-/Motorintegration**.
 
 Der bestehende Slice KNX016 bleibt **deferred** und ohne `_OPEN_`-Datei. Für den separaten Hardware-/ETS-Testplatz wird KNX018 als geplanter Aufbau geführt. KNX008 ist als ASH-Design-Slice abgeschlossen; spätere Umsetzung in produktive ETS-XML, Raumregler- und Motorfirmware erfordert separate ASH-Slices und Testfreigaben.

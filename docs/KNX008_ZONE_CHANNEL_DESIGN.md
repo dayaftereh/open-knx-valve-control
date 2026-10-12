@@ -128,7 +128,7 @@ Die [heating_zone_model.hpp](../lib/common/heating_zone_model.hpp) setzt diese A
 
 [Native-Tests](../tests/native/test_knx008_zone_model.cpp) decken Einzel- bis Vierfachbelegung, 4+3+1 Zuordnung aller acht Motoren, verschiedene Modi, 0-/100-%-Grenzen, echte 0-%-Befehle, DPT5.001 vs. 5.004, ungültige/stale Signale, ausgeschaltete/unzugeordnete Kanäle, fehlerhafte Konfiguration und `millis()`-Wraparound ab.
 
-**Geplant für KNX010 (nicht Teil dieser Abnahme):** Implementierung des langsamen Raumtemperatur-Reglers, PI-/Hysterese-Entscheidung, Anti-Windup, Stellwertänderungsrate, Sensor-/KNX-Bus-Failover, Frostschutz und Queue-Entwertung. **Geplant für KNX004..006:** Ausgangs-Hardware-Interlock und exklusive Motor-Referenzfahrt. Die lokale Temperaturmessung bleibt Diagnose.
+**Separater Software-Vorbereitungsslice KNX019:** Ein [portabler PI-Raumregelungskern](KNX019_ROOM_PI_SIMULATION.md) mit Deadband, Anti-Windup, Slew-Limit, Sensor-/Modus-Frische und Integration mit diesem Router wird offline simuliert. **Geplant für KNX010 (nicht Teil von KNX008/KNX019):** echte KNX-Eingangstelegramme, Firmware-Integration, Bus-Failover, Frostschutz, Motor-Queue-Entwertung, validierte reale Regelparametrierung und Hardwareabnahme. **Geplant für KNX004..006:** Ausgangs-Hardware-Interlock und exklusive Motor-Referenzfahrt. Die lokale Temperaturmessung bleibt Diagnose.
 
 ## 8. Nachweise, Freigaben und Wiederanlauf
 

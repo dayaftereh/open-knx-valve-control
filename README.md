@@ -2,9 +2,9 @@
 
 Controller for up to **eight motorized underfloor-heating valve actuators** with KNX integration. This repository contains firmware, KNX product-description sources, electronics schematics/PCB exports and DIN-rail enclosure models.
 
-> **Project status (2026-10-12):** KNX013/014 collect nine ATtiny 1-Wire temperatures and deliver CRC-checked UART snapshots to RP2040; KNX015 now implements **ETS-parameterized KNX DPT9.001 telemetry** (KO25..33) and two quality-diagnostic objects (KO34/35) with validity checks and throttling. Native tests, isolated RP2040 build and product generation pass. **No real-board UART/KNX/ETS6 import, no real motor positioning or room regulation is implemented; KNX008 adds only a validated OFFLINE zone-assignment/target-routing model, not active KNX/actuator firmware integration.** This document separates offline evidence from requirements and hardware gates.
+> **Project status (2026-10-12):** KNX013/014 collect nine ATtiny 1-Wire temperatures and deliver CRC-checked UART snapshots to RP2040; KNX015 now implements **ETS-parameterized KNX DPT9.001 telemetry** (KO25..33) and two quality-diagnostic objects (KO34/35) with validity checks and throttling. Native tests, isolated RP2040 build and product generation pass. **No real-board UART/KNX/ETS6 import, real motor positioning, or live room regulation has been tested/integrated. KNX008 provides an OFFLINE zone-assignment/target router, and KNX019 adds a **native simulated PI room-temperature control core** with no KNX or motor output.** This document separates offline evidence from requirements and hardware gates.
 
-> **Teststatus:** Auf Wunsch wurde **KNX016/KNX009 (ETS6-Import und reale KNX-Abnahme) zurückgestellt**. Der Test soll später auf einem **eigenständigen, mit KNX-Schnittstelle und der Platine verbundenen Labor-Testplatz** stattfinden, nicht als Endabnahme auf dem LLO Desktop Agent. **KNX008 Zonen-/Raumgruppen- und Regelmodus-Entwurf wurde offline abgeschlossen**, mit geprüftem 8-Motor-/8-Zonen-Router und vorgeschlagener ETS-ABI. Noch keine KNX- oder Motor-Firmwareintegration; KNX016/009 bleiben zurückgestellt. [Testbench-Konzept](docs/KNX_TESTBENCH_PLAN.md) und [Zonen-Entwurf](docs/KNX008_ZONE_CHANNEL_DESIGN.md).
+> **Teststatus:** Auf Wunsch wurde **KNX016/KNX009 (ETS6-Import und reale KNX-Abnahme) zurückgestellt**. Der Test soll später auf einem **eigenständigen, mit KNX-Schnittstelle und der Platine verbundenen Labor-Testplatz** stattfinden, nicht als Endabnahme auf dem LLO Desktop Agent. **KNX008 Zonenmodell wurde offline abgeschlossen; KNX019 ergänzt einen rein softwareseitigen PI-Raumregler mit Simulation und KNX008-Anbindung.** Noch keine KNX- oder Motor-Firmwareintegration; KNX016/009 bleiben zurückgestellt. [Testbench-Konzept](docs/KNX_TESTBENCH_PLAN.md) und [Zonen-Entwurf](docs/KNX008_ZONE_CHANNEL_DESIGN.md).
 
 ## ASH Project Workflow v1 (verbindlich)
 
@@ -27,6 +27,7 @@ Dieses Projekt arbeitet nach dem **ASH Slice-Konzept** aus dem ChatGPT-Space `/A
 - [KNX014: UART bridge, framed nine-sensor snapshots, CRC, tests](docs/KNX014_UART_BRIDGE.md)
 - [KNX015: ETS-parametrisierte KNX-Temperaturtelegramme T0..T8 und Diagnosen](docs/KNX015_TEMPERATURE_PUBLISH.md)
 - [KNX008: vorgeschlagene 8-Zonen-/8-Motoren-Zuordnung, Moduskontrakt und Native-Tests](docs/KNX008_ZONE_CHANNEL_DESIGN.md)
+- [KNX019: simulierter PI-Raumtemperaturregler, 8-Zonen-Bank, Sensor-Failsafe und Modelltests](docs/KNX019_ROOM_PI_SIMULATION.md)
 - [KNX-Hardwaretest auf eigenständige Laborumgebung verschoben: Testbench-Konzept](docs/KNX_TESTBENCH_PLAN.md)
 - [Schematic V1.2 electrical review and open findings](docs/SCHEMATIC_V1_2_REVIEW.md)
 - [5-V-Externversorgung, Jumper und KNX-Leistungsbudget](docs/POWER_SUPPLY_CONCEPT.md)
