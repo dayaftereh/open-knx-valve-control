@@ -248,3 +248,44 @@ LLO Desktop Agent online; vorheriger KNX017 vollständig geschlossen; HEAD `c171
 - Bestehender KNX015-Produktheader-Audit PASS, ATtiny/RP-Brücken-/PCB-Pinaudit PASS; **PCB/ETS-Static 0 Invariant-Fehler** mit den unveränderten Power-/Bestückungswarnungen. **ASH-Workflow PASS, 30 Checks, 289 lokale Markdown-Links vor Closing**. Native C++17 mit -Wall/-Wextra/-Werror/-pedantic; Python Syntaxprüfung PASS; gestagter `git diff --cached --check` PASS. Abschlussaudit nach Markerentfernung wiederholt.
 - **Keine produktive ETS-XML/knxprod.hpp/Firmware geändert; kein Motor GPIO, keine physische Fahrt/KNX-Telegramme/ETS6-Import und kein GitHub-Push.**
 - **Nächste technische Abhängigkeiten:** KNX004/005/006 für sichere Einzelmotorfahrten und Referenz, KNX010 für langsame echte Raumtemperaturregelung inkl. PI/Anti-Windup und Busfailover, KNX009/016 für ETS-Produktumsetzung/Import erst auf späterem KNX018-Testplatz. ASH öffnet keinen Folgeslice automatisch.
+
+
+## KNX019 – PI-Raumtemperaturregler nur als Offline-Simulation
+
+- **State:** closed (Native-C++-Software-Gate, **keine** reale KNX-/ETS6-/Ventilfreigabe)
+- **Date:** 2026-10-12
+- **Baseline:** 025c84e, main clean, 18 lokale Commits ahead origin/main; kein fremder Write-Owner und keine offenen Marker
+- **Implementation commit:** 89bd2cd – feat(knx019): simulate PI room control for eight KNX zones
+- **Closing commit:** eigener ASH-HISTORY/ROADMAP-Commit mit Entfernung des KNX019-Markers
+- **Engineering report:** [KNX019_ROOM_PI_SIMULATION.md](../KNX019_ROOM_PI_SIMULATION.md)
+
+### Gate 1 – Checkup
+
+LLO Desktop Agent 0.8.1 live erreichbar; vorheriger KNX008-Slice erfolgreich abgeschlossen. Das bestehende [KNX008-Zonenmodell](../../lib/common/heating_zone_model.hpp) erlaubt acht Zonen, exklusive Zuordnung eines Motors zu höchstens einer Zone und die Betriebsarten RoomTemperature/DirectPercent. ETS-Produkt V2 mit 35 KOs/21 Parametern ist erhalten. **KNX010** Vollintegration wäre gegenwärtig wegen KNX006/007/009-Abhängigkeiten unzulässig: KNX009/016 ETS-/Bustests sind auf Wunsch bis zur separaten KNX018-Testbench zurückgestellt.
+
+### Gate 2 – Decision
+
+Nur softwareseitige, native Regelungskernvorbereitung statt vollständige KNX010-Firmware: je Zone Eingang externer KNX-Raum-Soll-/Isttemperatur, diskrete PI-Rechnung auf 0..1000 Promille, wählbares Kp/Ti/Sampling/Deadband/Slew und Anti-Windup; die lokalen ATtiny-Rohrtemperaturen T0..T8 dürfen **nicht** automatisch als Raum-Istwerte gelten. Mode DirectPercent umgeht den PI. Bei Stale/Invalid/Mode-/Topologie-/Tuningwechsel, zu langer Regel-Loop-Pause: validen Ausgang entwerten, Integrator resetten und frische externe Telegramme vor erneuter Freigabe verlangen. Nur neue Zielintents, kein physisches All-off oder Abschalten laufender Motorjobs.
+
+### Gate 3 – Implementation
+
+- [Native room PI reference](../../lib/common/room_pi_controller.hpp) mit acht unabhängigen Reglerzuständen, konfiguriertem 60s-Abtastzyklus (30..600), PI-Anti-Windup, Heiz-Stellwert 0..1000, konservativer Slew-Begrenzung, Deadband und Timeouts.
+- Anschluss nur im RAM an [KNX008-Zielwertrouter](../../lib/common/heating_zone_model.hpp). Re-Konfiguration, including motor reassignment and timeout changes, invalidiert sämtliche alten Zonen-Outputs/Direct Commands als konservativer globaler Konfigurations-Epoch-Wechsel.
+- [Native integration/simulations](../../tests/native/test_room_pi_controller.cpp) inklusive 8-Zonen-Unabhängigkeit, 2–4 Motoren je Zone, 0/100%, keine Modusvermischung, Kp-/Ti-/Grenzwerte, Deadband-Rauschen, Timing, Antiwindup, millis-Rollover, Revalidierung in verschiedener Telegramm-Reihenfolge.
+- Synthetische zwei-Raum-48h-Plant mit 4h thermischer Zeitkonstante, 15%-Kopplung und 2%-Punkte/min Begrenzung ergab Zone1 21,60°C (Soll21,5°C), Zone2 20,10°C (Soll20°C). **Nur ein didaktisches deterministisches Beispiel, keine Bestätigung realer Regelgüte/Tuning/Stabilität**.
+- [Test runner](../../tools/test_room_pi_controller.py), [unmodified KNX/ETS/firmware audit](../../tools/audit_knx019_room_pi.py), README/Roadmap/KNX008/ETS-Konzept/Testbench-Doku aktualisiert.
+
+### Gate 4 – Validation
+
+- KNX019 native C++17 mit -Wall/-Wextra/-Werror/-pedantic: PASS, echte PI-Klasse + KNX008 Router + Stör- und thermische Simulation.
+- KNX008 native 1, KNX013 native 2, KNX014 native 4, KNX015 native 2: **alle bestehenden 9 Suites PASS**. Insgesamt **10 native Suites** mit KNX019.
+- Baseline-Vertrag: ETS-XML V2, generierter Header, KNX008 proposed-only JSON und KNX008 C++-Router, RP2040-/ATtiny-Quellmain sowie Publisher/Bridge **byte-identisch** gegen 025c84e (CRLF-normalisiert). Kein Product-XML-/Firmware-Edit.
+- KNX008 ETS proposed contract PASS; KNX015 product audit PASS; KNX013/014 Pin/UART static PASS; PCB/ETS static PASS mit 0 Invariant-Fehlern (bekannte 5V-, Shunt-, U25-/BOM-Risiken bleiben).
+- **ASH audit 30 Checks PASS, 311 Markdown-Links vor Closing**; Python compile PASS, staged Git diff --check PASS. Endaudit nach Closing wiederholt. Eigene Cygwin-Crash-Stacktrace-Datei aus einem korrigierten Testlauf sicher beseitigt; keine fremden Artefakte berührt.
+- Kein realer KNX-Bus-/ETS6-Import, keine Platine versorgt/geflasht, kein Motortest, keine GitHub-Pushes.
+
+### Offene Hardware-/Implementierungs-Gates
+
+- Für echte KNX010-Raumregelung: ETS V3/KO-Nummerierung im KNX009-Slice und KNX018-Testbench nach Freigabe, echtes Telegramm- und Bus-Recovery, Frostschutz, hydraulische Kalibrierung und unabhängige Heizquellen-Schutzfunktionen.
+- Für Motoren: KNX002/003 as-built/Power, KNX004 sichere Einzelmotor-Fahrqueue, KNX005 Strom/Endlagenmessungen und KNX006 Homing/Position; der KNX019-Code ist **kein** Ersatz für Motor-Sicherheitsmaßnahmen.
+- Folge-Slices nur mit neuem ASH-Checkup und ausdrücklichem Start; KNX009/016 bleiben deferred.
