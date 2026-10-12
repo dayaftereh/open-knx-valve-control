@@ -211,3 +211,40 @@ ASH-Workflow-Audit **PASS, 30 Checks**, **271 Markdown-Links** vor Closing; unve
 
 ### Wiederanlauf
 Nach Aufbau der dedizierten Testumgebung über **KNX018** die Hardware-/Schnittstellenfreigaben dokumentieren, dann **KNX016/KNX009** in frischen Write-Sessions fortsetzen. Bis dahin Softwarearbeiten wie KNX008 möglich, aber nur nach separatem Slice-Start und Checkup.
+
+
+## KNX008 – Zonen-/Heizkreis-Zuordnung und ETS-Modusvertrag
+
+- **State:** closed (Software-/ETS-Design-Gate, keine Produkt- oder Hardwarefreigabe)
+- **Closed:** 2026-10-12
+- **Baseline:** `c171d17`, `main` clean, 16 lokale Commits vor origin/main, keine fremden Write-Sessions oder offenen Marker
+- **Implementation commit:** `1b5ead4` – feat(knx008): specify zone ETS contract and offline target router
+- **Closing commit:** separater Commit mit diesem HISTORY-Eintrag, Roadmap/README-Status und Entfernung des KNX008-Markers
+- **Detailed record:** [KNX008_ZONE_CHANNEL_DESIGN.md](../KNX008_ZONE_CHANNEL_DESIGN.md)
+- **Proposed ETS schema (NOT LIVE):** [knx008_zone_ets_proposal.json](../../assets/knx008_zone_ets_proposal.json)
+
+### Gate 1 – Checkup
+
+LLO Desktop Agent online; vorheriger KNX017 vollständig geschlossen; HEAD `c171d17`, sauberer Git-Tree. Aktuelles ETS-Produkt ApplicationVersion **2**, **35 KO und 21 Parameter**. Die alten motorbezogenen Objekte KO1..16 (DPT9.001) und KO17..24 (DPT5.004) dürfen nicht stillschweigend zu Raumzonen-/DPT5.001-Objekten umgedeutet werden. T0..T8 sind Vorlauf-/Rücklaufsensorik, ausdrücklich keine Raum-Istwerte. KNX009 und KNX016 sind für eigenständige KNX-Testbench KNX018 deferred.
+
+### Gate 2 – Designentscheidung
+
+- Acht logische Zonen und acht Motoren; Zuordnung M1..M8 jeweils genau Zone 0 (unassigned) oder Zone 1..8. Beliebig viele Motoren einer Zone können denselben Zielwert erhalten; jeder Motor gehört höchstens einer Zone.
+- ETS-Modus 0 Disabled, 1 RoomTemperature (externes KNX Soll-/Raum-Ist plus **erst später von KNX010 berechneter** Reglerausgang), 2 DirectPercent (DPT5.001 scaling byte 0..255). Keine automatische Quervermischung.
+- Default alle Zonen aus und Motoren unzugeordnet; gültige Signale und Zeitstempel erforderlich. Bei stale/invalid/disabled **keine neue Fahranforderung**, aber physischer All-off und bereits laufende/gewartete Fahrten sind **KNX004/010**, nicht KNX008.
+- ETS-ABI: Bestehendes AppVersion2 mit KO1..35 und P1..21 bleibt unverändert. Vorgeschlagen AppVersion3, KO36..100 und P22..39 mit eindeutigem C-Identifiern, DPT und überschneidungsfreiem Speicher ab Byte11. Kein ETS-Import, XML-/Headeränderung oder Busdownload.
+
+### Gate 3 – Umsetzung
+
+- [Heating zone C++ model](../../lib/common/heating_zone_model.hpp) ohne Arduino/KNX/GPIO-Anbindung prüft Konfiguration und Zeitstempel und fächert logische, noch nicht ausführbare 0..1000-Promille-Ziele auf 1..8 Motoren auf. Keine Motorbewegung.
+- [Native tests](../../tests/native/test_knx008_zone_model.cpp) für 1/2/3/4 Motoren je Zone, 4+3+1 über acht Motoren, verschiedene Räume/Modi, echte 0%, raw5.001/legacy5.004-Verwechslung, ungültige Parameter, fehlende/stale Eingänge und `millis()`-Wraparound.
+- [ETS contract JSON](../../assets/knx008_zone_ets_proposal.json) enthält 65 nur vorgeschlagene KOs und 18 nur vorgeschlagene ETS-Parameter; [read-only audit](../../tools/audit_knx008_zone_contract.py) gleicht das mit dem unveränderten Produkt V2 und seinen bestehenden Bitspeicherbelegungen ab.
+- README, Roadmap und historisches Konzept ETS_AND_CONTROL_CONCEPT mit korrekter Ist-/Soll-Trennung und Dokumentlinks aktualisiert.
+
+### Gate 4 – Tests und Einschränkungen
+
+- **KNX008 C++ native: PASS**, die bisherigen **KNX013 zwei + KNX014 vier + KNX015 zwei = acht** Regressionstests ebenfalls **PASS** (zusammen neun Suites).
+- **KNX008 ETS-Kontrakt-Audit PASS:** V2 App/KO1..35/P1..21 Byte-identisch zu Baseline, proposed-only-KO36..100/P22..39 ohne Kollisionen, DPT-Flags/Namen/ETS-Speicheroffsets prüfbar.
+- Bestehender KNX015-Produktheader-Audit PASS, ATtiny/RP-Brücken-/PCB-Pinaudit PASS; **PCB/ETS-Static 0 Invariant-Fehler** mit den unveränderten Power-/Bestückungswarnungen. **ASH-Workflow PASS, 30 Checks, 289 lokale Markdown-Links vor Closing**. Native C++17 mit -Wall/-Wextra/-Werror/-pedantic; Python Syntaxprüfung PASS; gestagter `git diff --cached --check` PASS. Abschlussaudit nach Markerentfernung wiederholt.
+- **Keine produktive ETS-XML/knxprod.hpp/Firmware geändert; kein Motor GPIO, keine physische Fahrt/KNX-Telegramme/ETS6-Import und kein GitHub-Push.**
+- **Nächste technische Abhängigkeiten:** KNX004/005/006 für sichere Einzelmotorfahrten und Referenz, KNX010 für langsame echte Raumtemperaturregelung inkl. PI/Anti-Windup und Busfailover, KNX009/016 für ETS-Produktumsetzung/Import erst auf späterem KNX018-Testplatz. ASH öffnet keinen Folgeslice automatisch.
