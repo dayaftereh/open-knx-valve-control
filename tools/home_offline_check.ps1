@@ -42,6 +42,8 @@ try {
                           'tools/audit_knx032_replay_scope.py',
                           'tools/audit_knx033_asbuilt.py',
                           'tools/test_knx033_asbuilt_gate.py',
+                          'tools/audit_knx034_usb_only.py',
+                          'tools/test_knx034_usb_only.py',
                           'tools/audit_ash_workflow.py')) {
         Run-PythonTest $script
     }

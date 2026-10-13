@@ -125,3 +125,7 @@ Mit [KNX032](KNX032_UART_TO_KNX_OFFLINE.md) ist die bisherige Luecke zwischen KN
 ## KNX033 – As-built Foto- und Prepower-Gates (13.10.2026)
 
 [KNX033 Foto-/Netzreview](KNX033_AS_BUILT_PCB_REVIEW.md) dokumentiert die erste reale V1.2-Bestueckungsseite, JMP1/2/3 sowie den D1-Draht-Bypass. **Foto-F1 T 2,5 A** weicht von der Quelle (**630 mA**) ab; D1 spart zwar den Vorwaertsabfall, verliert aber die Rueckstromsperre. U6 auf der gezeigten Seite nicht zweifelsfrei identifizierbar, Rueckseitenfoto fehlt; U25-Markierung TINY3216 wahrscheinlich, R29-Wert offen. [Strukturierte, rein fotografische Evidenz](KNX033_AS_BUILT_PREFLIGHT.json), Messfelder null, Power-/USB-/KNX-/UPDI-/Motor-Gates false. KNX002–006, KNX018 bleiben hardwareseitig gesperrt.
+
+## KNX034 – USB-only ohne KNX-Versorgung, Rueckseiten-Foto (13.10.2026)
+
+Die Rueckseite zeigt U6 als real bestueckten schwarzen Baukoerper an der Stelle `U6` nahe 5V-/3.3V-Markierungen, aber ohne lesbare exakte Typaufschrift. [KNX034 Vorabnahmekonzept](KNX034_USB_ONLY_PREPOWER_GATE.md): **JMP1 Oeffnung nur vorgeschlagen, NICHT ausgefuehrt**; trennt V1.2-Netz `KNX_VCC` von `R9_2` am MOSFET Q1, nicht alle Masse-/Rueckspeisungswege. Bereits bei **komplett abgetrenntem KNX** ist USB die einzige externe Quelle; erst nach stromlosen JMP1/D1-Pruefungen und korrekter F1-Schutzwahl wird ein separat freizugebender USB-only-Gate diskutiert. D6-Drop bleibt und TSR benoetigt >=4,75 V am tatsaechlichen VIN-Pin. [Maschinenlesbarer BLOCKED-Status](KNX034_USB_ONLY_PREFLIGHT.json). Keine Power-/Flash-/KNX-/Motorfreigabe.

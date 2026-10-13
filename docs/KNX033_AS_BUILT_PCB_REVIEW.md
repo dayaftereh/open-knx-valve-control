@@ -71,3 +71,7 @@ Dadurch entfällt **der Vorwärtsspannungsabfall von D1**. Dies kann die früher
 Bitte für den nächsten Abgleich ein **scharfes Foto der Platinenrückseite** (besonders U6/TSR-1-2433-Lötseite) sowie, falls möglich, Großaufnahmen von U25, F1 und R29 bereithalten. Am hilfreichsten sind später drei **spannungsfreie** DMM-Durchgangsergebnisse: D1 Pad 1↔2, JMP2 Wahlpad↔Mittelpad und JMP3 Wahlpad↔Mittelpad – zuzüglich Nachbarpad-Prüfung.
 
 **Status:** `BLOCKED_NO_POWER_NO_FLASH_NO_MOTOR`. Hardware- und Firmwaretests [KNX018](KNX018_LAPTOP_UPDI_TESTBENCH.md), [KNX029](KNX029_FIRST_CONTACT_RUNBOOK.md), [KNX030](KNX030_PASSIVE_FIRST_CONTACT.md) bleiben bis zu echten Versorgungs-/UPDI-Messungen gesperrt; [KNX032](KNX032_UART_TO_KNX_OFFLINE.md) ist weiterhin nur ein Mock-Test.
+
+## KNX034-Nachtrag – Rueckseite und vorgesehener JMP1-Umbau (13.10.2026)
+
+Nach der ersten dreiseitigen Frontfoto-Aufnahme wurde ein **separates viertes Rueckseitenfoto** bereitgestellt. Das U6-Gehaeuse ist darin physisch vorhanden. Wichtig: Der Nutzer **schlaegt vor**, JMP1 zum USB-only-Betrieb zu oeffnen; das ist **noch nicht als Aenderung bestaetigt** und aendert den oben dokumentierten as-built-JMP1-geschlossen-Stand nicht rueckwirkend. [Aktueller KNX034-Entscheidungs-/Pruefplan](KNX034_USB_ONLY_PREPOWER_GATE.md) beschreibt DMM-Messungen und offene F1-/D6-/RUECKSPEISE-Gates. KNX033-JSON bleibt als historische 3-Foto-Evidenz unveraendert.

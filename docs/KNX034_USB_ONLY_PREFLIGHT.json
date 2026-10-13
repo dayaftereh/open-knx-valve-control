@@ -1,0 +1,120 @@
+{
+  "schema": "openknx-valvecontrol/knx034-usb-only-power-gate-v1",
+  "source_head": "e8033c7",
+  "revision": "V1.2",
+  "evidence": "photographic_and_designed_netlist_only",
+  "new_photo": {
+    "filename": "20261013_164325.jpg",
+    "sha256": "932bfac8982d03ebee0e23087a8da03d7480d40fc89b5677eec800fb3d392e82",
+    "image_archived_on_home": false,
+    "side": "reverse",
+    "observations": {
+      "U6_black_regulator_housing_visible": true,
+      "U6_label_near_component_visible": true,
+      "U6_exact_manufacturer_marking_readable": false,
+      "CN1_2x3_header_visible": true,
+      "RUN_PROG_USB_BOOT_switches_visible": true,
+      "electrical_test_performed": false
+    }
+  },
+  "current_jmp1": {
+    "source": "prior_user_report",
+    "reported_closed": true,
+    "measured_resistance_ohms": null
+  },
+  "proposed_jmp1": {
+    "state": "PROPOSED_NOT_APPLIED",
+    "target_open": true,
+    "physical_change_performed": false,
+    "measured_resistance_ohms": null,
+    "expected_severed_net_pair": [
+      "KNX_VCC",
+      "R9_2"
+    ],
+    "galvanic_isolation_proven": false,
+    "KNX_USB_backfeed_absence_proven": false
+  },
+  "expected_pad_nets": {
+    "JMP1": {
+      "1": "KNX_VCC",
+      "2": "R9_2"
+    },
+    "Q1": {
+      "1": "USB_VCC",
+      "2": "5V_",
+      "3": "R9_2"
+    },
+    "R9": {
+      "1": "GND",
+      "2": "R9_2"
+    },
+    "D6": {
+      "1": "5V_",
+      "2": "USB_VCC"
+    },
+    "F1": {
+      "1": "5V_",
+      "2": "5V"
+    },
+    "D1": {
+      "1": "D1_1",
+      "2": "5V"
+    },
+    "U6": {
+      "1": "D1_1",
+      "2": "GND",
+      "3": "3.3V"
+    }
+  },
+  "usb_only_architecture": "USB_VCC -> D6 -> 5V_ -> F1 -> 5V -> D1_WIRE -> D1_1(U6 VIN) -> U6(3.3V)",
+  "f1": {
+    "nominal_schematic_mA": 630,
+    "observed_photo_mA": 2500,
+    "actual_part_characteristics_verified": false,
+    "protective_coordination_verified": false
+  },
+  "d1": {
+    "installed": "wire_bypass_user_report",
+    "original_diode_directional_isolation_removed": true,
+    "electrical_continuity_verified": false,
+    "adjacent_shorts_excluded": false
+  },
+  "u6": {
+    "housing_seen_on_reverse_photo": true,
+    "exact_part_marking_verified": false,
+    "designed_part": "TSR 1-2433",
+    "minimum_VIN_V": 4.75,
+    "actual_VIN_V": null,
+    "actual_output_V": null
+  },
+  "requirements": {
+    "all_sources_disconnected_for_unpowered_checks": true,
+    "knx_bus_unplugged_for_initial_usb_only_trial": true,
+    "updi_programmer_unplugged": true,
+    "all_motors_disconnected": true,
+    "f1_appropriate_protection_required": true,
+    "all_power_trials_deferred_until_separate_gate": true
+  },
+  "unpowered_measured": {
+    "JMP1_pad1_2_before_ohms": null,
+    "JMP1_pad1_2_after_ohms": null,
+    "KNX_VCC_to_5V_ohms": null,
+    "D1_5V_to_D1_1_ohms": null,
+    "D1_neighbor_short_test": null,
+    "F1_rating_BOM_verified": null,
+    "rail_5V_to_GND_ohms": null,
+    "rail_3V3_to_GND_ohms": null,
+    "M_VCC_to_GND_ohms": null,
+    "U6_installed_pins_electrically_checked": null
+  },
+  "releases": {
+    "knx_only_power_authorized": false,
+    "usb_only_power_authorized": false,
+    "dual_usb_knx_power_authorized": false,
+    "usb_rp2040_flash_authorized": false,
+    "updi_attiny_flash_authorized": false,
+    "knx_bus_connection_authorized": false,
+    "motor_enable_authorized": false
+  },
+  "status": "BLOCKED_PENDING_UNPOWERED_MEASUREMENTS_AND_F1_REVIEW"
+}
