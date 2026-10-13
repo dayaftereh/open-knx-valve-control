@@ -109,3 +109,8 @@ Die [KNX026-HMI-Dokumentation](docs/KNX026_HMI_DIAGNOSTICS.md) beschreibt das ne
 ## KNX027 – RP2040 USB-Flash-Automatisierung (12.10.2026)
 
 Das USB-Flash-Verfahren fuer die spaetere KNX018-Laptop-Testbank ist [softwareseitig vorbereitet](docs/KNX027_USB_FLASH_AUTOMATION.md). Der Controller verwendet ausdruecklich `upload_protocol = picotool`; das neue CLI unter [tools/usb_flash_controller.py](tools/usb_flash_controller.py) bietet passive USB-Port-Erkennung, Uploadplan, isolierten Firmwarebuild und **nur mit expliziten Teststand-/Port-/VID:PID-/Git-Freigaben** einen spaeteren USB-Upload. Arduino-Pico erlaubt bei bereits laufender kompatibler USB-CDC-Firmware ueblicherweise den 1200-Baud-Auto-Reset ohne BOOTSEL. Die Erstprogrammierung oder ein Recovery benoetigt weiterhin gegebenenfalls BOOTSEL und UF2. **Bisher kein RP2040 am LLO Desktop angeschlossen, kein echter Flash und keine Hardware-/Motorfreigabe.** Die KNX018-Testbank, alle ETS-/KNX-Bustests und elektrische Schutzpruefungen bleiben offen.
+
+
+## LLO Home Offline-Entwicklung (KNX028, 13.10.2026)
+
+Primärer Entwicklungsrechner nach Git-Synchronisierung: **LLO Home** unter `C:\_myspace\workspace\open-knx-valve-control`. Installation, festgelegte Toolchain-Pfade, Offline-Testbefehle und offene Hardwaregrenzen stehen in [KNX028 Home Setup](docs/KNX028_LLO_HOME_SETUP.md). Die reproduzierbaren hostseitigen Diagnosetests starten mit `powershell -NoProfile -File tools/home_offline_check.ps1`. Keine angeschlossene Platine, kein Upload und keine KNX-/Motorfreigabe.

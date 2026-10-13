@@ -94,3 +94,8 @@ KNX026 wurde auf der KNX025-Basis fuer eine rein lesende [portable HMI und Diagn
 ## KNX027 – USB-Firmware-Upload (softwareseitig, 12.10.2026)
 
 **KNX027 closed (Host-Software only):** [USB-Auto-Upload/Recovery](KNX027_USB_FLASH_AUTOMATION.md) legt picotool fuer RP2040-PlatformIO fest, liefert ein bewusst gesperrtes USB-CLI (probe/plan/build/upload), validiert exakte COM-/VID:PID- und Git-HEAD-Zuordnung und baut den Controller in einem isolierten Verzeichnis. Acht synthetische Tests, Plattform-/ASH-Audit und echter isolierter Controllerbuild gehoeren zum Software-Gate. **KNX018 bleibt fuer den erstmals echten USB-Flash/1200-Baud-Reset, KNX/IP/ETS, Chip-/Power-Verifizierung offen**; KNX002–006 Motor-Safety, KNX009/016 ETS6 weiterhin deferred. Kein GitHub-Push oder USB-Gerateflash.
+
+
+## KNX028 – LLO Home Bootstrap (13.10.2026)
+
+Die Entwicklung wechselt auf den synchronisierten **LLO Home Agent** mit Repo `C:\_myspace\workspace\open-knx-valve-control`. [Offline-Initialisierung](KNX028_LLO_HOME_SETUP.md) und [Host-Checks](../tools/home_offline_check.ps1) dokumentieren System-/Git-/Python-/PlatformIO-Abhaengigkeiten, Mock-USB-Checks und Hardware-Sperren. Ein RP2040/ATtiny-Offlinebuild kann bestanden haben, ohne dass USB, KNX, ETS oder die Motor-Stromversorgung freigegeben sind. Der Teststand KNX018 und Hardware KNX002-006 bleiben separat offen.
