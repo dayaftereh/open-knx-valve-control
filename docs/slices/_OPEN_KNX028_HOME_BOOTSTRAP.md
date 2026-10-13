@@ -1,93 +1,100 @@
-# KNX028 – LLO Home Offline-Initialisierung
+# KNX028 - LLO Home Offline-Initialisierung
 
-**State:** open
-**Gate:** 2/4 (Gate 1+2 verified)
+**State:** ready-for-validation
+**Gate:** 4/4
 **Profile:** software/infrastructure
 **Opened:** 2026-10-13
-**Owner/Session:** ChatGPT-OpenKNXValveControl-KNX028-HomeInit-20261013 / `ses-20261013T091101-f5813049ea1d`
+**Owner/Session:** ChatGPT-OpenKNXValveControl-KNX028-HomeResume-20261013 / `ses-20261013T094818-64b5967e87b2`
 **Project root:** `C:\_myspace\workspace\open-knx-valve-control`
 **Baseline commit:** `14795c6c7af6808bcff210d3a98bce814bac7461`
+**Previous KNX028 commits:** `089a984`, `5128482` (home only, not pushed)
 
 ## Objective
 
-LLO Home zum primaeren OpenKNXValveControl-Entwicklungsrechner machen und Git, Python, PlatformIO, gepinnte RP2040/ATtiny-Abhaengigkeiten und OpenKNXproducer fuer **Offline-Builds und Mock-Tests** initialisieren; alle Nachweise dokumentieren, ohne fertige oder angeschlossene Platine vorauszusetzen.
+Make LLO Home the primary offline development machine for OpenKNXValveControl:
+establish reproducible host tools, ATtiny and RP2040 builds, USB upload mock
+tests and portable software regressions without attached electronics.
 
-## In scope
+## Scope and hard exclusions
 
-- Host-/Rechte-/Git-/Toolchain-Pruefung mit reproduzierbarem Home-Bootstrap.
-- Nach Moeglichkeit die vorhandene PlatformIO-Installation des Windows-Benutzers `ll` nutzen, nicht ungefragt global installieren.
-- Projektkompatiblen OpenKNXproducer 3.12.2 mit gepruefter Release-Herkunft bereitstellen, sofern Download moeglich.
-- RP2040- und ATtiny-Builds **nur im isolierten temporaeren Workspace**, niemals Firmware laden oder produktive KNX-Produkte/Header ueberschreiben.
-- Native Softwaretests, USB-Upload-Mocktests und statische ASH-/Design-Audits ausfuehren, externe/fehlende Abhaengigkeiten ehrlich kennzeichnen.
-- Home-Onboarding/Umgebungsdiagnostik dokumentieren und in Git lokal committen.
+- In scope: Windows SYSTEM/ll Git handling via per-process safe.directory,
+  Python/PlatformIO/producer setup, exact Arduino-Pico/GCC/Platform pins,
+  native x86_64 host compiler, offline tests/builds, README/ROADMAP docs.
+- Out: USB/UPDI bootloader reset/flash, ETS/KNX bus, pin/GPIO interaction,
+  motor outputs, any physical assembly qualification, force push, global
+  PATH/registry/Git trust modifications.
+- Original ETS XML, schematics/PCB, generated canonical `knxprod.hpp`,
+  ATtiny source, motor GPIO and KNX firmware core must not be changed.
 
-## Out of scope
-
-- USB/UPDI-Flash, ROM BOOTSEL oder 1200-Baud-Reset, physische USB-/COM-Probe die Geraete veraendert, PIN-/Motor-/KNX-/ETS-IO.
-- Aenderungen an ETS XML, knxprod.hpp, PCB und Leistungs-/Motor-Firmware.
-- Behauptung einer elektrisch sicheren V1.2-Platine oder Freigabe des Aufbaus.
-- Push, Force-Push, Loeschen fremder Dateien, ungepruefte globale Git-/OS-Konfigurationsaenderungen.
-
-## Pre-existing / quarantined changes
-
-- Keine: Home main CLEAN und synchron zu origin/main, HEAD `14795c6`; keine offenen Slice-Marker und keine fremde aktive Session.
-- Bekannte Git-SYSTEM-vs.-`ll`-Eigentuemerabweichung: nur pro Prozess `safe.directory`, keine globale Git-Konfiguration.
-- Nur Benutzer `ll` hat PlatformIO 6.1.18/Python 3.11.7; auf Home fehlen Raspberry-Pi-Plattform und OpenKNXproducer.exe. Kein RP2040 verbunden.
-
-## Gate 1 – Checkup + Analysis
+## Gate 1 - Checkup + analysis
 
 **Status:** accepted
 
-- Home Agent 0.7.9 reachable, Projekt unter `C:\_myspace\workspace\open-knx-valve-control`.
-- Python + PlatformIO im Benutzerprofil `C:\Users\ll\.platformio\penv\Scripts\` vorhanden; Arduino-Pico/RP2040 Plattformpakete fehlen.
-- `OpenKNXproducer.exe` nicht in HOME Tool-Verzeichnis gefunden; offizielle OpenKNX GitHub v3.12.2 Release vorhanden, separates ZIP.
-- Fuer PIO/Python und Git Jobs Pfade/Umgebung explizit setzen, keine Hardwaretransaktionen.
+- LLO Home Agent 0.7.9, root `C:\_myspace\workspace\open-knx-valve-control`. Source started clean at `14795c6`.
+- `main` tracks same GitHub `origin/main`; original Desktop and Home sync
+  had been completed in KNX027. No foreign active Write session.
+- Home Python3.11.7 / PlatformIO6.1.18 under `C:\Users\ll\.platformio`.
+  Agent runs as SYSTEM, repo belongs to ll: repo-scoped Git trust only.
+- Home started with no RP2040 platform, OpenKNXproducer, or host g++.
+- Existing AppVersion2 and USB flash safety fences must be preserved.
 
-## Gate 2 – Decision/Plan
+## Gate 2 - Decision / plan
 
 **Status:** accepted
 
-- Originale Hersteller-/OpenKNX-Toolchain-Versionen beibehalten; keine stillen Updates zu neueren nicht validierten Major-Versionen.
-- Tooling nur in bewusst dokumentierten lokalen Pfaden des Home Hosts, isolierte Builds.
-- Sicherheitsgrenze: echte Hardware voraussetzungslos **nicht** testen, selbst bei vorhandenem COM-Port.
-- Tests/Builds/Audits und QA-Log; Zustand PASS/PARTIAL/BLOCKED jeweils nach Live-Ergebnis.
+- Install only pinned toolchain binaries under local user/Tools paths.
+- Use upstream official OpenKNXproducer 3.12.2 release and verify WinLibs
+  host compiler archive against the release SHA256 checksum sidecar.
+- Keep PlatformIO RP2040 build in a temporary copied tree with canonical
+  header SHA check. Never issue upload, USB reset, KNX or motor command.
+- Fix `__getreent` using the proven Desktop compiler instead of patching
+  foreign framework files. Pin selected PlatformIO fork commit.
+- Preserve KNX027 historical scope-audit strength, allowing only exact
+  intended platform/compiler pin changes.
 
-## Gate 3 – Implementation
+## Gate 3 - Implementation
 
-**Status:** pending
+**Status:** complete
 
-- [ ] Python/Pio Toolchain Probe und Build-Dependencies
-- [ ] Gepinnter OpenKNXproducer bereitstellen
-- [ ] Native Tests, RP2040/ATtiny Builds soweit moeglich
-- [ ] Home Runtime Runbook + README/Roadmap
+- [x] Install Raspberry Pi PlatformIO, Arduino-Pico 5.5.0, OpenKNX/TPUart,
+  picotool/pioasm and OpenKNXproducer 3.12.2 for Home.
+- [x] ATtiny3216 isolated temp build PASS (previous Home job-000032).
+- [x] Diagnose Home failure: GCC16.1.0 plus Arduino-Pico5.5.0 reported
+  `__getreent` missing from `malloc-lock.cpp:122`.
+- [x] Pin `toolchain-rp2040-earlephilhower 5.140200.250530` (GCC14.3.0),
+  official 4.1.0 URL, and PlatformIO fork Git SHA
+  `5d4561a05e3b212660ac6fdd3fbfb328d1988aa1` in controller.ini.
+- [x] RP2040 isolated builds PASS both before and after full pin.
+  UF2 SHA256 `6b3e82f30e71d9e6bffd56d5418379e18a998f73fc8befddd68478e18975d805`,
+  RAM 54108/262144, Flash 198340/1048576.
+- [x] Windows native g++ 16.2.0 installed locally from the WinLibs pinned
+  release, upstream checksum verified; no global system modification.
+- [x] Native simulations: 11/11 script groups PASS incl KNX008, KNX013-15,
+  KNX019-21, KNX023-26, Arduino-hardlock tests. KNX027 mock USB 8/8 PASS.
+- [x] Update `tools/home_offline_check.ps1` (-Native, -ControllerBuild),
+  `tools/install_home_host_compiler.ps1`, producer/compiler docs and
+  KNX027 source guard to validate exact new pins.
+- [x] Hardware preflight still reports 10 blockers; no real power qualification.
 
-## Gate 4 – Validation/Commit/Close
+## Gate 4 - Validation, commit and close
 
-**Status:** pending
+**Status:** in progress
 
-- [ ] Host-Builds/tests + ASH-Audit
-- [ ] Git Scope-Diff / clean / separate Closing-Commit
-- [ ] Hardware-Gates als offen dokumentiert
+- [x] Isolated RP2040 success with toolchain+platform pins, no firmware/ETS change.
+- [x] 11 native script-group regressions and 8 USB mocks PASS.
+- [x] KNX027 historic scope guard repaired and PASS.
+- [x] Reproducible `home_offline_check.ps1 -ControllerBuild` job-000072 exit 0. Identical UF2 SHA256 after whole smoke-test script.
+- [x] Final ASH 30/30, 476 Markdown links, design 0 invariant failures, KNX026/027 scope PASS, staged diff --check PASS; README/Roadmap updated.
+- [ ] Implementation commit; HISTORY and marker removal in separate
+  ASH closing commit; no GitHub push.
+
+## Known remaining hardware gates
+
+KNX002..006 electrical and motor interlock qualification, KNX018 hardware
+testbench, KNX009/016 real ETS6 import, USB ROM/1200-baud reset, external
+supply/backfeed/actual flash chip size, INA219 current limits and STBY output
+disable remain NOT verified. Host build/simulators are not release approval.
 
 ## Next exact action
 
-Host-Python/PlatformIO und gepinnte Tools pruefen, OpenKNXproducer aus verifiziertem Release installieren soweit erreichbar und reproduzierbare Offline-Builds / Tests ausfuehren.
-
-## Gate 3 – Live implementation status 13.10.2026
-
-- [x] Home Python 3.11.7 / PlatformIO 6.1.18 found under `C:\Users\ll\.platformio\penv\Scripts`; setting `PLATFORMIO_CORE_DIR=C:\Users\ll\.platformio`.
-- [x] RP2040 platform, Arduino-Pico 5.5.0, picotool, GNU Arm toolchain, OpenKNX knx/TPUart dependencies installed.
-- [x] OpenKNXproducer 3.12.2 ZIP downloaded, x64 binary inside `tools/Windows/OpenKNXproducer-x64.exe` runs and generates the temporary V2 35-KO header/knxprod.
-- [x] ATtiny3216 in isolated temp directory built PASS, job-000032; no upload.
-- [x] Native KNX027 mock USB tests 8/8 PASS; ASH 30 checks and 472 links PASS; design audit 0 structural failures.
-- [x] Reusable `tools/home_offline_check.ps1` and `docs/KNX028_LLO_HOME_SETUP.md`, README and Roadmap.
-- [ ] RP2040 build **BLOCKED:** `framework-arduinopico 5.5.0` `malloc-lock.cpp:122` compiler error `__getreent was not declared` with Home currently resolved toolchain (see `docs/KNX028_LLO_HOME_SETUP.md`, job-000035).
-- [ ] Native C++ suite requires a Home `g++` binary; not present.
-
-## Gate 4 – Current validation
-
-**Status:** blocked (do not close the slice as complete). Original `src/`, `assets/`, ETS XML, knxprod.hpp, and schematics unchanged. Need Home RP2040/host C++ build regression before a full Gate4 close. No push, no USB/UPDI, no KNX/motor/ETS.
-
-## Next exact action
-
-Compare compiler/PlatformIO Raspberry Pi framework/toolchain package versions and compile flags between the previously passing LLO Desktop isolated controller build and LLO Home's failing `__getreent` framework build; repair using a reviewed/pinned external toolchain, then re-run isolated controller build and host tests. Keep this same KNX028 slice open.
+Implementation software changes and snapshot evidence are validated; commit reviewed KNX028 files locally. Then append HISTORY and remove this open marker in an isolated ASH closing commit. No GitHub push.

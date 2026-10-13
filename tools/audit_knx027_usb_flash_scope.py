@@ -44,12 +44,50 @@ def check(condition: bool, label: str) -> None:
     print("PASS:", label)
 
 
+def strip_known_knx028_pin_changes(config: str) -> str:
+    """Compare legacy KNX027 upload scope after undoing reviewed KNX028 pins.
+
+    This does NOT broadly ignore controller.ini edits: the exact platform
+    commit, framework, and compiler release must match this new contract.
+    """
+    original_platform = "platform = https://github.com/maxgerhardt/platform-raspberrypi"
+    pinned_platform = (
+        "; KNX028: Home-verified maxgerhardt PlatformIO revision (raspberrypi 1.20.0).\n"
+        "platform = https://github.com/maxgerhardt/platform-raspberrypi.git#"
+        "5d4561a05e3b212660ac6fdd3fbfb328d1988aa1"
+    )
+    framework = (
+        "framework-arduinopico @ https://github.com/earlephilhower/"
+        "arduino-pico/releases/download/5.5.0/rp2040-5.5.0.zip"
+    )
+    original_packages = "platform_packages = " + framework
+    pinned_packages = (
+        "; KNX028: reproducible toolchain. GCC 16.1.0 broke Arduino-Pico 5.5.0\n"
+        "; with __getreent not declared (framework malloc-lock.cpp). GCC 14.3.0\n"
+        "; matches the previously verified successful LLO Desktop controller build.\n"
+        "platform_packages =\n"
+        "    " + framework + "\n"
+        "    toolchain-rp2040-earlephilhower @ "
+        "https://github.com/earlephilhower/pico-quick-toolchain/releases/"
+        "download/4.1.0/x86_64-w64-mingw32.arm-none-eabi-1aec55e.250530.zip"
+    )
+    if "KNX028:" in config:
+        check(config.count(pinned_platform) == 1,
+              "KNX028 explicit platform revision only")
+        check(config.count(pinned_packages) == 1,
+              "KNX028 explicit GCC 14.3.0 compiler pin only")
+        config = config.replace(pinned_platform, original_platform, 1)
+        config = config.replace(pinned_packages, original_packages, 1)
+    return config
+
+
 def main() -> int:
     for path in FROZEN:
         check(previous(path) == current(path), "unchanged firmware/ETS/PCB: " + path)
 
     old = previous("src/controller/controller.ini").splitlines(keepends=True)
-    new = current("src/controller/controller.ini").splitlines(keepends=True)
+    new = strip_known_knx028_pin_changes(
+        current("src/controller/controller.ini")).splitlines(keepends=True)
     inserted = []
     for op, _, _, lo, hi in difflib.SequenceMatcher(
             None, old, new, autojunk=False).get_opcodes():

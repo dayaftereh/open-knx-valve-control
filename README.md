@@ -114,3 +114,6 @@ Das USB-Flash-Verfahren fuer die spaetere KNX018-Laptop-Testbank ist [softwarese
 ## LLO Home Offline-Entwicklung (KNX028, 13.10.2026)
 
 Primärer Entwicklungsrechner nach Git-Synchronisierung: **LLO Home** unter `C:\_myspace\workspace\open-knx-valve-control`. Installation, festgelegte Toolchain-Pfade, Offline-Testbefehle und offene Hardwaregrenzen stehen in [KNX028 Home Setup](docs/KNX028_LLO_HOME_SETUP.md). Die reproduzierbaren hostseitigen Diagnosetests starten mit `powershell -NoProfile -File tools/home_offline_check.ps1`. Keine angeschlossene Platine, kein Upload und keine KNX-/Motorfreigabe.
+
+
+**KNX028 Home-QA (13.10.2026):** RP2040-Compilerproblem behoben: `src/controller/controller.ini` pinnt ARM GCC 14.3.0 und den getesteten Raspberry-Pi-PlatformIO-Commit, der isolierte Controller-Build ist erfolgreich (RAM 20,6 %, Sketch 18,9 % des 1-MiB-Firmwarebereichs). Ein separater WinLibs-g++ ist per upstream SHA256 installiert; `powershell -NoProfile -ExecutionPolicy Bypass -File tools/home_offline_check.ps1 -Native` hat alle 11 nativen Test-Skriptgruppen samt ARDUINO-Hardlock bestanden. `-ControllerBuild` prueft zusaetzlich rein offline die RP2040-Firmware. **Dies ist kein USB-Flash, keine KNX-/ETS-Abnahme und keine Freigabe der acht Motoren.**

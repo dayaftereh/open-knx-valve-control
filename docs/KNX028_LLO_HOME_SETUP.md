@@ -92,3 +92,29 @@ Erfasst im ASH Job `job-000035` der Home-Session `ses-20261013T091101-f5813049ea
 ### Konkreter Unterschied gegen letzten erfolgreichen Desktop-Build
 
 Live am 13.10.2026 geprueft: Bei gleichem `framework-arduinopico` **1.50500.0 (Arduino-Pico 5.5.0)** hat der frueher erfolgreiche LLO Desktop die ARM-Paketversion `toolchain-rp2040-earlephilhower 5.140200.250530`, Home hingegen `5.160100.260719`. Das ist eine nachgewiesene **Toolchain-Differenz**, die den `__getreent`-Fehler erklaeren koennte, aber noch kein kausaler Beweis. Keine Fremdbibliothek modifizieren. Erst eine kontrollierte isolierte Regression mit explizit gepinnter aelterer, auf Desktop bewaehrter Compiler-Version pruefen und danach PIO-Paketversion projektweit dokumentieren; keine System-/USB-/Motoraktion.
+
+## KNX028 – Buildblocker geloest: reproduzierbarer RP2040-Stand
+
+Am 13.10.2026 wurde der vorherige `__getreent`-Fehler durch eine **gezielte Projekt-Paketbindung** behoben, ohne Quellcode oder fremde Framework-Dateien zu patchen:
+
+- Alter, auf Desktop bewaehrter `toolchain-rp2040-earlephilhower`: **5.140200.250530 (ARM GCC 14.3.0)** statt Home-Fehlschlag mit **5.160100.260719 (ARM GCC 16.1.0)**.
+- In `src/controller/controller.ini` ist die offizielle Producer-unabhaengige Compiler-Release-URL `pico-quick-toolchain/releases/download/4.1.0/x86_64-w64-mingw32.arm-none-eabi-1aec55e.250530.zip` explizit unter `platform_packages` fixiert.
+- Die maxgerhardt Raspberry-Pi-PlatformIO-Plattform ist zusaetzlich auf den am Home erfolgreich getesteten Git-Commit `5d4561a05e3b212660ac6fdd3fbfb328d1988aa1` fixiert.
+- **Kontrollbuild 1 PASS** vor Plattform-SHA-Pin und **Kontrollbuild 2 PASS** nach beiden Pins. Der isolierte `usb_flash_controller.py build` erzeugte `firmware.elf` und `firmware.uf2`, **ohne USB/KNX oder Flash**.
+- Beide Builds produzierten dieselbe Firmware-UF2-SHA256 `6b3e82f30e71d9e6bffd56d5418379e18a998f73fc8befddd68478e18975d805`; Controller RAM 54.108/262.144 B (20,6 %), Flash 198.340/1.048.576 B (18,9 %). Das in der Config eingetragene 16-MiB-Flash-Layout ist **noch nicht am realen Chip geprueft**.
+- Die bisherige Knx027-Scope-Pruefung ist explizit um die **zwei erlaubten, genau verifizierten KNX028-Toolchain-Pins** erweitert, ohne unkontrollierte Firmware-/ETS-/Upload-Aenderungen zu tolerieren; `tools/audit_knx027_usb_flash_scope.py` wieder PASS.
+- Die Geraete-/USB-/KNX-/Motor-Safety-Gates bleiben unveraendert blockiert. Die Hersteller-Warnungen zu ETS Channel-Number-Prefix und fehlendem XSD-Schema beim Producer sind dokumentierte Software-Warnungen; kein ETS6-Importnachweis.
+
+### Native C++-Tests
+
+Ein separater, opt-in portabler Windows-g++ wird aus dem originalen WinLibs-Release **16.2.0posix-14.0.0-ucrt-r2** mit offiziellem SHA256-Sidecar (keine globalen PATH/Registry-Aenderungen) mittels `tools/install_home_host_compiler.ps1` nach `C:\_myspace\Tools\winlibs-gcc-16.2.0-ucrt\mingw64\bin\g++.exe` installiert. `tools/home_offline_check.ps1 -Native` kann danach alle elf native-Test-Skriptgruppen ausfuehren. `-ControllerBuild` baut zusaetzlich nur einen temporaeren RP2040-Snapshot (kein Upload).
+
+### Verifizierte nativen Hosttests (Home, 13.10.2026)
+
+Das WinLibs-7z-Archiv (109762824 Bytes) wurde gegen das offizielle Release-SHA256-Sidecar verifiziert: `53fb6773fbdf87cdf22b69a6b2a07ee33d3ada413b42d83044bc7cc6481400d2`. `g++.exe --version` ergab **16.2.0 (MinGW-w64 x86_64 UCRT)**. Keine globale Installation oder PATH-Aenderung; die Tests erhalten den Pfad per `CXX` im lokalen PowerShell-Prozess.
+
+`tools/home_offline_check.ps1 -Native` **exit 0 / PASS**: 11/11 native Testskriptgruppen mit erfolgreich gebauten und ausgefuehrten Host-C++-Binaries fuer KNX008, KNX013, KNX014, KNX015, KNX019, KNX020, KNX021, KNX023, KNX024, KNX025, KNX026 einschliesslich Arduino-Hardlock-Mocks. Ebenfalls PASS: KNX027 mock USB-Uploadtests 8/8, KNX026/KNX027 frozen-firmware-Scope, statisches Design-Audit und ASH workflow. `audit_knx022_hw_preflight.py` meldet 35/35 **statische** Invarianten PASS, aber weiterhin **10 reale Hardware-Blocker** mit `BLOCKED_NOT_SAFE_TO_ENERGIZE_MOTOR`.
+
+Der eingeschlossene KNX027 Scope-Audit ist fuer die genau zwei bekannten `controller.ini`-Pins erweitert: fremde Firmware-/ETS-/PCB-Aenderungen und geaenderte USB-Upload-Freigaben bleiben weiterhin verboten. Native Simulation, Software-Queue-ACK und `ARDUINO` Compile-Hardlock sind kein Nachweis einer elektrisch abgesicherten H-Bruecke.
+
+**Letzter End-to-End-Check:** `tools/home_offline_check.ps1 -ControllerBuild` lief als LLO-Home-ASH-Job `job-000072` **exit 0**, wieder mit derselben UF2-SHA256 `6b3e82f30e71d9e6bffd56d5418379e18a998f73fc8befddd68478e18975d805`. Damit ist nicht nur der isolierte Python-Builder, sondern auch das reproduzierbare PowerShell-Runbook praktisch geprueft. Weder USB-Reset noch Upload.

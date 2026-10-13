@@ -99,3 +99,6 @@ KNX026 wurde auf der KNX025-Basis fuer eine rein lesende [portable HMI und Diagn
 ## KNX028 – LLO Home Bootstrap (13.10.2026)
 
 Die Entwicklung wechselt auf den synchronisierten **LLO Home Agent** mit Repo `C:\_myspace\workspace\open-knx-valve-control`. [Offline-Initialisierung](KNX028_LLO_HOME_SETUP.md) und [Host-Checks](../tools/home_offline_check.ps1) dokumentieren System-/Git-/Python-/PlatformIO-Abhaengigkeiten, Mock-USB-Checks und Hardware-Sperren. Ein RP2040/ATtiny-Offlinebuild kann bestanden haben, ohne dass USB, KNX, ETS oder die Motor-Stromversorgung freigegeben sind. Der Teststand KNX018 und Hardware KNX002-006 bleiben separat offen.
+
+
+**KNX028 Software-Gate (13.10.2026):** Der LLO Home Host ist mit gepinntem PlatformIO/RP2040-GCC14, OpenKNXproducer 3.12.2 sowie eigenem nativen WinLibs-g++ eingerichtet. ATtiny3216-Isolationsbuild sowie RP2040-Isolationsbuilds PASS, USB-Mock-Tests 8/8 und native Testgruppen 11/11 PASS; Details, Checkpoints und Reproduktionsbefehle stehen in [KNX028 Home Setup](KNX028_LLO_HOME_SETUP.md). Das zuvor auf Home aufgetretene `__getreent`-Problem mit GCC16.1.0 ist durch die gepinnte GCC14.3.0-Toolchain behoben. **Alle realen Hardware-/ETS-Gates unveraendert offen.**
