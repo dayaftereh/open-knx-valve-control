@@ -122,3 +122,7 @@ Primärer Entwicklungsrechner nach Git-Synchronisierung: **LLO Home** unter `C:\
 ## KNX029 – Offline-Erstkontaktpaket für RP2040 + ATtiny (13.10.2026)
 
 Auf **LLO Home** steht die [KNX029-Erstkontakt-Anleitung](docs/KNX029_FIRST_CONTACT_RUNBOOK.md) bereit. `tools/knx029_prepare_bringup.py` erstellt nach Clean-HEAD-Prüfung in einem **neuen Ordner außerhalb des Repos** ein versionsgebundenes Offlinepaket mit RP2040-UF2/ELF, ATtiny3216-HEX/ELF, Manifest und SHA256SUMS. `plan` und `verify` sind rein lesend, `build` führt nur isolierte Builds aus, kein USB-/UPDI-/KNX-/Motorzugriff. Bei der echten Platine muss U25 zunächst als ATtiny3216 oder ATtiny1616 identifiziert werden; vor jeder Versorgung die [KNX022-Sicherheitsblocker](docs/KNX022_STATIC_HW_READINESS.md) beachten. Bis KNX002–006 bleibt jeder Motor ausdrücklich gesperrt.
+
+## KNX030 – Passive Geräteerkennung auf LLO Home (13.10.2026)
+
+Wenn die V1.2-Platine nach Abschluss der elektrischen KNX002/003-Prüfung angeschlossen werden darf, kann [KNX030](docs/KNX030_PASSIVE_FIRST_CONTACT.md) neue Windows-USB/COM-Geräte und RPI-RP2-Laufwerke durch **Vorher-/Nachher-Snapshots** identifizieren. Die Baseline vom unbelegten Teststand liegt außerhalb Git unter `C:\_myspace\workspace\Builds\OpenKNXValveControl\KNX030-home-before-board-20261013.json`. `tools/knx030_passive_inventory.py plan`, `capture` und `compare` sind ausschließlich passiv/OS-lesend; keine COM-Öffnung, kein KNX/IP-Scan, keine Programmierung, keine Motorfreigabe. Ein lokaler WLAN-Link beweist keine KNX/IP-Verbindung.

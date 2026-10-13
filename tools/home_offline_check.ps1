@@ -35,6 +35,8 @@ try {
                           'tools/audit_knx027_usb_flash_scope.py',
                           'tools/test_knx029_bringup_kit.py',
                           'tools/audit_knx029_bringup_scope.py',
+                          'tools/test_knx030_passive_inventory.py',
+                          'tools/audit_knx030_passive_scope.py',
                           'tools/audit_ash_workflow.py')) {
         Run-PythonTest $script
     }
