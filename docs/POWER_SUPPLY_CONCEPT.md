@@ -116,3 +116,7 @@ beide Pfade mit bewusst validierter gemeinsamer Bezugsmasse.
 - Soll ein automatisches Umschalten der 5-V-Quellen vorgesehen werden, oder ein absichtlich **mechanisch/jumperbasiert exklusiver** Betriebsmodus?
 
 Fuer die V1.2-Platine wurden **keine Loet-, Netz-/PCB-, Software- oder Stromversorgungs-Aenderungen durchgefuehrt**. Dieses Dokument ist ausschliesslich ein belastbarer Auslegungs- und Messplan.
+
+## KNX033 reale D1- und F1-Aenderung (13.10.2026)
+
+Die vorangehende Beschreibung behandelt die urspruenglich **eingezeichnete D1-Diode**. Die neue fotografierte V1.2-Platine hat an `D1` stattdessen eine Drahtbruecke von `5V` nach `D1_1/U6 VIN`: Der Vorwaertsabfall an D1 entfaellt, **aber auch die D1-Rueckwaertssperre**. Q1/JMP1, D6, F1 bleiben als separate, nicht auf Rueckspeisungsfreiheit gepruefte Elemente bestehen. **Foto F1 `T 2,5 A / AC250V`**, Schematicsoll `630 mA / 275 V`: Schutzfunktion vor jedem Power-On neu koordinieren, nicht aus der Zeichnung eine passende Sicherung ableiten. U6 (TSR 1-2433) und Anschlussseite sind auf Frontfotos nicht sicher erkennbar. Die PCB-Herstellerteilenummer fuer die entfernte D1 ist `1N5819HW-7-F`; der Schematic-JSON-D1-Kommentar nennt dagegen `SL1MDIO` (BOM-Labeldifferenz, nicht Netzzuordnung). Mess- und Bildnachweis steht in [KNX033](KNX033_AS_BUILT_PCB_REVIEW.md).

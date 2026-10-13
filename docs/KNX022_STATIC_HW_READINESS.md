@@ -70,3 +70,7 @@ Vom Repository-Root auf dem Desktop Agent:
 Der Audit bricht mit einem **Fehler** ab, wenn sich kritische Netze, STBY, RP2040-Zuordnungen, 200-mΩ-/630-mA-Annotationen oder ATtiny-Target ohne neue Überprüfung ändern. Die Tests simulieren **15 unterschiedliche Driftfälle nur im Arbeitsspeicher** und bestätigen, dass eine MPN-Textkorrektur keine physische Sicherheitsfreigabe liefert.
 
 **Interpretation:** Python Exitcode 0 bedeutet ausschließlich: Die **statische Quelle stimmt mit dem geprüften V1.2-Risikoregister überein**. Der gesonderte Status bleibt **BLOCKED_NOT_SAFE_TO_ENERGIZE_MOTOR**. Kein Software-Audit kann die spätere Hardwaremessung ersetzen.
+
+## KNX033 As-built-Foto-Nachtrag vom 13.10.2026
+
+Inzwischen liegen reale Fotos der **Bestueckungsseite** der V1.2-Platine vor: [Foto-/Netzabgleich](KNX033_AS_BUILT_PCB_REVIEW.md). Der Nutzer meldet JMP1 geschlossen, JMP2/JMP3 jeweils nach oben und D1 als Drahtbruecke statt Diode. **Sichtbare F1 `T 2,5 A` statt Schemabeschriftung `630 mA`** ist ein neuer P0-Abweichungsnachweis. Die D1-Bruecke verbindet `5V` und `D1_1/U6 VIN` jetzt in beide Richtungen. U6-Bestueckung auf Rueckseite, R29-Istwert, U25-Signatur und Quellentrennung sind nicht gemessen. **Alle zehn elektrischen KNX022-Hardwareblocker bleiben offen, keine Power-On- oder Motorfreigabe.**

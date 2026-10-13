@@ -121,3 +121,7 @@ Die Entwicklung wechselt auf den synchronisierten **LLO Home Agent** mit Repo `C
 ## KNX032 – Offline-End-to-End UART/KNX-Mock (13.10.2026)
 
 Mit [KNX032](KNX032_UART_TO_KNX_OFFLINE.md) ist die bisherige Luecke zwischen KNX031-UART-Rohdatenpruefung und produktivem KNX015-TemperaturePublisher unter einem **C++-Hosttest** geschlossen: Protokollbytes aus dem echten KNX014-Codec durch echte `TemperatureBridge`-/`TemperaturePublisher`-Quellen bis zu in-memory KO25–35. Der Test prueft DPT, neun Kanäle, negative/0-Grad-Werte, Offline/Faults, P19, KNXMock-Gap sowie CRC/Sequenzfailclosed, ohne ESP/ETS/USB-/Motorhardware. KNX002–006/018 bleiben offen, KNX009/016 ETS6 deferred.
+
+## KNX033 – As-built Foto- und Prepower-Gates (13.10.2026)
+
+[KNX033 Foto-/Netzreview](KNX033_AS_BUILT_PCB_REVIEW.md) dokumentiert die erste reale V1.2-Bestueckungsseite, JMP1/2/3 sowie den D1-Draht-Bypass. **Foto-F1 T 2,5 A** weicht von der Quelle (**630 mA**) ab; D1 spart zwar den Vorwaertsabfall, verliert aber die Rueckstromsperre. U6 auf der gezeigten Seite nicht zweifelsfrei identifizierbar, Rueckseitenfoto fehlt; U25-Markierung TINY3216 wahrscheinlich, R29-Wert offen. [Strukturierte, rein fotografische Evidenz](KNX033_AS_BUILT_PREFLIGHT.json), Messfelder null, Power-/USB-/KNX-/UPDI-/Motor-Gates false. KNX002–006, KNX018 bleiben hardwareseitig gesperrt.

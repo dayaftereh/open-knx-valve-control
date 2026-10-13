@@ -1,0 +1,217 @@
+{
+  "schema": "openknx-valvecontrol/knx033-visual-as-built-preflight-v1",
+  "board": "OpenKNXValveControl",
+  "revision": "V1.2",
+  "source_git_head": "7d8f835",
+  "date_received": "2026-10-13",
+  "photos": [
+    {
+      "filename": "20261013_160055.jpg",
+      "sha256": "d1d43ebca2575577a443a118c7578d40129f9b239abf974b2431568b032cbdb0",
+      "size_bytes": 637039,
+      "scope": "KNX/USB power, F1, D1, jumpers, INA219/R29"
+    },
+    {
+      "filename": "20261013_160046.jpg",
+      "sha256": "21eeb078657f3835bfff5b7f9d13454e07c54c7d4498e2c0f4d6019847081c16",
+      "size_bytes": 784596,
+      "scope": "whole populated component side"
+    },
+    {
+      "filename": "20261013_160042.jpg",
+      "sha256": "420375056e798662df1b34f1335b48489f11c784210af7c802e63249599522c1",
+      "size_bytes": 753537,
+      "scope": "whole component side, alternate angle"
+    }
+  ],
+  "image_archive": "ChatGPT conversation uploads only; originals were not transferred to LLO Home repository",
+  "source_of_truth": {
+    "schematic": "schematic/sch_knx-valve-control_v1.2.json",
+    "pcb": "schematic/pcb_knx-valve-control_v1.2.json",
+    "physical": "user-shared photos and explicit jumper/D1 description",
+    "electrical_measurements": "NONE"
+  },
+  "net_contracts": {
+    "D1": {
+      "1": "D1_1",
+      "2": "5V"
+    },
+    "F1": {
+      "1": "5V_",
+      "2": "5V"
+    },
+    "D6": {
+      "1": "5V_",
+      "2": "USB_VCC"
+    },
+    "Q1": {
+      "1": "USB_VCC",
+      "2": "5V_",
+      "3": "R9_2"
+    },
+    "JMP1": {
+      "1": "KNX_VCC",
+      "2": "R9_2"
+    },
+    "JMP2": {
+      "1": "KNX_RX'",
+      "2": "KNX_RX",
+      "3": "KNX_TX'"
+    },
+    "JMP3": {
+      "1": "KNX_RX'",
+      "2": "KNX_TX",
+      "3": "KNX_TX'"
+    },
+    "U6": {
+      "1": "D1_1",
+      "2": "GND",
+      "3": "3.3V"
+    },
+    "R29": {
+      "1": "3.3V",
+      "2": "M_VCC"
+    },
+    "U25": {
+      "1": "3.3V",
+      "16": "UPDI",
+      "20": "GND"
+    }
+  },
+  "reported_modifications": {
+    "JMP1": {
+      "user_report": "solder bridge closed",
+      "visual_corroboration": "bridge appears populated",
+      "electrical_verified": false
+    },
+    "JMP2": {
+      "user_report": "upper-side bridge closed",
+      "visual_corroboration": "two adjacent pads appear bridged; exact pin pair not ohm-tested",
+      "electrical_verified": false
+    },
+    "JMP3": {
+      "user_report": "upper-side bridge closed",
+      "visual_corroboration": "two adjacent pads appear bridged; exact pin pair not ohm-tested",
+      "electrical_verified": false
+    },
+    "D1": {
+      "user_report": "original diode removed and substituted with conductive wire/solder bridge",
+      "visual_corroboration": "exposed copper/wire and solder occupying D1 footprint; diode body not present",
+      "electrical_verified": false,
+      "source_original": "1N5819HW-7-F",
+      "effect": "5V to D1_1/U6 VIN shunted bidirectionally; original diode reverse isolation absent"
+    }
+  },
+  "observations": {
+    "pcb_revision": {
+      "evidence": "visible silkscreen OpenKNXValveControl V1.2",
+      "confidence": "high",
+      "electrical_verified": false
+    },
+    "RP2040_U18": {
+      "evidence": "installed QFN with Raspberry Pi logo",
+      "confidence": "high",
+      "electrical_verified": false
+    },
+    "U25": {
+      "evidence": "Atmel marking appears TINY3216; complete suffix not reliably readable from photo",
+      "confidence": "medium",
+      "hardware_mcu_signature": null,
+      "electrical_verified": false,
+      "pcb_metadata": "ATTINY1616-SN",
+      "schematic_and_firmware": "ATtiny3216"
+    },
+    "U6": {
+      "evidence": "TSR 1-2433 3-pin regulator not independently identifiable on shown side; possible reverse-side installation requires photograph",
+      "confidence": "unknown",
+      "installed_location": null,
+      "electrical_verified": false
+    },
+    "F1": {
+      "photo_marking": "T 2.5A ... AC250V",
+      "schematic_nominal_mA": 630,
+      "photo_apparent_nominal_mA": 2500,
+      "manufacturer_exact_part": null,
+      "confidence": "high for 2.5A text, exact fuse type unknown",
+      "risk": "photo rating conflicts with intended 630mA protective fuse; NO ENERGIZE pending BOM/protection validation"
+    },
+    "D1_wire": {
+      "evidence": "visible soldered jumper with a copper tip projecting beyond solder, close to nearby 5V/D5/R7 tracks",
+      "confidence": "high",
+      "clearance_measured_mm": null,
+      "continuity_verified": false
+    },
+    "R29": {
+      "evidence": "two-terminal black low-profile part populated at R29, resistor marking/value illegible",
+      "actual_ohms": null,
+      "schematic_nominal_ohms": 0.2,
+      "pcb_mpn": "SCR1206F1M1",
+      "electrical_verified": false
+    },
+    "drivers": {
+      "evidence": "four populated TB6612FNG U34 U36 U37 U35 visible",
+      "confidence": "high",
+      "motor_outputs_electrically_tested": false,
+      "standby_hardware_isolation": false
+    },
+    "USB1": {
+      "evidence": "USB-C connector populated",
+      "confidence": "high",
+      "bus_power_safe_verified": false
+    },
+    "U16": {
+      "evidence": "small 8-pin external memory component visible",
+      "part_marking_verified": false,
+      "flash_capacity_verified": false
+    }
+  },
+  "nominal_expected_links": {
+    "JMP1": [
+      "1",
+      "2"
+    ],
+    "JMP2_upper_if_matching_PCB_orientation": [
+      "1",
+      "2"
+    ],
+    "JMP3_upper_if_matching_PCB_orientation": [
+      "2",
+      "3"
+    ],
+    "D1_bypass": [
+      "1",
+      "2"
+    ]
+  },
+  "unpowered_checks": {
+    "JMP1_pad1_2_ohms": null,
+    "JMP2_pad1_2_ohms": null,
+    "JMP2_pad2_3_ohms": null,
+    "JMP3_pad2_3_ohms": null,
+    "JMP3_pad1_2_ohms": null,
+    "D1_pad1_2_ohms": null,
+    "D1_bridge_to_adjacent_D5_R7_short_test": null,
+    "F1_pad1_2_ohms": null,
+    "U6_physical_location_and_part": null,
+    "U6_input_to_ground_observation": null,
+    "three_point_three_V_to_GND_observation": null,
+    "five_V_to_GND_observation": null,
+    "U25_full_marking_and_read_only_signature": null,
+    "R29_as_built_part_and_milliohm_measurement": null,
+    "reverse_side_photo_received": null
+  },
+  "pre_energization_release": {
+    "correct_fuse_protective_rating_verified": false,
+    "power_source_selection_Q1_JMP1_verified": false,
+    "D1_bypass_short_and_reverse_current_safety_verified": false,
+    "U6_regulator_physically_verified": false,
+    "rails_and_updi_voltage_topology_verified": false,
+    "KNX_to_USB_backfeed_absent_verified": false,
+    "MCU_and_flash_variant_confirmed": false,
+    "any_power_on_authorized": false,
+    "any_USB_UPDI_KNX_contact_authorized": false,
+    "motor_enable_authorized": false
+  },
+  "status": "BLOCKED_NO_POWER_NO_FLASH_NO_MOTOR",
+  "disclaimer": "Pictures and a user-reported solder configuration are not continuity measurements, isolated supply validation, DRC or a flash/motor authorization."
+}
