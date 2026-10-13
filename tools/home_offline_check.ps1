@@ -39,6 +39,7 @@ try {
                           'tools/audit_knx030_passive_scope.py',
                           'tools/test_knx031_uart_trace.py',
                           'tools/audit_knx031_uart_scope.py',
+                          'tools/audit_knx032_replay_scope.py',
                           'tools/audit_ash_workflow.py')) {
         Run-PythonTest $script
     }
@@ -63,9 +64,10 @@ try {
             'tools/test_knx023_room_control_runtime.py',
             'tools/test_knx024_room_dpt_adapter.py',
             'tools/test_knx025_fault_supervisor.py',
-            'tools/test_knx026_hmi_diagnostics.py'
+            'tools/test_knx026_hmi_diagnostics.py',
+            'tools/test_knx032_replay_contract.py'
         )) { Run-PythonTest $script }
-        Write-Output 'PASS all eleven native-script groups (each can contain multiple C++ binaries)'
+        Write-Output 'PASS all twelve native-script groups (each can contain multiple C++ binaries)'
     }
 
     if ($ControllerBuild) {

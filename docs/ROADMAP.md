@@ -117,3 +117,7 @@ Die Entwicklung wechselt auf den synchronisierten **LLO Home Agent** mit Repo `C
 ## KNX031 – KNX014 UART-Trace-Diagnose offline (13.10.2026)
 
 [KNX031 UART-Runbook](KNX031_UART_TRACE_OFFLINE.md) ergänzt KNX029/030 um einen read-only Host-Decoder für **gespeicherte** KNX014-UART-Rohdaten und native C++-Golden-Vektoren. Der Decoder validiert CRC, Framing, Uptime, 9 Temperaturkanäle, Flags/Faults und markiert Zeit-/Richtungs-/Online-Aussagen ausdrücklich als unbekannt. Das gemeinsame Firmwareprotokoll, ETS, PCB, Upload und Motorsteuerung bleiben unverändert. Reale UART-/USB-/KNX-/ETS-Gates erfordern weiterhin eine geprüfte Platine.
+
+## KNX032 – Offline-End-to-End UART/KNX-Mock (13.10.2026)
+
+Mit [KNX032](KNX032_UART_TO_KNX_OFFLINE.md) ist die bisherige Luecke zwischen KNX031-UART-Rohdatenpruefung und produktivem KNX015-TemperaturePublisher unter einem **C++-Hosttest** geschlossen: Protokollbytes aus dem echten KNX014-Codec durch echte `TemperatureBridge`-/`TemperaturePublisher`-Quellen bis zu in-memory KO25–35. Der Test prueft DPT, neun Kanäle, negative/0-Grad-Werte, Offline/Faults, P19, KNXMock-Gap sowie CRC/Sequenzfailclosed, ohne ESP/ETS/USB-/Motorhardware. KNX002–006/018 bleiben offen, KNX009/016 ETS6 deferred.
