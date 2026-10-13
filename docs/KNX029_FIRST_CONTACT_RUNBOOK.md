@@ -73,3 +73,7 @@ Besonders wichtig: Die V1.2-TB6612-STBY-Pins sind laut Schaltung fest auf 3,3 V.
 Fotos und gemessene Werte nach Gate A/B protokollieren, inklusive Zeit/Boardrevision/BOM/U25-Markierung/RP-Flash-Chip, beteiligter USB-Port-IDs und Netzteilgrenzen. An jedem Gateway genau **GO**, **BLOCKED** oder **NOT TESTED** dokumentieren, keine Werte annehmen. Gerätetests bleiben bis zum tatsächlichen Aufbau offen.
 
 Siehe [KNX018 Teststand](KNX018_LAPTOP_UPDI_TESTBENCH.md), [KNX022 statische Hardware-Gates](KNX022_STATIC_HW_READINESS.md), [KNX027 USB Recovery](KNX027_USB_FLASH_AUTOMATION.md) und [KNX028 LLO Home Toolchain](KNX028_LLO_HOME_SETUP.md).
+
+### PlattformIO-Environmentwechsel und Vollständigkeit
+
+Beim ersten Realbuild auf LLO Home kompilierten beide Umgebungen erfolgreich, aber der PlatformIO-Wechsel `controller` → `temperature` entfernte die vorherige `firmware.uf2`/ELF aus `.pio/build/controller`. KNX029 unterbricht deshalb die Paketausgabe, statt eine unvollständige Datei zu melden. Die korrigierte Toolversion sichert und prüft beide RP2040-Binaries unmittelbar nach dem Controller-Build in einen separaten temporären Bereich und paketiert erst danach die ATtiny-Artefakte. Ein zusätzlicher Negativtest simuliert genau die Buildordner-Bereinigung. Der Upload bleibt ausschließlich ein späterer, getrennt freizugebender KNX018-Arbeitsschritt.

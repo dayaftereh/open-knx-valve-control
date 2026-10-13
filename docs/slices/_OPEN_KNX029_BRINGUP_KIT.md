@@ -54,3 +54,10 @@ Implementiere das stromlose, fail-closed KNX029 Bundle mit reproduzierbarem Soft
 **Gate 3 status:** implementation and negative tests PASS.
 
 **Gate 4 next:** stage reviewed files, Git diff --check; commit implementation to establish a clean full Git SHA; generate real dual-firmware bundle in a fresh external directory on Home, verify all hashes and target artifacts; close marker/HISTORY in a separate commit. No push, motor, USB flash, UPDI or KNX send.
+
+### Offline-Build-Regressionsprüfung nach Implementierungscommit
+
+- Implementierungscommit `0dfb518`: Doppel-Target-build `job-000112` **beide Firmwarekompilationen PASS** (RP2040 und ATtiny3216), aber Verpackung BLOCKED: PlatformIO bereinigte beim Environmentwechsel die Controller-UF2/-ELF aus dem temporaeren `.pio/build/controller`. Der Packaging-Workflow hat deshalb zu Recht **kein unvollstaendiges Paket** freigegeben.
+- Fix: RP2040-UF2 und -ELF unmittelbar nach dem ersten erfolgreichen Build mit SHA-Abgleich in einen separaten Temp-Bereich kopieren. Erst danach den ATtiny-Environment-Build starten; bei KIT-Build werden ausschliesslich verifizierte gesicherte Dateien verwendet.
+- Neuer adversarial FakeRunner-Test simuliert das reale Loeschen des Controller-Buildordners bei ATtiny-Start. KNX029 **14/14 Tests PASS** einschliesslich des neuen Falles.
+- No GitHub-Push, kein Motor, kein Bus, kein Flash. Der real erneut laufende Doppel-Build wird erst nach einem weiteren sauberen Fix-Commit gestartet.

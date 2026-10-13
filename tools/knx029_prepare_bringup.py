@@ -201,16 +201,31 @@ def build_bundle(expected_head: str, target_dir: str,
             pio, producer, temp, root=root, runner=runner)
         if not elf.is_file() or not uf2.is_file():
             raise KitError("RP2040 build incomplete")
+        # PlatformIO may clean a different environment's .pio/build outputs
+        # when switching toolchains (RP2040 -> ATtiny). Capture the finished
+        # controller binaries outside .pio BEFORE starting the second build.
+        preserved_dir = temp / ".knx029-captured-rp2040"
+        preserved_dir.mkdir()
+        preserved: dict[str, Path] = {}
+        for name, origin in (("controller-rp2040.uf2", uf2),
+                             ("controller-rp2040.elf", elf)):
+            if not origin.is_file() or origin.stat().st_size == 0:
+                raise KitError("Empty RP2040 artifact: " + name)
+            saved = preserved_dir / name
+            shutil.copyfile(origin, saved)
+            if sha256_file(saved) != sha256_file(origin):
+                raise KitError("Failed to safeguard controller artifact: " + name)
+            preserved[name] = saved
         strip_updi_actions_in_temporary_config(temp)
         env = os.environ.copy()
         env["PATH"] = str(Path(producer).parent) + os.pathsep + env.get("PATH", "")
         # Explicit BUILD, never 'upload'; temp config lacks ALL programmer hooks.
         usb.run_checked([pio, "run", "-e", "temperature"], cwd=temp,
                         env=env, runner=runner)
-        for relative in ARTIFACTS.values():
-            source = temp / relative
+        for name, relative in ARTIFACTS.items():
+            source = preserved.get(name, temp / relative)
             if not source.is_file() or source.stat().st_size == 0:
-                raise KitError("Expected firmware build artifact missing: " + relative)
+                raise KitError("Expected firmware build artifact missing: " + name)
         # Detect concurrent source/branch mutation before publishing artifacts.
         require_clean_commit(expected, root, runner)
         with tempfile.TemporaryDirectory(
@@ -219,7 +234,7 @@ def build_bundle(expected_head: str, target_dir: str,
             staging.mkdir()
             records: dict[str, dict[str, Any]] = {}
             for name, relative in ARTIFACTS.items():
-                inp = temp / relative
+                inp = preserved.get(name, temp / relative)
                 out = staging / name
                 shutil.copyfile(inp, out)
                 hashed = sha256_file(out)

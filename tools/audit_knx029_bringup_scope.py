@@ -58,6 +58,9 @@ def run() -> None:
         '"attiny_signature_readonly_verified": False',
         '"rp2040_software_boot_and_com_verified": False',
         'SHA256SUMS.txt', 'ARTIFACTS', 'require_clean_commit(expected, root, runner)',
+        'preserved_dir = temp / ".knx029-captured-rp2040"',
+        'saved = preserved_dir / name',
+        'source = preserved.get(name, temp / relative)',
     ):
         assert term in script, f"Missing hardlock: {term}"
     # Only compiler commands are permitted; all programmer-specific entries

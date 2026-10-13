@@ -10,6 +10,7 @@ from contextlib import redirect_stdout
 import io
 import json
 from pathlib import Path
+import shutil
 import subprocess
 import tempfile
 import unittest
@@ -25,12 +26,14 @@ OTHER_HEAD = "b" * 40
 class FakeRunner:
     def __init__(self, *, head: str = HEAD, dirty: bool = False,
                  fail_target: str = "", missing_hex: bool = False,
-                 change_head_midbuild: bool = False) -> None:
+                 change_head_midbuild: bool = False,
+                 purge_controller_on_temperature: bool = False) -> None:
         self.head = head
         self.dirty = dirty
         self.fail_target = fail_target
         self.missing_hex = missing_hex
         self.change_head_midbuild = change_head_midbuild
+        self.purge_controller_on_temperature = purge_controller_on_temperature
         self.calls: list[list[str]] = []
         self.snapshots = 0
         self.attiny_config_safe = False
@@ -55,6 +58,8 @@ class FakeRunner:
         tmp = Path(kwargs["cwd"])
         target = cmd[-1]
         if target == "temperature":
+            if self.purge_controller_on_temperature:
+                shutil.rmtree(tmp / ".pio" / "build" / "controller")
             conf = (tmp / "src" / "temperature" / "temperature.ini").read_text()
             self.attiny_config_safe = all(
                 value not in conf for value in
@@ -145,6 +150,16 @@ class KNX029OfflineKitTests(unittest.TestCase):
             self.assertEqual(record["size_bytes"], artifact.stat().st_size)
             self.assertIn(name, sums)
         self.assertFalse((kit.ROOT / "candidate-1").exists())
+
+    def test_second_platform_build_cannot_discard_controller_images(self):
+        # Reproduces the real first Home dual-build: PlatformIO deleted
+        # the controller UF2/ELF while switching from RP2040 to ATtiny.
+        runner = FakeRunner(purge_controller_on_temperature=True)
+        actual = self.build(runner)
+        self.assertTrue(runner.attiny_config_safe)
+        self.assertEqual(kit.verify_bundle(str(actual))["artifacts_verified"], 4)
+        self.assertEqual((actual / "controller-rp2040.uf2").read_bytes(),
+                         b"UF2-CONTROLLER-MOCK")
 
     def test_missing_hex_fails_without_published_bundle(self):
         runner = FakeRunner(missing_hex=True)
