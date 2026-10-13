@@ -37,6 +37,8 @@ try {
                           'tools/audit_knx029_bringup_scope.py',
                           'tools/test_knx030_passive_inventory.py',
                           'tools/audit_knx030_passive_scope.py',
+                          'tools/test_knx031_uart_trace.py',
+                          'tools/audit_knx031_uart_scope.py',
                           'tools/audit_ash_workflow.py')) {
         Run-PythonTest $script
     }

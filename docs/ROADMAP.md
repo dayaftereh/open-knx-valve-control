@@ -113,3 +113,7 @@ Die Entwicklung wechselt auf den synchronisierten **LLO Home Agent** mit Repo `C
 ## KNX030 – LLO Home First-Contact OS-Inventur (13.10.2026)
 
 [Passive Geräte-Inventur](KNX030_PASSIVE_FIRST_CONTACT.md): Windows PnP/USB/COM, RPI-RP2-Volume-Label und lokale Netzwerklinks lassen sich auf LLO Home softwareseitig lesen und zwischen zwei Snapshots vergleichen, ohne COM, UPDI, KNX/IP oder Motoren anzusprechen. Vorab-Baseline außerhalb Git dokumentiert (15 USB/Port-Kandidaten, kein RPI-RP2-Laufwerk, 21 lokale Netzwerkadapter); Geräteserien aus PnP-Instanzen werden nur gehasht gespeichert. Der später sichtbare neue Eintrag ist ein *Kandidat*, nie eine Flash-/KNX-/Motorfreigabe. KNX002..006, KNX018 und ETS6-Prüfung bleiben unabhängig offen.
+
+## KNX031 – KNX014 UART-Trace-Diagnose offline (13.10.2026)
+
+[KNX031 UART-Runbook](KNX031_UART_TRACE_OFFLINE.md) ergänzt KNX029/030 um einen read-only Host-Decoder für **gespeicherte** KNX014-UART-Rohdaten und native C++-Golden-Vektoren. Der Decoder validiert CRC, Framing, Uptime, 9 Temperaturkanäle, Flags/Faults und markiert Zeit-/Richtungs-/Online-Aussagen ausdrücklich als unbekannt. Das gemeinsame Firmwareprotokoll, ETS, PCB, Upload und Motorsteuerung bleiben unverändert. Reale UART-/USB-/KNX-/ETS-Gates erfordern weiterhin eine geprüfte Platine.

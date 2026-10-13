@@ -94,3 +94,7 @@ KNX018 muss vor physischem Upload: (1) Repo mit **allen** lokalen Git-Commits au
 ## KNX030-Nachtrag (13.10.2026): LLO Home ist der führende Software-/Erstkontaktrechner
 
 Der aktuelle Git-Stand und das fertig geprüfte KNX029-Offline-Firmwarepaket liegen auf **LLO Home**, nicht allein auf dem ursprünglich beschriebenen Laptop. Für den spätere Erstkontakt siehe [KNX030 passive Windows-Geräteinventur](KNX030_PASSIVE_FIRST_CONTACT.md): ein gespeicherter Basis-Snapshot vor dem Anschluss und ein neuer Snapshot nach dem **elektrisch freigegebenen** USB-Anschluss können nur neue PnP-/COM-Einträge anzeigen. Der Vorgang öffnet keinen Port und prüft noch nicht das Board oder die KNX/IP-Schnittstelle. Die in diesem Dokument beschriebenen CN1-/UPDI-, Bus-, Versorgungs- und Motor-Sicherheitsgates bleiben unverändert gültig.
+
+## KNX031-Nachtrag – Rohdaten aus dem internen ATtiny-Temperatur-UART
+
+Für einen späteren **separat freigegebenen** Rohmitschnitt der RP2040-Serial2 ↔ ATtiny ALT1 PA1/PA2-Leitung steht die rein dateibasierte [KNX031 UART-Analyse](KNX031_UART_TRACE_OFFLINE.md) bereit. Der LLO-Home-USB-CDC-Anschluss und die CH340G-Programmer-CN1-TXD/RXD-Pins liefern nicht automatisch diesen internen UART1-Verkehr. Keine Portöffnung in der Auswerte-CLI, keine Aufzeichnung ohne sicheren Spannungs-/GND-/Pegelcheck, keine elektrische oder motorische Freigabe durch einen guten CRC.

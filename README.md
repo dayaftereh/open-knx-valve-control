@@ -126,3 +126,7 @@ Auf **LLO Home** steht die [KNX029-Erstkontakt-Anleitung](docs/KNX029_FIRST_CONT
 ## KNX030 – Passive Geräteerkennung auf LLO Home (13.10.2026)
 
 Wenn die V1.2-Platine nach Abschluss der elektrischen KNX002/003-Prüfung angeschlossen werden darf, kann [KNX030](docs/KNX030_PASSIVE_FIRST_CONTACT.md) neue Windows-USB/COM-Geräte und RPI-RP2-Laufwerke durch **Vorher-/Nachher-Snapshots** identifizieren. Die Baseline vom unbelegten Teststand liegt außerhalb Git unter `C:\_myspace\workspace\Builds\OpenKNXValveControl\KNX030-home-before-board-20261013.json`. `tools/knx030_passive_inventory.py plan`, `capture` und `compare` sind ausschließlich passiv/OS-lesend; keine COM-Öffnung, kein KNX/IP-Scan, keine Programmierung, keine Motorfreigabe. Ein lokaler WLAN-Link beweist keine KNX/IP-Verbindung.
+
+## KNX031 – Offline UART-Trace-Diagnose (13.10.2026)
+
+Mit [KNX031](docs/KNX031_UART_TRACE_OFFLINE.md) kann der KNX014-Datenrahmen zwischen ATtiny und RP2040 später aus einer **gespeicherten, separat und sicher aufgezeichneten Bytefolge** geprüft werden: A5-5A, CRC16, Sequenz, neun T0…T8-Kanäle und Sensorfehler. Ein nativer C++-Golden-Vektor-Test verwendet die tatsächliche gemeinsame Protokolldatei; die LLO-Home-Beispieldatei liegt außerhalb Git im Builds-Ordner. Der rein lokale Befehl tools/knx031_uart_trace.py inspect --format hex|binary öffnet **keinen COM-Port** und erlaubt keine Programmierung/KNX-/Motoraktion. Ohne zeitgestempelten und gerichteten Mitschnitt ist damit keine Bus-/Link-Onlinefreigabe verbunden.
