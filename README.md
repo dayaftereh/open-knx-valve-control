@@ -117,3 +117,8 @@ Primärer Entwicklungsrechner nach Git-Synchronisierung: **LLO Home** unter `C:\
 
 
 **KNX028 Home-QA (13.10.2026):** RP2040-Compilerproblem behoben: `src/controller/controller.ini` pinnt ARM GCC 14.3.0 und den getesteten Raspberry-Pi-PlatformIO-Commit, der isolierte Controller-Build ist erfolgreich (RAM 20,6 %, Sketch 18,9 % des 1-MiB-Firmwarebereichs). Ein separater WinLibs-g++ ist per upstream SHA256 installiert; `powershell -NoProfile -ExecutionPolicy Bypass -File tools/home_offline_check.ps1 -Native` hat alle 11 nativen Test-Skriptgruppen samt ARDUINO-Hardlock bestanden. `-ControllerBuild` prueft zusaetzlich rein offline die RP2040-Firmware. **Dies ist kein USB-Flash, keine KNX-/ETS-Abnahme und keine Freigabe der acht Motoren.**
+
+
+## KNX029 – Offline-Erstkontaktpaket für RP2040 + ATtiny (13.10.2026)
+
+Auf **LLO Home** steht die [KNX029-Erstkontakt-Anleitung](docs/KNX029_FIRST_CONTACT_RUNBOOK.md) bereit. `tools/knx029_prepare_bringup.py` erstellt nach Clean-HEAD-Prüfung in einem **neuen Ordner außerhalb des Repos** ein versionsgebundenes Offlinepaket mit RP2040-UF2/ELF, ATtiny3216-HEX/ELF, Manifest und SHA256SUMS. `plan` und `verify` sind rein lesend, `build` führt nur isolierte Builds aus, kein USB-/UPDI-/KNX-/Motorzugriff. Bei der echten Platine muss U25 zunächst als ATtiny3216 oder ATtiny1616 identifiziert werden; vor jeder Versorgung die [KNX022-Sicherheitsblocker](docs/KNX022_STATIC_HW_READINESS.md) beachten. Bis KNX002–006 bleibt jeder Motor ausdrücklich gesperrt.

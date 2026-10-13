@@ -33,6 +33,8 @@ try {
                           'tools/audit_design.py',
                           'tools/audit_knx026_hmi_scope.py',
                           'tools/audit_knx027_usb_flash_scope.py',
+                          'tools/test_knx029_bringup_kit.py',
+                          'tools/audit_knx029_bringup_scope.py',
                           'tools/audit_ash_workflow.py')) {
         Run-PythonTest $script
     }

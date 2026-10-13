@@ -102,3 +102,8 @@ Die Entwicklung wechselt auf den synchronisierten **LLO Home Agent** mit Repo `C
 
 
 **KNX028 Software-Gate (13.10.2026):** Der LLO Home Host ist mit gepinntem PlatformIO/RP2040-GCC14, OpenKNXproducer 3.12.2 sowie eigenem nativen WinLibs-g++ eingerichtet. ATtiny3216-Isolationsbuild sowie RP2040-Isolationsbuilds PASS, USB-Mock-Tests 8/8 und native Testgruppen 11/11 PASS; Details, Checkpoints und Reproduktionsbefehle stehen in [KNX028 Home Setup](KNX028_LLO_HOME_SETUP.md). Das zuvor auf Home aufgetretene `__getreent`-Problem mit GCC16.1.0 ist durch die gepinnte GCC14.3.0-Toolchain behoben. **Alle realen Hardware-/ETS-Gates unveraendert offen.**
+
+
+## KNX029 – Erstkontaktpaket und Inbetriebnahmereihenfolge (13.10.2026)
+
+[KNX029 Runbook](KNX029_FIRST_CONTACT_RUNBOOK.md) bereitet auf LLO Home **ohne angeschlossene Platine** ein versionsgebundenes Zwei-Controller-Firmwarepaket und Gate-Protokoll für den späteren KNX018-Teststand vor. `tools/knx029_prepare_bringup.py` mit `plan`, `build`, `verify` ist offline; der Build erzeugt nur Kandidaten und fordert sauberes Git/volle Commit-SHA. Die tatsächlich bestückte U25-Signatur, die 16-MiB-Flash-Annahme, UPDI-Pegel/CN1.1 und USB-/KNX-Rückspeisung sind bei KNX002/003/018 zu prüfen; KNX004–006 Motoren, KNX009/016 ETS6 verbleiben offen.
