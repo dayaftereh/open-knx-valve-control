@@ -77,3 +77,20 @@ Siehe [KNX018 Teststand](KNX018_LAPTOP_UPDI_TESTBENCH.md), [KNX022 statische Har
 ### PlattformIO-Environmentwechsel und Vollständigkeit
 
 Beim ersten Realbuild auf LLO Home kompilierten beide Umgebungen erfolgreich, aber der PlatformIO-Wechsel `controller` → `temperature` entfernte die vorherige `firmware.uf2`/ELF aus `.pio/build/controller`. KNX029 unterbricht deshalb die Paketausgabe, statt eine unvollständige Datei zu melden. Die korrigierte Toolversion sichert und prüft beide RP2040-Binaries unmittelbar nach dem Controller-Build in einen separaten temporären Bereich und paketiert erst danach die ATtiny-Artefakte. Ein zusätzlicher Negativtest simuliert genau die Buildordner-Bereinigung. Der Upload bleibt ausschließlich ein späterer, getrennt freizugebender KNX018-Arbeitsschritt.
+
+## 6. Abgeschlossener echter Offline-Doppelbuild (13.10.2026)
+
+Der Build wurde auf LLO Home im ASH-Job `job-000122` nach dem Fix des PlattformIO-Environmentwechsels erfolgreich ausgefuehrt; `exit=0`. Er verwendet den **sauberen Quellcommit `b016a16243ca207b491383d7f9bdd446ace2f288`**. Die Paketpruefung `verify` ergab **4/4 Firmwaredateien und 5/5 SHA256SUMS-Eintraege PASS**, alle acht physischen Freigabefelder bleiben `false`.
+
+`C:\_myspace\workspace\Builds\OpenKNXValveControl\KNX029-b016a16-v1` ist bewusst **ausserhalb** des Git-Repositories. Nicht ungeprueft nach `src/` kopieren oder in Git committieren; das Manifest dokumentiert den Build-Stand, keine Freigabe.
+
+| Firmwaredatei | Byte | SHA256 |
+| --- | ---: | --- |
+| `controller-rp2040.uf2` | 420864 | `6b3e82f30e71d9e6bffd56d5418379e18a998f73fc8befddd68478e18975d805` |
+| `controller-rp2040.elf` | 1783076 | `47243260548aeb73aeffb76be18fcfd5bd4b275b2423dade947831f0edbce34f` |
+| `temperature-attiny3216.hex` | 24467 | `72c962c038a077d23fbb7ecb160fcffab2c705bb111219de0840637610c954e8` |
+| `temperature-attiny3216.elf` | 36100 | `e6bd85a824b31a988b975d2705de42ac42911d656b86b4ed972d2761b31c1e78` |
+
+Controller RAM 54108/262144 Bytes (20,6%), Programmspeicher 198340/1048576 (18,9% der bisher angenommenen Firmwarepartition). ATtiny RAM 983/2048 Bytes (48,0%), Flash 8691/32768 (26,5%). **Die reale U25-IC-Identitaet, der bestueckte RP2040-Flashchip und der Stromversorgungsaufbau sind noch nicht verifiziert.** Kein USB-Reset/Flash, keine UPDI-Erase-/Write-Operation und keine KNX-Kommunikation oder Motorbewegung.
+
+Die erstmalig ausgefuehrte Doppel-Build-Pruefung vor dem Fix kompilierte beide Targets, aber ein PlatformIO-Environmentwechsel loeschte die RP2040-Builddateien vor dem Packen. Das Tool verweigerte korrekt ein unvollstaendiges Kit. Die spaetere Version bewahrt beide RP2040-Binaries nach erfolgreichem Build mit eigenem Hashcheck und testet dieses Aufraeumverhalten in einem gezielten Mockfall.
