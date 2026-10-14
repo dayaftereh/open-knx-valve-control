@@ -1,0 +1,95 @@
+{
+  "slice": "KNX043",
+  "captured_utc": "2026-10-14T19:13:23+00:00",
+  "test_type": "live read-only device and KNXnetIP network discovery",
+  "host": "LLO Home",
+  "usb_bootloader": {
+    "connected": true,
+    "vidpid": "2E8A:0003",
+    "name": "RP2040 ROM BOOTSEL",
+    "device_instance": "USB\\VID_2E8A&PID_0003\\E0C9125B0D9B",
+    "usb_rom_serial": "E0C9125B0D9B",
+    "drive": "D:",
+    "label": "RPI-RP2",
+    "uf2_bootloader_version": "3.0",
+    "board_id": "RPI-RP2",
+    "usb_mass_storage": {
+      "windows_driver": "USBSTOR",
+      "status": "OK",
+      "problem_code": 0
+    },
+    "rp2_boot_usb_interface": {
+      "windows_status": "Error",
+      "problem_code": 28,
+      "driver_service": null,
+      "picotool_info": "device detected but not accessible; install driver if picotool access required"
+    },
+    "com_port": null,
+    "application_usb_serial_reported_on_desktop": "E464401787522D33",
+    "flashed": false,
+    "firmware_read": false
+  },
+  "home_network": {
+    "interface": "WLAN",
+    "local_ip": "192.168.178.21",
+    "ipv4_prefix": 24,
+    "gateway": "192.168.178.1"
+  },
+  "knxnetip": {
+    "discovered": true,
+    "ip": "192.168.178.5",
+    "port": 3671,
+    "multicast_search": "224.0.23.12:3671, KNXnetIP SearchRequest 0x0201",
+    "search_response": "0x0202 received",
+    "unicast_description": "0x0203 -> response 0x0204 received",
+    "name_from_30_char_dib": "SCN-IP000.03 IP Interface mit ",
+    "knx_individual_address": "1.0.1",
+    "this_address_belongs_to_interface": true,
+    "device_medium_code": 2,
+    "device_status_code": 0,
+    "multicast_address": "224.0.23.12",
+    "mac": "CC:1B:E0:81:6C:20",
+    "service_families": [
+      {
+        "id": 2,
+        "version": 2
+      },
+      {
+        "id": 3,
+        "version": 2
+      },
+      {
+        "id": 4,
+        "version": 2,
+        "name": "Tunneling"
+      },
+      {
+        "id": 5,
+        "version": 2
+      },
+      {
+        "id": 7,
+        "version": 1
+      }
+    ],
+    "no_knx_tp_telegram_sent": true,
+    "no_tunneling_connection_started": true,
+    "isolated_knx_testbus_verified": false
+  },
+  "ets6": {
+    "executable": "C:\\Program Files (x86)\\ETS6\\ETS6.exe",
+    "installed": true,
+    "running": false,
+    "automatic_interface_discovery_in_ets_software_tested": false
+  },
+  "unresolved_hardware_safety": [
+    "R17 KNX_TX pull-up to 3V3",
+    "U11 previously overheated, U9 health unknown",
+    "STKNX TX idle must be LOW including ROM/reset/brownout",
+    "F1/D1/JMP1 power and backfeed uncertain"
+  ],
+  "all_17_physical_gate_measurements_remain_unverified": true,
+  "firmware_flash_attempted": false,
+  "knx_tp_bus_connection_attempted": false,
+  "knx_tunneling_attempted": false
+}

@@ -36,5 +36,12 @@
     "motor_standby": "TB6612 STBY hardwired HIGH; no independent STO"
   },
   "measurement_log": [],
-  "later_connection_policy": "NEVER_AUTOMATICALLY_AUTHORIZE_KNX_POWER; completion only requests qualified manual review"
+  "later_connection_policy": "NEVER_AUTOMATICALLY_AUTHORIZE_KNX_POWER; completion only requests qualified manual review",
+  "live_network_usb_discovery": {
+    "date": "2026-10-14",
+    "evidence": "docs/KNX043_HOME_LIVE_DISCOVERY_20261014.json",
+    "rp2040_rom_bootsel": "VIDPID 2E8A:0003, RPI-RP2 D:, picotool USB MI_01 needs driver (code28)",
+    "knx_ip": "192.168.178.5:3671, individual address 1.0.1, KNXnet/IP tunneling service advertised",
+    "network_only": "No ETS tunnel and no valve KNX bus connection; hardware gate remains blocked"
+  }
 }

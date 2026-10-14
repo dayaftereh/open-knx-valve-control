@@ -101,3 +101,15 @@ Bitte nach Ankunft bei LLO Home:
 ## 6. Hinweis zu Motoren
 
 M1 OPEN/CLOSE und M2 OPEN wurden mit LEDs tatsächlich beobachtet, was den GPIO-/Anzeigenpfad für diese Kanäle positiv bestätigt. M3–M8 sind **nicht** unabhängig elektrisch gemessen und reale Motorantriebe/Endlagen/INA219 sind weiter ungeprüft. Die Motoren haben derzeit keine Priorität und bleiben physisch abgeklemmt.
+
+## Live-Nachtrag 14.10.2026 – BOOTSEL und KNX/IP entdeckt
+
+Der RP2040 wird auf LLO Home als USB 2E8A:0003 im **ROM-BOOTSEL** erkannt. Das Laufwerk D: hat Label RPI-RP2 und INFO_UF2.TXT meldet UF2 Bootloader v3.0. Das USB-Massenspeicherinterface funktioniert. Das zusätzliche Interface RP2 Boot (MI_01) zeigt jedoch Windows Problemcode **28: Treiber fehlt**; deshalb meldet Picotool zwar das Geraet, kann es aber nicht oeffnen. Keine UF2 kopiert, keine Firmware geflasht. Die USB-ROM-Seriennummer E0C9125B0D9B weicht von der frueheren Anwendungsseriennummer E464401787522D33 ab, was unterschiedliche Identitaetsquellen sein koennen.
+
+KNXnet/IP im WLAN 192.168.178.21/24: eine Multicast-Suche an 224.0.23.12:3671 lieferte SearchResponse und eine direkte DescriptionRequest lieferte DescriptionResponse vom IP-Interface **192.168.178.5:3671**. Das 30-Byte-Namensfeld beginnt mit SCN-IP000.03 IP Interface mit. Die eigene physikalische KNX-Adresse des **IP-Interfaces** ist **1.0.1** (nicht die Adresse des Ventilcontrollers); DIB-Servicefamilie 4 Version 2 meldet KNXnet/IP-Tunneling-Unterstuetzung. ETS6.exe ist installiert, zum Untersuchungszeitpunkt aber nicht gestartet. Keine ETS6-Sitzung, kein Tunneling-Aufbau und keine KNX-TP-Telegramme.
+
+Dieses IP-Interface ist **nicht** als isolierter KNX-Testbus qualifiziert. R17 am STKNX-KNX_TX, das fruehere Hitzeereignis an U11 und der Zustand von U9 sowie D1/F1/JMP1-Rueckspeisung bleiben kritisch. Besonders im BOOTSEL/Reset ist ein inaktives LOW auf GPIO0 nicht durch Firmware garantiert. **Keine KNX-Busleitung an der Platine anschliessen**, bis die stromlosen und spannungsgefuehrten Gates separat geklaert sind.
+
+[Maschinenlesbarer Live-Bericht](KNX043_HOME_LIVE_DISCOVERY_20261014.json).
+
+**Naechster Schritt:** Platine fuer R17/U9/U11/F1/D1/JMP1-3-Kontrolle erst stromlos machen und Messungen dokumentieren. Fuer die ETS6-Konfiguration kann spaeter das gefundene IP-Interface 192.168.178.5 als KNX/IP-Verbindung ausgewaehlt werden, ohne den nicht freigegebenen Ventilcontroller an den Bus zu haengen.
