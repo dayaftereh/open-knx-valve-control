@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-14",
+  "slice": "KNX042",
+  "feature": "M1 F time-limited 180s hold",
+  "state": "BUILT_AND_VERIFIED_PENDING_FLASH",
+  "uf2_path": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX042-M1-hold-180s-20261014\\knx042-m1-hold-180s.uf2",
+  "uf2_sha256": "7e3dc4fe5cb92544558d3d42c71fbb54afb61c3bb29e21d9bb1676fb4961cb6d",
+  "size_bytes": 153088,
+  "base_commit": "7536c2a1f96da7c8c3805ed82ae7db5db5382fa0",
+  "source_sha256": "734e681f58a72d08989f96c44db2fa6fb4bbcb7c5b42605cb6ded32c4464a24a",
+  "host_sha256": "006da1fff4a10088f80d49080bc0c88dc8743d1f54ff96907985857e780a6063",
+  "previous_working_knx040_uf2_sha256": "e9de4dcb66a0afd4fa906d5a5591bc7785cb6c8bc71f57e20bb4104069c31639",
+  "motor_output": "M1 GPIO10 enable, common IN1=GPIO18 HIGH, IN2=GPIO19 LOW",
+  "max_auto_off_seconds": 180,
+  "knx_bus_isolated_by_user": true,
+  "power_usb_only_by_user": true,
+  "motors_unplugged_by_user": true,
+  "actual_motor_drive_performed": false,
+  "flash_performed": false,
+  "leds_observed_by_user": false,
+  "github_push_performed": false
+}

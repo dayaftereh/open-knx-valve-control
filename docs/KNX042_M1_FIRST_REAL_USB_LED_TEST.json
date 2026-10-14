@@ -1,0 +1,40 @@
+{
+  "slice": "KNX042",
+  "date": "2026-10-14",
+  "device": "RP2040 Rev B2; 16MB; flash ID E464401787522D33",
+  "usb": "COM7 VIDPID 2E8A:000A serial E464401787522D33",
+  "physical_preflight": {
+    "knx_disconnected_user_confirmed": true,
+    "usb_only_user_confirmed": true,
+    "motors_unplugged_user_confirmed": true
+  },
+  "firmware_uf2_sha256": "7e3dc4fe5cb92544558d3d42c71fbb54afb61c3bb29e21d9bb1676fb4961cb6d",
+  "flash": "picotool load -v -x exit 0; 100% write and verify; auto reboot",
+  "usb_identity": "KNX042 USB MOTOR-LED diagnostic; KNX/MOTORS DISCONNECTED ONLY",
+  "pre_activation": "KNX042 STATUS armed=0 active=0",
+  "sensors": {
+    "T0_C": 21.31,
+    "T1_C": 22,
+    "valid_count": 2,
+    "uart_timeouts": 0
+  },
+  "activation_local_time": "2026-10-14T14:54:34+02:00",
+  "arming_ack": "KNX042 ARMED 15s; NO KNX OR MOTORS",
+  "activation_ack": "KNX042 HOLD M1 F 180s",
+  "gpio": {
+    "motor_m1_enable": 10,
+    "in1": 18,
+    "in2": 19
+  },
+  "expected": {
+    "m1_enable": "HIGH",
+    "in1": "HIGH",
+    "in2": "LOW",
+    "motor_m2_to_m8": "LOW",
+    "firmware_auto_off_seconds": 180
+  },
+  "observed_leds": "PENDING_USER_CONFIRMATION",
+  "physical_motor_motion": "NOT_TESTED_NO_MOTORS_CONNECTED",
+  "knx_activated": false,
+  "github_push": false
+}

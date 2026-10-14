@@ -41,7 +41,7 @@ def send(connection, command: str, expected: str, seconds: float = 3.0):
 
 def run(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("action", choices=["probe", "status", "pulse"])
+    p.add_argument("action", choices=["probe", "status", "pulse", "hold", "stop"])
     p.add_argument("--port", required=False, default="COM7")
     p.add_argument("--expect-serial", required=True)
     p.add_argument("--channel", type=int, choices=range(1, 9))
@@ -58,7 +58,9 @@ def run(argv=None):
         print(json.dumps({"port": found.device, "serial": found.serial_number,
                           "vidpid": "2E8A:000A", "opened": False}))
         return 0
-    if args.action == "pulse":
+    if args.action in ("pulse", "hold"):
+        if args.action == "hold" and (args.channel != 1 or args.direction != "F"):
+            p.error("hold is limited to --channel 1 --direction F")
         if args.channel is None or args.direction is None:
             p.error("pulse needs --channel 1..8 and --direction F|R")
         if not all((args.knx_disconnected, args.motors_unplugged,
@@ -74,6 +76,7 @@ def run(argv=None):
     conn.dtr = False
     conn.rts = False
     conn.open()
+    hold_confirmed = False
     try:
         conn.dtr = True
         ready = await_line(conn, READY_LINE, 10.5)
@@ -81,9 +84,19 @@ def run(argv=None):
             status = send(conn, "STATUS", "KNX042 STATUS")
             print(json.dumps({"identity": ready, "status": status}))
             return 0
+        if args.action == "stop":
+            stopped = send(conn, "STOP", "KNX042 STOPPED")
+            print(json.dumps({"identity": ready, "stopped": stopped}))
+            return 0
         # Always stop before requesting a new arming token.
         send(conn, "STOP", "KNX042 STOPPED")
         armed = send(conn, "ARM LEDS_ONLY", "KNX042 ARMED")
+        if args.action == "hold":
+            hold = send(conn, "HOLD M1 F", "KNX042 HOLD M1 F 180s")
+            hold_confirmed = True
+            print(json.dumps({"identity": ready, "armed": armed, "hold": hold,
+                              "auto_off_seconds": 180, "stop_command": "STOP"}))
+            return 0
         pulse = send(conn, f"PULSE {args.channel} {args.direction}",
                      f"KNX042 PULSE M{args.channel} {args.direction}")
         stopped = await_line(conn, "KNX042 AUTO-STOP", 2.5)
@@ -94,7 +107,7 @@ def run(argv=None):
         # Attempt safe disarm on every error path. No blind command if
         # identity hasn't been established by a matching USB diagnostic.
         try:
-            if 'ready' in locals():
+            if 'ready' in locals() and not hold_confirmed:
                 conn.write(b"STOP\n")
                 conn.flush()
         finally:

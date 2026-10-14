@@ -26,7 +26,15 @@ class MotorLedSafetyTests(unittest.TestCase):
         self.assertIn('memcmp(inputLine, "PULSE ", 6) == 0', SOURCE)
         self.assertIn('strcmp(inputLine, "STOP") == 0', SOURCE)
         self.assertIn("if (!armed || pulseActive ||", SOURCE)
-        self.assertIn("now - pulseStartedAt) >= kPulseMs", SOURCE)
+        self.assertIn("now - pulseStartedAt) >=", SOURCE)
+        self.assertIn("(holdActive ? kHoldMs : kPulseMs)", SOURCE)
+        self.assertIn("constexpr uint32_t kHoldMs = 180000;", SOURCE)
+        self.assertIn('strcmp(inputLine, "HOLD M1 F") == 0', SOURCE)
+        self.assertIn("digitalWrite(kMotorEnable[0], HIGH);", SOURCE)
+        self.assertEqual(SOURCE.count("digitalWrite(kMotorEnable[0], HIGH);"), 1)
+        self.assertIn("holdActive = false;", SOURCE)
+        self.assertIn('KNX042 HOLD M1 F 180s', SOURCE)
+        self.assertIn('armed = false; // single-shot', SOURCE)
         self.assertIn("now - armedAt) >= kArmMs", SOURCE)
         self.assertEqual(SOURCE.count("digitalWrite(kMotorEnable[motorIndex], HIGH)"), 1)
         self.assertIn("void stopMotorOutputs()", SOURCE)
@@ -61,7 +69,8 @@ class MotorLedSafetyTests(unittest.TestCase):
         host = (ROOT / "tools/knx042_motor_led_control.py").read_text(encoding="utf-8")
         for text in ("--knx-disconnected", "--motors-unplugged", "--usb-only",
                      "--leds-current-limited", "READY_LINE", "identify_port",
-                     "KNX042 AUTO-STOP"):
+                     "KNX042 AUTO-STOP", "hold_confirmed", "stop_command",
+                     "hold is limited to --channel 1 --direction F"):
             self.assertIn(text, host)
 
     def test_host_port_identity_strict(self):

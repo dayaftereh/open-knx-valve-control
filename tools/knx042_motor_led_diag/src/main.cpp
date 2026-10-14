@@ -17,10 +17,12 @@ constexpr uint8_t kMotorEnable[8] = {10, 11, 12, 13, 14, 15, 16, 17};
 constexpr uint8_t kDir1 = 18;
 constexpr uint8_t kDir2 = 19;
 constexpr uint32_t kPulseMs = 400; // fixed maximum, no arbitrary run-time pulse length
+constexpr uint32_t kHoldMs = 180000; // M1 LED observation only: hard software auto-stop at 3 minutes
 constexpr uint32_t kArmMs = 15000; // permission expires, never autonomous
 uint32_t pulseStartedAt = 0;
 uint32_t armedAt = 0;
 bool pulseActive = false;
+bool holdActive = false;
 bool armed = false;
 char inputLine[24] = {};
 uint8_t inputLen = 0;
@@ -53,6 +55,7 @@ void stopMotorOutputs() {
     digitalWrite(kDir1, LOW);
     digitalWrite(kDir2, LOW);
     pulseActive = false;
+    holdActive = false;
 }
 
 void receiveCommand() {
@@ -78,6 +81,28 @@ void receiveCommand() {
         armedAt = millis();
         armed = true;
         if (Serial) Serial.println(F("KNX042 ARMED 15s; NO KNX OR MOTORS"));
+        return;
+    }
+    // Human-visible first-contact check: M1 only, fixed 180s timeout.
+    // This never arms itself on boot. No KNX bus or physical motors allowed.
+    if (strcmp(inputLine, "HOLD M1 F") == 0) {
+        if (!armed || pulseActive ||
+            static_cast<uint32_t>(millis() - armedAt) >= kArmMs) {
+            stopMotorOutputs();
+            armed = false;
+            if (Serial) Serial.println(F("KNX042 REFUSED not-armed-or-busy"));
+            return;
+        }
+        stopMotorOutputs();
+        digitalWrite(kDir1, HIGH);
+        digitalWrite(kDir2, LOW);
+        delayMicroseconds(20);
+        digitalWrite(kMotorEnable[0], HIGH);
+        pulseStartedAt = millis();
+        pulseActive = true;
+        holdActive = true;
+        armed = false; // single-shot, cannot chain without explicit new ARM
+        if (Serial) Serial.println(F("KNX042 HOLD M1 F 180s"));
         return;
     }
     if (strlen(inputLine) == 9 &&
@@ -204,7 +229,8 @@ void printSnapshot(uint8_t seq, const TemperatureProtocol::Snapshot& snap) {
 
 void loop() {
     const uint32_t now = millis();
-    if (pulseActive && static_cast<uint32_t>(now - pulseStartedAt) >= kPulseMs) {
+    if (pulseActive && static_cast<uint32_t>(now - pulseStartedAt) >=
+        (holdActive ? kHoldMs : kPulseMs)) {
         stopMotorOutputs();
         if (Serial) Serial.println(F("KNX042 AUTO-STOP"));
     }

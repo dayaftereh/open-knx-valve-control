@@ -56,3 +56,15 @@ Once all physical prerequisites are confirmed and this isolated UF2 has **actual
 - Isolated PlatformIO RP2040 compilation, SHA256 UF2, diffs and ASH audit.
 - No claim of observed LED or output voltage until tested physically.
 - No GitHub push without user authorization.
+
+## KNX042 M1 Hold-LED (14.10.2026)
+
+Der Nutzer bestaetigte: KNX-Bus abgeklemmt, Versorgung ausschliesslich USB, keine Motoren angeschlossen. Fuer die menschliche Sichtpruefung wurde das exakte USB-Kommando `HOLD M1 F` ergaenzt. Es setzt M1-EN=GPIO10 HIGH, IN_1=GPIO18 HIGH und IN_2=GPIO19 LOW, laesst M2-M8 ausgeschaltet und schaltet spaetestens nach 180 s selbsttaetig ab. Vorher ist `ARM LEDS_ONLY` erforderlich; `STOP` schaltet sofort ab. GPIO0/KNX_TX wird erst nach Firmwarestart LOW gesetzt, nicht im ROM-Bootloader. Keine KNX-Verbindung freigegeben.
+
+Bild: `C:\ASH\Workspace\Builds\OpenKNXValveControl\KNX042-M1-hold-180s-20261014\knx042-m1-hold-180s.uf2`. SHA256 `7e3dc4fe5cb92544558d3d42c71fbb54afb61c3bb29e21d9bb1676fb4961cb6d`. Siehe [Buildnachweis](KNX042_M1_HOLD_BUILD_EVIDENCE.json).
+
+**Live-Gate noch OFFEN:** Der Versuch eines softwareseitigen BOOTSEL-Einstiegs wurde durch die Zugriffssicherheitskontrolle abgelehnt. Ein separater read-only picotool-Aufruf bestaetigte, dass der RP2040 nicht im BOOTSEL-Modus ist. Es fand kein Flash statt; kein Motor-LED-Signal wurde eingeschaltet oder physisch beobachtet. Die KNX040-Firmware bleibt unveraendert installiert.
+
+## KNX042 M1 first real USB LED test (2026-10-14)
+
+User confirmed KNX physically disconnected, only USB power and no motors connected. RP2040 entered ROM BOOTSEL (Rev B2, flash ID E464401787522D33); the isolated KNX042 M1 180s-HOLD UF2 was flashed by picotool load -v -x, write 100%, verify 100%, exit 0 and reboot. USB COM7 returned KNX042 USB MOTOR-LED diagnostic with initial armed=0 active=0. T0=21.31 C and T1=22.00 C remained valid with zero UART timeouts in the read-only capture. At 14:54:34 MESZ, the host received ACK KNX042 ARMED 15s and KNX042 HOLD M1 F 180s, exit 0. M1 GPIO10 should be HIGH, IN_1 GPIO18 HIGH, IN_2 GPIO19 LOW; firmware should stop after 180 s. Actual LED observation is PENDING USER FEEDBACK; no actual motor motion was tested. See [M1 live USB evidence](KNX042_M1_FIRST_REAL_USB_LED_TEST.json).
