@@ -1,0 +1,56 @@
+{
+  "project": "OpenKNXValveControl",
+  "slice": "KNX043",
+  "date": "2026-10-14",
+  "workstation": "LLO Home",
+  "result": "RP2040 KNX043 passive RX firmware running",
+  "user_reported_rework": {
+    "R17": "desoldered",
+    "U11": "resoldered and measured 68 ohm",
+    "U9": "correct originally specified STKNX chip"
+  },
+  "image": {
+    "name": "KNX043 passive STKNX RX-only",
+    "source": "tools/knx043_passive_rx/src/main.cpp",
+    "uf2": "C:\\_myspace\\workspace\\Builds\\OpenKNXValveControl\\KNX043_HOME_KNX_BENCH_20261014\\knx043-passive-rx-only-NOT-FLASHED.uf2",
+    "sha256_verified_before_copy": "8b2a3d92c567bf38596d0afff9f1c7d527e5ef3be81ca798609b31a1e7f82e5f",
+    "uf2_blocks": 286,
+    "previous_rollback_image_sha256": "7e3dc4fe5cb92544558d3d42c71fbb54afb61c3bb29e21d9bb1676fb4961cb6d"
+  },
+  "flashing": {
+    "protocol": "RP2040 ROM BOOTSEL USB mass-storage",
+    "drive": "D:",
+    "volume": "RPI-RP2",
+    "usb_rom_vidpid": "2E8A:0003",
+    "command": "PowerShell Copy-Item of SHA256-checked UF2 to D:\\knx043-passive-rx-only.uf2",
+    "started_utc": "2026-10-14T21:13:13.5585Z",
+    "finished_utc": "2026-10-14T21:13:18.2219517Z",
+    "host_exit_code": 0,
+    "host_message": "KNX043 UF2 copy completed (device firmware reboot expected)",
+    "direct_flash_readback_performed": false
+  },
+  "after_boot": {
+    "application_port": "COM8",
+    "vidpid": "2E8A:000A",
+    "usb_serial": "E464401787522D33",
+    "expected_ready_banner_seen_by_USB_tool": true,
+    "command": "STATUS",
+    "actual_response": "KNX043 STATUS armed=0 listen=0 buffered=0 dropped=0",
+    "host_status_exit_code": 0,
+    "rx_capture_active": false,
+    "motor_outputs_commanded": false
+  },
+  "electrical_safety": {
+    "R17_removed_user_report_not_electrically_verified": true,
+    "U11_resoldered_and_68ohm_user_report_not_thermally_verified": true,
+    "U9_type_user_report_not_health_verified": true,
+    "KNX_TX_GPIO0_voltage_in_ROM_reset_brownout_measured": false,
+    "U9_U11_operating_temperature_measured": false,
+    "D1_F1_JMP1_power_backfeed_verified": false,
+    "actual_knx_tp_connection_state_independently_verified": false,
+    "knx_tp_bus_test_authorized": false,
+    "knx_telegram_sent": false,
+    "firmware_is_ETS_application": false
+  },
+  "github_push_performed": false
+}

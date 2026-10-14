@@ -64,3 +64,13 @@ Für einen späteren physischen KNX-TP-Test sind trotz entfernten R17 weiterhin 
 Referenzen: [KNX043 ausführlicher Prüfplan](KNX043_HOME_KNX_BENCH_READINESS.md), [Live-Geräteprüfung](KNX043_HOME_LIVE_DISCOVERY_20261014.json), [Hardware-Gate](KNX043_HOME_KNX_GATE.json).
 
 **Git:** Der Home-Rechner ist die führende Entwicklungsinstanz. Nach Änderungen verifizieren und per SHA-geprüftem Offline-Bundle fast-forward auf LLO Desktop spiegeln. Kein GitHub-Push ohne explizite Freigabe.
+
+## KNX043 USB-only Flash successfully completed on Home (2026-10-14)
+
+The user reports R17 desoldered, U11 resoldered and measured 68 ohms, and U9 is the expected chip. These are user-reported observations, not independent board-voltage or heat-damage clearance.
+
+The isolated KNX043 passive receive-only image (pre-copy SHA256 8b2a3d92c567bf38596d0afff9f1c7d527e5ef3be81ca798609b31a1e7f82e5f) was written through the verified RP2040 RPI-RP2 D: ROM BOOTSEL USB-mass-storage volume. USB copy process EXIT 0. The board subsequently enumerated on LLO Home as COM8 (VIDPID 2E8A:000A, serial E464401787522D33). The KNX043-specific READY banner was recognized and read-only USB STATUS returned exactly: KNX043 STATUS armed=0 listen=0 buffered=0 dropped=0. The program is running. Firmware contents were not directly read back from flash.
+
+**KNX BUS STILL BLOCKED:** No physical proof of U9/U11 electrical/thermal health after the previous overheating, KNX_TX LOW under ROM/reset/brownout, R17-pad continuity, D1/F1/JMP1 rail power/backfeed, or independent testbus isolation. This firmware only captures receive edges, does not implement ETS KNX telegram transmission. Do NOT connect the board to KNX on firmware success alone.
+
+[Live USB flash report](KNX043_RX_ONLY_FLASH_HOME_20261014.json).

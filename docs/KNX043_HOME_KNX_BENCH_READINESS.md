@@ -119,3 +119,13 @@ Dieses IP-Interface ist **nicht** als isolierter KNX-Testbus qualifiziert. R17 a
 Der Nutzer bestaetigt, dass er **R17 physisch ausgelötet** hat. Dies wurde dokumentiert als **Nutzerbericht, kein gemessener Widerstand oder Nachweis fuer TX LOW im Reset/BOOTSEL**. Das kombinierte KNX-TX-Hardware-Gate bleibt unverifiziert, ebenso U11 nach vorheriger Ueberhitzung, U9, D1-Bypass, F1 und die Spannungs-/Rueckspeisungspfade.
 
 Der RP2040 wird auf Home weiterhin im USB-ROM-BOOTSEL mit Laufwerk D: RPI-RP2 erkannt. Die passende, neueste isolierte KNX043-RX-only-UF2 und die KNX042-Rollback-UF2 haben auf Home und im automatisierten READ-ONLY-Preflight korrekte SHA256-Werte und UF2-Adressen (14.10.2026). **Kein Flash erfolgt.** Die weiteren Schritte inklusive sicherer manueller UF2-Option und notwendigen stromlosen Messungen stehen unter [R17-Rework und RX-Only-Flashplan](KNX043_R17_REWORK_TO_RX_FLASH.md). Windows blockiert lokale .ps1-Dateien per Execution Policy, die nicht veraendert wird; der Pruefer ist Python und ist read-only.
+
+## KNX043 USB-only Flash successfully completed on Home (2026-10-14)
+
+The user reports R17 desoldered, U11 resoldered and measured 68 ohms, and U9 is the expected chip. These are user-reported observations, not independent board-voltage or heat-damage clearance.
+
+The isolated KNX043 passive receive-only image (pre-copy SHA256 8b2a3d92c567bf38596d0afff9f1c7d527e5ef3be81ca798609b31a1e7f82e5f) was written through the verified RP2040 RPI-RP2 D: ROM BOOTSEL USB-mass-storage volume. USB copy process EXIT 0. The board subsequently enumerated on LLO Home as COM8 (VIDPID 2E8A:000A, serial E464401787522D33). The KNX043-specific READY banner was recognized and read-only USB STATUS returned exactly: KNX043 STATUS armed=0 listen=0 buffered=0 dropped=0. The program is running. Firmware contents were not directly read back from flash.
+
+**KNX BUS STILL BLOCKED:** No physical proof of U9/U11 electrical/thermal health after the previous overheating, KNX_TX LOW under ROM/reset/brownout, R17-pad continuity, D1/F1/JMP1 rail power/backfeed, or independent testbus isolation. This firmware only captures receive edges, does not implement ETS KNX telegram transmission. Do NOT connect the board to KNX on firmware success alone.
+
+[Live USB flash report](KNX043_RX_ONLY_FLASH_HOME_20261014.json).

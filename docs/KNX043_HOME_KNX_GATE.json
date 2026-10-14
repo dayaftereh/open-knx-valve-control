@@ -55,6 +55,30 @@
     "solder_bridge_excluded": null,
     "stknx_tx_idle_measured": null,
     "stknx_tx_reset_bootsel_brownout_measured": null,
-    "note": "Do not mark combined observation gate as true without direct checks."
+    "note": "Do not mark combined observation gate as true without direct checks.",
+    "U11_user_report": {
+      "date": "2026-10-14",
+      "resoldered": true,
+      "measured_ohms": 68,
+      "reported_by_user": true,
+      "thermal_health_independently_verified": false
+    },
+    "U9_user_report": {
+      "date": "2026-10-14",
+      "reported_correct_chip": true,
+      "electrically_functional_verified": false
+    }
+  },
+  "usb_only_firmware_installation": {
+    "date": "2026-10-14",
+    "image": "KNX043 passive STKNX RX only",
+    "bootloader_transport": "RP2040 USB mass-storage RPI-RP2 D:",
+    "usb_copy_exit_code": 0,
+    "new_com_port": "COM8",
+    "identity": "E464401787522D33",
+    "read_only_status": "KNX043 STATUS armed=0 listen=0 buffered=0 dropped=0",
+    "firmware_running": true,
+    "evidence": "docs/KNX043_RX_ONLY_FLASH_HOME_20261014.json",
+    "knx_bus_connection_authorized": false
   }
 }
