@@ -74,3 +74,19 @@ User confirmed KNX physically disconnected, only USB power and no motors connect
 At **15:06:27 MESZ**, on explicit user request, the same already-installed KNX042 isolated diagnostic received a single USB `ARM LEDS_ONLY`, followed by `HOLD M1 F 180s`. Both commands returned acknowledged success (host exit code 0). GPIO10 M1 enable HIGH, GPIO18 IN1 HIGH, GPIO19 IN2 LOW, M2-M8 remain LOW per firmware. A second USB `STATUS` read returned `armed=0 active=1` at approximately 15:06:51 MESZ. The software has a fixed automatic 180s stop; this run's final OFF transition is not yet verified in this log. Visual M1/IN1/IN2 LED observation remains **PENDING USER FEEDBACK**. No new firmware flash, KNX transmission, or physical motor connection. [Repeat test evidence](KNX042_M1_LED_REPEAT_20261014.json).
 
 **Finale Live-Nachpruefung M1 Wiederholung:** COM7 KNX042 um etwa 15:09:23 MESZ: `KNX042 STATUS armed=0 active=0`. Der Ausgang ist wieder AUS; LED-Beobachtung des Benutzers noch ausstehend. Die Firmware besitzt einen auf 180 s begrenzten HOLD; die Statusmeldung belegt AUS, nicht unabhaengig den genauen Abschaltgrund.
+
+## KNX042 - User LED observation and PCB OPEN/CLOSE labels (2026-10-14)
+
+After the third M1 F 180s diagnostic, the user **visually confirmed OPEN LED illuminated** and reported M1 appeared energized; the user did not identify I1/I2 labels. This is **human LED feedback**, NOT a calibrated current measurement or proof that a physical motor turned. There are no connected motors. User suspects some LEDs may have been soldered in reverse orientation; **not electrically proven**. Do not automatically mark all LEDs reversed, because OPEN visibly worked.
+
+Direct original V1.2 EasyEDA PCB JSON net inspection proves the following mapping (not inferred from a photo):
+
+| PCB reference text | PCB pad/net evidence | RP2040 pin | M1 F hold |
+| --- | --- | --- | --- |
+| `OPEN` (PCB shape 888) | `OPEN` LED pad1 `R41_1` -> R41 pad2 `IN_1`, pad2 GND | GPIO18 (`IN_1`) | HIGH |
+| `CLOSE` (PCB shape 889) | `CLOSE` LED pad1 `LED8_1` -> R43 pad2 `IN_2`, pad2 GND | GPIO19 (`IN_2`) | LOW |
+| M1 enable | R48 pad2 `M1_EN` -> indicator LED12 -> GND | GPIO10 (`M1_EN`) | HIGH |
+
+The tested command `HOLD M1 F` sets GPIO18 HIGH and GPIO19 LOW, so the observed `OPEN` LED is consistent with the PCB. The **actuator movement direction** must still be verified with a separate load-safe motor test; OPEN is the PCB silk designation, not mechanically verified valve movement. Other dark LEDs: check silkscreen/component datasheet polarity, solder orientation, resistor connection and LED diode test **with all power physically off**. Leave KNX physically disconnected and do not attach actuators while resolving the known hardware issues.
+
+Evidence is machine-readable in [KNX042 user LED observation](KNX042_OPEN_LED_OBSERVATION_20261014.json). No firmware, bus, GPIO or motor command was issued in response to this user feedback.

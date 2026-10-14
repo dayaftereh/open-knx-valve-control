@@ -1,0 +1,32 @@
+{
+  "slice": "KNX042",
+  "date": "2026-10-14",
+  "context": "User visual feedback after M1 F 180s USB diagnostic repeat #3",
+  "reported": {
+    "open_indicator_lit": true,
+    "m1_reported_energized": true,
+    "in1_or_in2_label_identified_by_user": false,
+    "close_indicator_lit": null,
+    "other_leds_may_be_reversed_by_soldering": true
+  },
+  "board_v1_2_layout_verified": {
+    "open_label": "PCB JSON shape index 888: LED package reference OPEN, pin1=R41_1, pin2=GND",
+    "resistor_open": "R41 pin1=R41_1, pin2=IN_1",
+    "close_label": "PCB JSON shape index 889: LED package reference CLOSE, pin1=LED8_1, pin2=GND",
+    "resistor_close": "R43 pin1=LED8_1, pin2=IN_2",
+    "pinout": "RP2040 U18 pad29=IN_1(GPIO18), pad30=IN_2(GPIO19), motor M1_EN=GPIO10",
+    "motor1_led": "LED12 pin1=LED12_1, pin2=GND; R48 pin1=LED12_1, pin2=M1_EN",
+    "test_command": "HOLD M1 F 180s",
+    "test_logic": "IN_1 HIGH; IN_2 LOW; M1_EN HIGH"
+  },
+  "conclusions": {
+    "gpio_to_open_label_mapping": "SUPPORTED by PCB nets and visual user report",
+    "physical_motor_open_direction": "NOT VERIFIED because actuator disconnected",
+    "true_motor_current": "NOT MEASURED; user mentioned apparent M1 energization, no motor connected",
+    "suspected_wrong_led_polarity": "NOT VERIFIED electrically or by solder inspection",
+    "open_led_orientation": "At least OPEN path lit during this command; other LEDs remain to check"
+  },
+  "no_additional_gpio_commands_executed": true,
+  "no_firmware_flash_executed": true,
+  "github_push": false
+}
