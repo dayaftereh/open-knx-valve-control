@@ -1,0 +1,77 @@
+{
+  "schema": "openknx-valvecontrol/knx037-first-live-USB-v1",
+  "observed_date": "2026-10-14",
+  "agent": "LLO Desktop 0.8.2",
+  "git_base": "6f7dee7",
+  "device_before": {
+    "port": "COM5",
+    "vidpid": "2E8A:00C0",
+    "description": "RP2040 Arduino USB CDC blink app",
+    "usb_serial_in_git": false,
+    "readable_cdc_payload_bytes": 0
+  },
+  "programmer": {
+    "port": "COM4",
+    "vidpid": "1A86:7523",
+    "description": "Units CH340G",
+    "RTS_toggled_on_COM4": false,
+    "DTR_toggled_on_COM4": false,
+    "UPDI_probe_performed": false
+  },
+  "rp2040_bootrom": {
+    "trigger": "1200 baud CDC COM5 DTR true -> false once",
+    "payload_bytes_written_on_serial": 0,
+    "vidpid": "2E8A:0003",
+    "temporary_port": "COM6",
+    "mcu": "RP2040",
+    "silicon_revision": "B2",
+    "external_flash_size_mib": 16
+  },
+  "flash": {
+    "kind": "KNX036 isolated USB-only UF2, no production KNX code",
+    "flash_command": "picotool load -v -x",
+    "image_bytes": 141312,
+    "sha256": "ad8df9ba4426102fb240f2ebfbb9526071b91e563fab897ab04034ed766866de",
+    "write_complete_percent": 100,
+    "verify_complete_percent": 100,
+    "tool_reported_ok": true,
+    "rebooted_to_application": true
+  },
+  "firmware_runtime": {
+    "port": "COM7",
+    "vidpid": "2E8A:000A",
+    "serial_baud": 115200,
+    "heartbeats_observed_first": 3,
+    "heartbeats_observed_repeat": 4,
+    "heartbeat_interval_ms": 2000,
+    "signature_prefix": "KNX036 USB-ONLY RP2040 ALIVE",
+    "KNX_telegram_test_performed": false,
+    "motor_GPIO_test_performed": false,
+    "ATtiny_UART_test_performed": false
+  },
+  "offline_tests": {
+    "USB_workflow_mock_tests_passed": 11,
+    "KNX036_diagnostic_source_tests_passed": 8
+  },
+  "safety_status": {
+    "no_KNX_bus_reported_by_user": true,
+    "no_motors_reported_by_user": true,
+    "R17_physically_removed_confirmed": false,
+    "RP2040_3v3_power_rail_measurement": null,
+    "F1_actual_rating_verified_safe": false,
+    "D1_bridge_reverse_current_safety_verified": false,
+    "STKNX_post_overheat_integrity_verified": false,
+    "CH340_PIN3_UPDI_voltage_measured": null,
+    "CH340_CN1_pin1_5v_isolation_verified": false,
+    "UPDI_connection_to_target_confirmed": false,
+    "ATtiny_device_signature": null,
+    "ATtiny_flash_done": false,
+    "KNX_bus_authorized": false,
+    "motor_authorized": false
+  },
+  "snapshot_paths": [
+    "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX037-20261014-two-ports.json",
+    "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX037-20261014-after-diag.json"
+  ],
+  "conclusion": "RP2040_USB_FLASH_AND_CDC_PASS__ATtiny_UPDI_BLOCKED_UNTIL_CN1_SIGNAL_LEVEL_AND_CABLE_CONFIRMATION"
+}

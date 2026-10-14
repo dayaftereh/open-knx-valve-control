@@ -87,3 +87,7 @@ Eine spätere, ausdrücklich freigegebene UPDI-Signatur-Leseoperation benötigt 
 - Zweite passive OS-Aufnahme `KNX036-desktop-current-01.json` und Offline-Diff zur Ausgangslage: **0 neue/entfernte USB-Geräte, 0 COM-Ports neu, 0 RPI-RP2-Volumes, 0 lokale Linkstatuswechsel**. Das Board ist demnach **noch nicht als neues Windows-Gerät nachgewiesen**. Keine COM-Schnittstelle wurde geöffnet.
 
 **Nächster sichere reale Schritt:** Falls der Nutzer den Units-UPDI-Programmer verfügbar hat, darf zunächst **nur dieser USB-Programmer am PC ohne angeschlossenen ValveControl-CN1-Stecker** rein per Windows-Geräteerkennung aufgenommen werden; keine RTS/DTR-Änderung und keine UPDI-Transaktion. Das echte Board mit eigener USB-Versorgung weiterhin erst nach F1/D1/R17/Pegelprüfung und ohne KNX/UPDI/Motoren.
+
+## KNX037 Nachtrag – tatsächlicher RP2040-Flash bestanden
+
+Der damals nur als Build-Kandidat vorliegende KNX036-USB-Heartbeat wurde inzwischen unter gesondertem User-Auftrag **real auf den RP2040 geflasht**, inklusive 1200-Baud-Reset ohne BOOTSEL, ROM-Revisions-/16-MiB-Flash-Identifikation, 100%-Picotool-Verify und USB-CDC-Runtime-Heartbeats auf COM7 (vorher COM5). Siehe [KNX037 Live-Testprotokoll](KNX037_DESKTOP_LIVE_USB_AND_UPDI.md). Dies ändert **nicht** rückwirkend die KNX036-Offlineabnahme; keine Freigabe des normalen TPUart/KNX-Controllers oder der Motor-/UPDI-Funktionen.
