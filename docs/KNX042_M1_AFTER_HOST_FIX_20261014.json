@@ -1,0 +1,52 @@
+{
+  "slice": "KNX042",
+  "date": "2026-10-14",
+  "reason": "Repeat user-authorized M1 F LED-only retest after host-side STATUS unintended STOP defect corrected",
+  "github_baseline_commit": "49421f3",
+  "setup": "Per user's existing confirmation KNX bus disconnected, motors unplugged, USB only; no changes reported",
+  "hardware": {
+    "port": "COM7",
+    "usb_vidpid": "2E8A:000A",
+    "usb_serial": "E464401787522D33",
+    "firmware_identity": "KNX042 USB MOTOR-LED diagnostic"
+  },
+  "initial_status": {
+    "local_time": "2026-10-14T17:12:51+02:00",
+    "line": "KNX042 STATUS armed=0 active=0"
+  },
+  "hold": {
+    "local_time": "2026-10-14T17:13:01+02:00",
+    "command": "HOLD M1 F",
+    "arm_ack": "KNX042 ARMED 15s; NO KNX OR MOTORS",
+    "hold_ack": "KNX042 HOLD M1 F 180s",
+    "host_exit_code": 0
+  },
+  "expected_gpio": {
+    "M1_EN": "GPIO10 HIGH",
+    "IN_1_OPEN": "GPIO18 HIGH",
+    "IN_2_CLOSE": "GPIO19 LOW",
+    "M2_to_M8": "LOW"
+  },
+  "status_reads": [
+    {
+      "local_time": "2026-10-14T17:13:21+02:00",
+      "line": "KNX042 STATUS armed=0 active=1"
+    },
+    {
+      "local_time": "2026-10-14T17:13:43+02:00",
+      "line": "KNX042 STATUS armed=0 active=1"
+    }
+  ],
+  "host_status_cleanup_regression": "PASS - corrected Python STATUS no longer issues implicit STOP, confirmed by subsequent active=1 reads",
+  "maximum_hold_seconds": 180,
+  "expected_timeout_local": "2026-10-14T17:16:01+02:00",
+  "final_readback": "PENDING_AFTER_180_SECONDS",
+  "physical_m1_led": "PENDING_USER_OBSERVATION",
+  "physical_open_led": "PENDING_USER_OBSERVATION",
+  "gpio_voltage_measured": false,
+  "motor_current_measured": false,
+  "actual_motor_connected": false,
+  "knx_bus_activated": false,
+  "firmware_flashing_performed": false,
+  "github_push_performed": false
+}

@@ -20,3 +20,5 @@ Evidence: [KNX042 runbook](../KNX042_MOTOR_LED_BRINGUP.md).
 - 2026-10-14 16:56:40 MESZ: M1 F HOLD after user LED rework accepted; COM7 initial off, follow-up active=1 at 16:56:54, max 180s software auto-off. Visual LED result awaiting user; no flash/KNX/motor connection. [Evidence](../KNX042_M1_LED_AFTER_REWORK_20261014.json).
 
 - **KNX042 Host-Fehler aufgedeckt, 14.10.2026:** Frühere `STATUS`-Abfragen sendeten im `finally` ein unbeabsichtigtes `STOP` (M1 HOLD 16:56:40, Status/STOP etwa 16:56:54). LED-Beobachtung nach Umlöten ist nicht schlüssig, keine elektrische GPIO-Verifikation. PC-Host korrigiert und mit Mock 3/3 plus bisheriger KNX042-Suite 10/10 getestet. **Keine** erneute Motoransteuerung/kein Flash während des Fixes. [Fehlernachweis](../KNX042_STATUS_SIDE_EFFECT_FIX_20261014.md).
+
+- 2026-10-14 **17:13:01 MESZ after host STATUS fix:** new guarded M1 F 180s HOLD ACK; corrected STATUS read-only twice at 17:13:21 and 17:13:43, both `active=1`. Previous premature-stop bug did **not** recur. Physical LED observation still pending; timeout check pending. [Evidence](../KNX042_M1_AFTER_HOST_FIX_20261014.json).
