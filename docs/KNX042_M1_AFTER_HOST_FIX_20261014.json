@@ -35,12 +35,20 @@
     {
       "local_time": "2026-10-14T17:13:43+02:00",
       "line": "KNX042 STATUS armed=0 active=1"
+    },
+    {
+      "local_time": "2026-10-14T17:15:24+02:00",
+      "line": "KNX042 STATUS armed=0 active=1"
     }
   ],
   "host_status_cleanup_regression": "PASS - corrected Python STATUS no longer issues implicit STOP, confirmed by subsequent active=1 reads",
   "maximum_hold_seconds": 180,
   "expected_timeout_local": "2026-10-14T17:16:01+02:00",
-  "final_readback": "PENDING_AFTER_180_SECONDS",
+  "final_readback": {
+    "local_time": "2026-10-14T17:16:11+02:00",
+    "line": "KNX042 STATUS armed=0 active=0",
+    "interpretation": "Firmware off-state observed 190 seconds after HOLD ACK and after 180s software limit; no manual STOP issued during this test. Direct pin voltage not measured."
+  },
   "physical_m1_led": "PENDING_USER_OBSERVATION",
   "physical_open_led": "PENDING_USER_OBSERVATION",
   "gpio_voltage_measured": false,
@@ -48,5 +56,6 @@
   "actual_motor_connected": false,
   "knx_bus_activated": false,
   "firmware_flashing_performed": false,
-  "github_push_performed": false
+  "github_push_performed": false,
+  "software_180s_timeout_result": "PASS: live active=1 after ~143s, then active=0 after ~190s; consistent with 180s auto-stop code"
 }
