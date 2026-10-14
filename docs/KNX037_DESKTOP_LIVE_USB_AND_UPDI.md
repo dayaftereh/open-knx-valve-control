@@ -60,3 +60,7 @@ Darum bisher **kein COM4-Open, kein RTS-/DTR-Toggle auf COM4, kein `pymcuprog pi
 Das USB-Testimage ist für **KNX Bus abgeklemmt und Motoren abgeklemmt**. Die bekannte V1.2-R17-Pull-up-Fehlbeschaltung auf aktiv-HIGH-STKNX-KNX_TX, Überhitzung U11 und möglicher U9-Schaden, F1-Foto T2,5 A versus Schaltplan 630 mA, D1-Draht-Bypass und USB/KNX-Rückspeisung sind nicht durch USB-CDC-Heartbeat erledigt. Die KNX-Produktivfirmware nutzt weiterhin **ungeeignetes TPUart::ArduinoSerial(Serial1)**, kein getesteter STKNX-Pulstreiber.
 
 **Status:** `RP2040_FLASH_AND_HEARTBEAT_REAL_PASS`. `CH340_USB_ENUM_PASS`. `ATTINY_UPDI_BLOCKED_PENDING_CABLE_AND_VOLTAGE_VERIFICATION`. **Keine KNX-/Motorfreigabe.**
+
+## KNX038 Nachtrag (14.10.2026)
+
+Die Units-V1.2-UPDI-Schaltung und RTS-MUX-Netze wurden nochmals live geprueft; [aktueller KNX038-Runbook- und Sicherheitsstand](KNX038_UPDI_RTS_ELECTRICAL_GATE.md). Die Temperatur-ATtiny3216-Firmware kompiliert erfolgreich, HEX+ELF sind im Desktop-Builds-Ordner SHA256-dokumentiert; die **COM4-UPDI-Initialisierung wurde jedoch weiterhin nicht ausgefuehrt**, da am mit dem Board mutmasslich verbundenen 2x3-CN1-Kabel noch nicht gemessene Pegel/Pin1-Power-Gates bestehen. Dieser Nachtrag aendert keine der zuvor erfolgreichen realen RP2040-Flash-/Heartbeat-Ergebnisse.

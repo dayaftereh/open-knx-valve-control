@@ -1,0 +1,95 @@
+{
+  "schema": "openknx-valvecontrol/knx038-updi-rts-electrical-gate-v1",
+  "date": "2026-10-14",
+  "git_base": "1b7b649",
+  "status": "UPDI_RTS_ELECTRICAL_LEVEL_NOT_VERIFIED",
+  "user_report": {
+    "programmer_to_board_cable": "probably connected, not directly measured",
+    "knx_bus_attached": false,
+    "motors_attached": false
+  },
+  "desktop_usb": {
+    "programmer_COM": "COM4",
+    "programmer_vidpid": "1A86:7523",
+    "rp2040_COM": "COM7",
+    "rp2040_vidpid": "2E8A:000A"
+  },
+  "units_programmer_as_designed": {
+    "schematic_version": "v1.2",
+    "mux_refs": [
+      "U2",
+      "U7"
+    ],
+    "mux_part": "SN74LVC1G3157DCKR",
+    "mux_power_net": "VCC (USB sourced)",
+    "select_net": "RTS",
+    "logical_webserial_UPDI": {
+      "requestToSend": true,
+      "dataTerminalReady": true
+    },
+    "CH340_RTS_sharp_active_low": true,
+    "CN1": {
+      "1": "CN1_1",
+      "2": "TX",
+      "3": "UPDI",
+      "4": "RX",
+      "5": "GND",
+      "6": "GND"
+    },
+    "UPDI_path": [
+      "U1.TXD",
+      "R21",
+      "U2",
+      "TX_UPDI",
+      "D3",
+      "RX_UPDI",
+      "R18",
+      "CN1.3"
+    ],
+    "target_voltage_translation_proven": false
+  },
+  "valvecontrol_as_designed": {
+    "CN1": {
+      "1": "5V",
+      "2": "RXD",
+      "3": "UPDI",
+      "4": "TXD",
+      "5": "GND",
+      "6": "GND"
+    },
+    "U25_3v3_VDD": true,
+    "U25_pin16": "UPDI",
+    "schematic_intended": "ATtiny3216",
+    "PCB_manufacturer_part": "ATTINY1616-SN",
+    "expected_signature_3216": "1E9521",
+    "alternate_1616": "1E9421"
+  },
+  "temperature_offline_build": {
+    "platformio_env": "temperature",
+    "build_pass": true,
+    "flash_used_bytes": 8655,
+    "ram_used_bytes": 983,
+    "hex_bytes": 24356,
+    "hex_sha256": "f3d118db90d8776de1b661a206f4bdcd025066bf1b27425335edd439dba95c6a",
+    "manifest_dir": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX038-ATtiny3216-offline-20261014",
+    "flash_written": false
+  },
+  "gate_conditions": {
+    "six_pin_header_orientation_confirmed": false,
+    "programmer_CN1_3_UPDI_high_measured": false,
+    "programmer_CN1_1_supply_measured": false,
+    "target_U25_vdd_measured": false,
+    "cn1_5V_backfeed_safety_confirmed": false,
+    "UPDI_3v3_compatibility_confirmed": false,
+    "programmer_detached_for_measurement_confirmed": false
+  },
+  "real_actions": {
+    "COM4_opened": false,
+    "COM4_RTS_toggled": false,
+    "read_signature_attempted": false,
+    "erase_executed": false,
+    "flash_executed": false,
+    "motor_or_knx_connected": false
+  },
+  "note": "Only offline firmware build and passive COM4 USB descriptor checked. Do not mark physical VDD/UPDI values as measured."
+}
