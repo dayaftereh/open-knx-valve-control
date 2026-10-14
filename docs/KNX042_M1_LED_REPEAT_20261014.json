@@ -26,9 +26,14 @@
   "firmware_auto_stop_limit_seconds": 180,
   "actual_led_visual_observation": "PENDING_USER_FEEDBACK",
   "actual_output_voltage_measurement": "NOT_PERFORMED",
-  "active_off_verified_after_timeout": false,
+  "active_off_verified_after_timeout": true,
   "firmware_flashing_performed": false,
   "knx_activation_performed": false,
   "connected_motors_present": false,
-  "github_push_performed": false
+  "github_push_performed": false,
+  "final_readback": {
+    "at_utc": "2026-10-14T13:09:23Z",
+    "status": "KNX042 STATUS armed=0 active=0",
+    "note": "OFF confirmed; firmware auto-off limit is 180 seconds, actual cause not independently distinguished from any reset"
+  }
 }

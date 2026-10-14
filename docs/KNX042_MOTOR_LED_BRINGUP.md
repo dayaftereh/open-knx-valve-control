@@ -72,3 +72,5 @@ User confirmed KNX physically disconnected, only USB power and no motors connect
 ### KNX042 M1 LED test repeated (2026-10-14)
 
 At **15:06:27 MESZ**, on explicit user request, the same already-installed KNX042 isolated diagnostic received a single USB `ARM LEDS_ONLY`, followed by `HOLD M1 F 180s`. Both commands returned acknowledged success (host exit code 0). GPIO10 M1 enable HIGH, GPIO18 IN1 HIGH, GPIO19 IN2 LOW, M2-M8 remain LOW per firmware. A second USB `STATUS` read returned `armed=0 active=1` at approximately 15:06:51 MESZ. The software has a fixed automatic 180s stop; this run's final OFF transition is not yet verified in this log. Visual M1/IN1/IN2 LED observation remains **PENDING USER FEEDBACK**. No new firmware flash, KNX transmission, or physical motor connection. [Repeat test evidence](KNX042_M1_LED_REPEAT_20261014.json).
+
+**Finale Live-Nachpruefung M1 Wiederholung:** COM7 KNX042 um etwa 15:09:23 MESZ: `KNX042 STATUS armed=0 active=0`. Der Ausgang ist wieder AUS; LED-Beobachtung des Benutzers noch ausstehend. Die Firmware besitzt einen auf 180 s begrenzten HOLD; die Statusmeldung belegt AUS, nicht unabhaengig den genauen Abschaltgrund.
