@@ -44,6 +44,8 @@ try {
                           'tools/test_knx033_asbuilt_gate.py',
                           'tools/audit_knx034_usb_only.py',
                           'tools/test_knx034_usb_only.py',
+                          'tools/audit_knx035_stknx_tx.py',
+                          'tools/test_knx035_tx_hazard.py',
                           'tools/audit_ash_workflow.py')) {
         Run-PythonTest $script
     }

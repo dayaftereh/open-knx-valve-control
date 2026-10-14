@@ -1,0 +1,59 @@
+{
+  "schema": "openknx-valvecontrol/knx035-stknx-tx-hazard-v1",
+  "source_git_baseline": "374dbc4f837169057b2000b0f19a3b91f240784e",
+  "source": "V1.2 EasyEDA schematic+PCB, local controller C++/TPUart headers, ST DS12399 Rev3, user-reported overheat and U11 installation",
+  "evidence": {
+    "STKNX_datasheet": "https://www.st.com/resource/en/datasheet/stknx.pdf",
+    "TX_idle_low": true,
+    "TX_active_high_pulse_us": 35,
+    "TX_low_following_us": 69,
+    "TX_internal_pull_down_typical_uA": 6,
+    "R17_nominal_ohms": 10000,
+    "R17_pins": {
+      "1": "KNX_TX",
+      "2": "3.3V"
+    },
+    "U9_STKNX_TX_pin": "24",
+    "U11_schematic_ohms": 68,
+    "U11_photo_actual": "user_reports_68_ohm_installed_not_ohmmeter_verified",
+    "U11_PCB_metadata_mpn": "HoJLR2512-3W-3.5mR-1%",
+    "U11_actual_mpn_confirmed": false,
+    "U11_overheated_user_report": true,
+    "KNX_bus_collapse_user_report": true,
+    "STKNX_TX_high_actually_measured": false,
+    "U9_damage_excluded": false,
+    "actual_blink_program_pin_setup_verified": false,
+    "KNX_TX_RP2040_gpio": "GPIO0 via JMP3; physical jumper pad pair not electrically measured",
+    "prepared_controller_uses_TPUart_on_Serial1": true,
+    "TPUart_uses_standard_UART_8E1": true,
+    "TPUart_standard_UART_idle_high": true
+  },
+  "v12_current": {
+    "R17_removed_confirmed": false,
+    "R17_removal_proposed": true,
+    "hardware_pullup_hazard_verified_by_source": true,
+    "KNX_bus_safe_to_connect": false
+  },
+  "v13_ECO_proposals": {
+    "remove_R17_3V3_pullup": true,
+    "add_new_external_pull_down_to_GND_ohms_range": [
+      4700,
+      10000
+    ],
+    "existing_R17_footprint_can_be_reused_unchanged": false,
+    "hardware_TX_enable_fail_low_review_required": true,
+    "replace_direct_TPUart_UART_driver_with_STKNX_pulse_phy_required": true,
+    "correct_U11_wrong_3_5_milliohm_BOM_metadata_to_68_ohm_power_part": true
+  },
+  "release": {
+    "R17_correction_physically_verified": false,
+    "KNX_TX_idle_low_all_boot_states_verified": false,
+    "USB_KNX_power_paths_verified": false,
+    "F1_correct_value_verified": false,
+    "U9_U11_post_overheat_verified": false,
+    "firmware_STKNX_phy_approved": false,
+    "any_KNX_bus_retest_authorized": false,
+    "any_motor_action_authorized": false
+  },
+  "status": "ELECTRICAL_TX_IDLE_HAZARD_OPEN"
+}
