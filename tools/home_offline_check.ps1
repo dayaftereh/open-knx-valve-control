@@ -58,6 +58,8 @@ try {
                           'tools/test_knx037_rp_usb_workflow.py',
                           'tools/test_knx038_updi_readiness.py',
                           'tools/test_knx039_live_readback.py',
+                          'tools/test_knx040_uart_diag.py',
+                          'tools/test_knx040_capture_uart.py',
                           'tools/audit_ash_workflow.py')) {
         Run-PythonTest $script
     }

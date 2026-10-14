@@ -78,3 +78,7 @@ Die bestehenden 1.888 Nicht-FF-Bytes belegen ein **nicht leeres Flashabbild**, e
 - KNX035: R17/STKNX-KNX_TX-HIGH-Hazard, möglicher U9-Hitzeschaden und TPUart-Firmwarekonflikt unverändert. KNX034: F1-/D1-/Versorgungsgates unverändert. Es gibt keine KNX- oder Motorfreigabe durch KNX039.
 
 **Fazit:** `LIVE_UPDI_SIGNATURE_AND_FLASH_EEPROM_FUSES_USERROW_READBACK_PASS`; **UPDI-Verbindung funktioniert.** ATtiny-Flash-Write weiterhin **nicht durchgeführt**; die gesicherte bisherige Firmware ist noch installiert.
+
+## KNX040 Nachtrag: Vorheriger Firmwarestand nun bewusst ersetzt
+
+Die hier unter KNX039 ausgelesene **ursprüngliche** ATtiny3216-Firmware wurde inzwischen aufgrund eines ausdrücklichen neuen Nutzerauftrags durch die aktuelle Temperatur-Firmware ersetzt. Die vier Originalbackups in \`KNX039-ATtiny3216-readback-20261014\` sind erhalten und erneut SHA256-geprüft. KNX040 hat den neuen Flash vollständig per UPDI zurückgelesen (8655/8655 Gleichheit, Fuses/EEPROM unverändert), danach über eine separate RP2040-UART1-Diagnose **9/9 NoSensor** und echte CRC-Snapshots nachgewiesen. Siehe [KNX040](KNX040_REAL_TEMPERATURE_UART.md). Die historische Aussage dieses KNX039-Protokolls „noch nicht geflasht“ beschreibt ausschließlich dessen damaligen Zustand.

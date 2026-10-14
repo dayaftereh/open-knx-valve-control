@@ -1,0 +1,78 @@
+{
+  "schema": "openknx-valvecontrol/knx040-live-temperature-uart-v1",
+  "date": "2026-10-14",
+  "hardware": {
+    "at_tiny_signature": "1E9521",
+    "at_tiny_model": "ATtiny3216",
+    "UPDI_programmer": "COM4 1A86:7523",
+    "rp2040": "RP2040 B2 16MiB",
+    "rp2040_usb": "COM7 2E8A:000A",
+    "temperature_sensors_connected": false,
+    "knx_connected": false,
+    "motors_connected": false,
+    "physical_at_tiny_UPDI_voltage_measured": false,
+    "stknx_knx_tx_hardware_safety_verified": false
+  },
+  "firmware": {
+    "at_tiny": {
+      "image": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX038-ATtiny3216-offline-20261014\\attiny3216-temperature.hex",
+      "sha256": "f3d118db90d8776de1b661a206f4bdcd025066bf1b27425335edd439dba95c6a",
+      "write": "pymcuprog write --device attiny3216 --tool uart --uart COM4 --filename ... --erase --verify --timing",
+      "write_exit": 0,
+      "verify_result": "OK",
+      "postflash_readback_defined_bytes": 8655,
+      "postflash_mismatch_defined_bytes": 0,
+      "postflash_non_ff_outside_image_bytes": 0,
+      "fuses_unchanged": true,
+      "eeprom_unchanged": true,
+      "pre_existing_flash_backup": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX039-ATtiny3216-readback-20261014\\attiny3216-existing-flash.hex",
+      "post_flash_manifest": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX040-ATtiny3216-postflash-20261014\\postflash_manifest.json",
+      "fuse_write_performed": false
+    },
+    "rp2040": {
+      "v1_image_sha256": "91de63d5e58ae97242c4a2eee7fa319d5fc55541f1548c8bfac1292121746342",
+      "v1_flash_verify": "OK",
+      "v1_snapshots": 0,
+      "v1_root_cause": "Arduino-Pico SerialUART::availableForWrite() returns 0/1, not FIFO free byte count; <8 guard suppresses all polls",
+      "v2_image_sha256": "e9de4dcb66a0afd4fa906d5a5591bc7785cb6c8bc71f57e20bb4104069c31639",
+      "v2_flash_verify": "OK",
+      "v2_image": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX040-rp2040-uart-temp-v2-20261014\\knx040-temp-uart-v2.uf2",
+      "usb_cdc_baud": 115200,
+      "at_tiny_uart_link_baud": 115200,
+      "rp_uart_pins": {
+        "TX_GPIO8": "ATtiny PA2 RX",
+        "RX_GPIO9": "ATtiny PA1 TX"
+      },
+      "common_temperature_protocol": "KNX014 UART115200 8N1 sync A55A CRC16/CCITT-FALSE",
+      "stknx_gpio0_idle_low_only_after_setup": true,
+      "production_firmware_replaced": false
+    }
+  },
+  "live_test": {
+    "raw_trace_path": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX040-rp2040-uart-temp-v2-20261014\\com7-live-cdc-v2.txt",
+    "observation_path": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX040-rp2040-uart-temp-v2-20261014\\com7-live-observation-v2.json",
+    "duration_seconds": 16,
+    "bytes_read": 4749,
+    "valid_crc_decoded_snapshots": 8,
+    "channel_lines": 72,
+    "timed_out_requests": 0,
+    "rejected_responses": 0,
+    "all_snapshots_valid_temperature_channels": 0,
+    "all_snapshots_nosensor_channels": 9,
+    "fault_value_NoSensor": 1,
+    "flags_value_Error": 16,
+    "age_seconds_no_sample": 65535,
+    "no_actual_temperature_measurement_possible_without_probes": true,
+    "status": "PASS_UART_CRC_NINE_NO_SENSOR"
+  },
+  "production_controller_fix_pending": {
+    "file": "src/controller/temperature_bridge.cpp",
+    "old_bug": "if (uart_->availableForWrite() < 8) return",
+    "correct_semantics": "Arduino-Pico SerialUART availableForWrite returns 1 if writable, 0 otherwise",
+    "proposed_patch": "if (uart_->availableForWrite() <= 0) return",
+    "already_applied_to_production_source": false,
+    "production_controller_still_blocked_by_STKNX_TPUart_unsafe": true,
+    "no_ETS_or_KNX_bus_test": true,
+    "no_motors_operated": true
+  }
+}
