@@ -1,0 +1,40 @@
+{
+  "slice": "KNX042",
+  "test": "M1 + CLOSE LED-only reversed motor-direction 400ms pulsetrain",
+  "date": "2026-10-14",
+  "firmware": "Existing flashed KNX042 image unchanged (no reflash)",
+  "user_preflight": "KNX bus physically not connected, USB-only supply, motor actuators unplugged (prior user confirmations)",
+  "usb_device": {
+    "port": "COM7",
+    "vidpid": "2E8A:000A",
+    "serial": "E464401787522D33"
+  },
+  "test_host": "tools/knx042_m1_close_led_blink.py",
+  "started_local": "2026-10-14T17:25:28+02:00",
+  "ended_local": "2026-10-14T17:26:29+02:00",
+  "test_result": "PASS",
+  "command": "PULSE 1 R",
+  "pulse_count": 100,
+  "pulses_completed": 100,
+  "pulse_max_ms": 400,
+  "inter_pulse_gap_nominal_ms": 200,
+  "gpio_expected_during_each_pulse": {
+    "M1_EN_GPIO10": "HIGH",
+    "IN_1_OPEN_GPIO18": "LOW",
+    "IN_2_CLOSE_GPIO19": "HIGH",
+    "M2_to_M8": "LOW"
+  },
+  "firmware_ack_for_every_pulse": "KNX042 PULSE M1 R 400ms",
+  "firmware_ack_for_every_auto_stop": "KNX042 AUTO-STOP",
+  "initial_status": "KNX042 STATUS armed=0 active=0",
+  "final_status": "KNX042 STATUS armed=0 active=0",
+  "led_observation": "PENDING_USER",
+  "measured_gpio_voltage": false,
+  "measured_motor_current": false,
+  "electrical_output_voltage_verified": false,
+  "firmware_flashing_performed": false,
+  "knx_used": false,
+  "physical_motor_connected": false,
+  "github_push_performed": false,
+  "offline_tests": "13 of 13 PASS"
+}
