@@ -55,3 +55,7 @@ Die lokale TPUart-Bibliothek verwendet SERIAL_8E1 und probiert 19200/38400 Baud.
 - U9-U11-Übertemperatur, F1 2,5A vs. 630mA und D1-Bypass-/USB-KNX-Rückspeisung als eigenständige sicherheitskritische Freigabepunkte beibehalten.
 
 **Ergebnis: ELECTRICAL_TX_IDLE_HAZARD_OPEN.** R17 wurde bislang **nicht** als vom Nutzer ausgelötet bestätigt; tatsächlicher LOW-Pegel am STKNX nicht gemessen. Der überhitzte U11 und U9 sind noch nicht erneut geprüft. Keine Power-, Bus-, Flash- oder Motorfreigabe aus diesem Dokument ableiten.
+
+## Nachtrag 14.10.2026: R17 laut Nutzer ausgelötet
+
+Der Nutzer hat am 14.10.2026 berichtet, dass er R17 ausgelötet hat. Die PCB-V1.2-Designdaten enthalten den urspruenglichen 10k Pull-up weiterhin als historische Design-Referenz. **Tatsaechliche Widerstands-/Kontinuitaetsmessung U9 KNX_TX zu 3.3V, freies R17-Pad, U11-Zustand und TX LOW bei RESET/BOOTSEL/Brownout stehen aus.** Das alleinige Ablöten R17 erteilt keine KNX-Busfreigabe. [Home KNX043 R17-Plan](KNX043_R17_REWORK_TO_RX_FLASH.md).

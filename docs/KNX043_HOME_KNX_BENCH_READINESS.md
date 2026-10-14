@@ -113,3 +113,9 @@ Dieses IP-Interface ist **nicht** als isolierter KNX-Testbus qualifiziert. R17 a
 [Maschinenlesbarer Live-Bericht](KNX043_HOME_LIVE_DISCOVERY_20261014.json).
 
 **Naechster Schritt:** Platine fuer R17/U9/U11/F1/D1/JMP1-3-Kontrolle erst stromlos machen und Messungen dokumentieren. Fuer die ETS6-Konfiguration kann spaeter das gefundene IP-Interface 192.168.178.5 als KNX/IP-Verbindung ausgewaehlt werden, ohne den nicht freigegebenen Ventilcontroller an den Bus zu haengen.
+
+## Nachtrag R17-Entfernung und RX-UF2-Pruefung (14.10.2026)
+
+Der Nutzer bestaetigt, dass er **R17 physisch ausgelötet** hat. Dies wurde dokumentiert als **Nutzerbericht, kein gemessener Widerstand oder Nachweis fuer TX LOW im Reset/BOOTSEL**. Das kombinierte KNX-TX-Hardware-Gate bleibt unverifiziert, ebenso U11 nach vorheriger Ueberhitzung, U9, D1-Bypass, F1 und die Spannungs-/Rueckspeisungspfade.
+
+Der RP2040 wird auf Home weiterhin im USB-ROM-BOOTSEL mit Laufwerk D: RPI-RP2 erkannt. Die passende, neueste isolierte KNX043-RX-only-UF2 und die KNX042-Rollback-UF2 haben auf Home und im automatisierten READ-ONLY-Preflight korrekte SHA256-Werte und UF2-Adressen (14.10.2026). **Kein Flash erfolgt.** Die weiteren Schritte inklusive sicherer manueller UF2-Option und notwendigen stromlosen Messungen stehen unter [R17-Rework und RX-Only-Flashplan](KNX043_R17_REWORK_TO_RX_FLASH.md). Windows blockiert lokale .ps1-Dateien per Execution Policy, die nicht veraendert wird; der Pruefer ist Python und ist read-only.

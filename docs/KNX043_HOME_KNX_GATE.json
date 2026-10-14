@@ -4,7 +4,7 @@
   "prepared_on": "2026-10-14",
   "board": "OpenKNXValveControl PCB V1.2; STKNXTR U9; RP2040 U18; U11 R68",
   "location": "LLO Home",
-  "user_report": "Board in transit; no serial COM available and no KNX bus connected",
+  "user_report": "Board on LLO Home in USB BOOTSEL; user confirms R17 physically desoldered. No direct electrical U9/U11 or reset/brownout measurement yet.",
   "requirement": "Record actual evidence before any KNX TP power/bus test; no field below is automatically satisfied by source/build success",
   "observations": {
     "board_visual_no_short_or_heat_damage": null,
@@ -26,7 +26,7 @@
     "user_explicit_release_for_separate_knx_connection_test": null
   },
   "facts": {
-    "R17_existing_design": "10k pull-up KNX_TX to 3V3; as-built removal not confirmed",
+    "R17_existing_design": "PCB V1.2 originally 10k from KNX_TX to 3V3; USER REPORTED R17 REMOVED on 2026-10-14; electrical continuity and reset-safe TX LOW not verified.",
     "U11_excessive_heat": "Previously observed when KNX and 5V connected, cause not yet measured",
     "U11_design": "68 ohm / 2W, PCB vendor metadata mismatched",
     "RP2040_TX": "GPIO0; default UART idle HIGH incompatible with STKNX active-HIGH pulse input",
@@ -43,5 +43,18 @@
     "rp2040_rom_bootsel": "VIDPID 2E8A:0003, RPI-RP2 D:, picotool USB MI_01 needs driver (code28)",
     "knx_ip": "192.168.178.5:3671, individual address 1.0.1, KNXnet/IP tunneling service advertised",
     "network_only": "No ETS tunnel and no valve KNX bus connection; hardware gate remains blocked"
+  },
+  "user_reported_hardware_rework": {
+    "date": "2026-10-14",
+    "component": "R17",
+    "statement": "R17 hatte ich abgeloetet",
+    "reported_removed": true,
+    "user_report_only": true,
+    "physical_pad_inspection_performed_by_agent": false,
+    "resistance_to_3v3_ohms_measured": null,
+    "solder_bridge_excluded": null,
+    "stknx_tx_idle_measured": null,
+    "stknx_tx_reset_bootsel_brownout_measured": null,
+    "note": "Do not mark combined observation gate as true without direct checks."
   }
 }
