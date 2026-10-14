@@ -6,6 +6,13 @@
 
 **Nur tatsaechlich geschlossene, validierte Slices** erscheinen in diesem chronologischen Index. Offene Arbeit liegt in `_OPEN_KNX###_*.md` und die Vorschau in [ROADMAP](../ROADMAP.md).
 
+## KNX041 - Temperature Bridge UART write readiness (2026-10-14)
+
+- Software-only fix: `src/controller/temperature_bridge.cpp` replaces the nonfunctional 8-byte capacity threshold with boolean `availableForWrite() <= 0` after KNX040 measured actual Arduino-Pico behavior.
+- KNX041 source regression 4/4 PASS; KNX014 native four groups PASS; KNX013/014 bridge audit PASS. KNX031 historical immutable-source audit is expected to reject this intentional change. Historical audit deliberately NOT weakened.
+- No RP2040 or ATtiny flash, KNX bus or motor operations; physical DS18B20 measurement remains pending.
+- Evidence: [KNX041 notes](../KNX041_TEMPERATURE_BRIDGE_READY_FIX.md). No GitHub push.
+
 ## Vor der ASH-Aktivierung: bestehende Projektbasis
 
 Diese Git-Arbeiten sind **keine rueckwirkend formal abgeschlossenen Slices**; es gab dabei noch keinen aktiven `_OPEN_...`-Marker, keine dokumentierte vierstufige Slice-Gate-Historie. Ihre technischen Feststellungen und Restrisiken sind in den verlinkten permanenten Dateien dokumentiert.

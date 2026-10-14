@@ -1,5 +1,7 @@
 # OpenKNXValveControl - ASH Slice Roadmap
 
+**KNX041 software fix:** Product temperature bridge UART write-readiness guard changed to boolean readiness after KNX040 real UART confirmation; regression and remaining hardware gate in [KNX041 notes](KNX041_TEMPERATURE_BRIDGE_READY_FIX.md).
+
 **Stand:** 2026-10-12. **Version:** Software-first Repriorisierung KNX012 und KNX015-Temperatur-MVP: Erst ATtiny -> UART -> RP2040 -> KNX-Temperaturen; danach Motor-Safety und Raumregelung. Geplante IDs/Abhaengigkeiten sind **keine Implementierungsfreigabe**.
 
 **Workflow:** [ASH Slice Protocol v1](reference/ash/SLICE_PROTOCOL.md) und [lokale Regeln](../.ash/WORKFLOW.md).

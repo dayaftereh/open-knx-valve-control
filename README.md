@@ -1,5 +1,7 @@
 # Open KNX Valve Control
 
+**KNX041:** The production temperature bridge UART write-readiness guard now uses boolean `availableForWrite() <= 0` (software only; no productive flashing). See [KNX041 notes](docs/KNX041_TEMPERATURE_BRIDGE_READY_FIX.md).
+
 Controller for up to **eight motorized underfloor-heating valve actuators** with KNX integration. This repository contains firmware, KNX product-description sources, electronics schematics/PCB exports and DIN-rail enclosure models.
 
 > **Project status (2026-10-12):** KNX013/014 collect nine ATtiny 1-Wire temperatures and deliver CRC-checked UART snapshots to RP2040; KNX015 now implements **ETS-parameterized KNX DPT9.001 telemetry** (KO25..33) and two quality-diagnostic objects (KO34/35) with validity checks and throttling. Native tests, isolated RP2040 build and product generation pass. **No real-board UART/KNX/ETS6 import, real motor positioning, or live room regulation have been tested. KNX008/019/020/021 implement the previously independent portable zone, PI, exclusive motor-lease and virtual feedback models. KNX023 now links the PI/zone computation into the actual RP2040 firmware at a RAM-only 100ms cadence; the real ARDUINO build has NO motor-event backend, NO motor-GPIO path and blocks synthetic arming by compilation. External room KNX inputs and real actuator commands have NOT been connected.** This document separates offline evidence from requirements and hardware gates.

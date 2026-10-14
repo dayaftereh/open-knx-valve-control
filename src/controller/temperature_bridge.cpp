@@ -24,9 +24,10 @@ void TemperatureBridge::update()
         client_.feed(static_cast<uint8_t>(value), millis());
     }
 
-    // Request packet is only 8 bytes; do not mark it pending unless the
-    // hardware TX FIFO has capacity for the whole frame.
-    if (uart_->availableForWrite() < 8)
+    // Arduino-Pico SerialUART::availableForWrite() returns a boolean
+    // readiness indication (0/1), not the free TX FIFO byte count.
+    // A count-based threshold of 8 suppresses every request.
+    if (uart_->availableForWrite() <= 0)
         return;
     uint8_t request[8]{};
     const size_t count = client_.prepareRequest(millis(), request,
