@@ -94,3 +94,9 @@ Evidence is machine-readable in [KNX042 user LED observation](KNX042_OPEN_LED_OB
 ### KNX042 M1 LED retest after reversing indicator LED (2026-10-14)
 
 At 16:56:40 MESZ the user-requested third-party hardware visual retest was started after the user had rotated/re-soldered an LED. KNX042 COM7 identity matched; initial status was `armed=0 active=0`; guarded `ARM LEDS_ONLY` and `HOLD M1 F 180s` were acknowledged (EXIT0), and the independent follow-up at 16:56:54 MESZ returned `armed=0 active=1`. Expected M1_EN GPIO10 HIGH / OPEN IN1 GPIO18 HIGH / CLOSE IN2 GPIO19 LOW, all other motor enables LOW. Board software auto-stop limit 180 s (approx 16:59:40 MESZ); the actual LED condition remains **pending direct user observation**. No firmware flash, KNX bus or connected motors. See [retest evidence](KNX042_M1_LED_AFTER_REWORK_20261014.json).
+
+## Erratum 14.10.2026 – ungewolltes STOP durch Statusabfrage
+
+Der Python-USB-Host hat im ursprünglichen `finally`-Pfad auch nach `STATUS` ein `STOP` verschickt. Beim Test nach dem LED-Umlöten (`HOLD M1 F` um 16:56:40) erfolgte die `STATUS`-Abfrage um 16:56:54; anschließend wurde das Ausgangssignal vom Host sehr wahrscheinlich vorzeitig gestoppt. Die später dunklen M1-/OPEN-LEDs beweisen daher keinen Lötfehler. Die angegebene 180-s-Testdauer wurde bei aktiv abgefragten Tests nicht nachgewiesen. **`active=1` war nur die interne Firmwarevariable, kein gemessener GPIO-Pegel.**
+
+Der Host wurde korrigiert und mittels simuliertem seriellen Port rot/grün getestet (KNX042 insgesamt 10/10 PASS), ohne RP2040-Neuflash oder erneute Motorausgangsaktivierung. Details: [KNX042 Status-Fehleranalyse](KNX042_STATUS_SIDE_EFFECT_FIX_20261014.md).

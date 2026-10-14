@@ -104,10 +104,12 @@ def run(argv=None):
                           "pulse": pulse, "stopped": stopped}))
         return 0
     finally:
-        # Attempt safe disarm on every error path. No blind command if
-        # identity hasn't been established by a matching USB diagnostic.
+        # A read-only STATUS must never emit STOP (including during a HOLD).
+        # Disarm only on an active drive operation's failure or pulse exit;
+        # never issue commands unless the expected USB identity was seen.
         try:
-            if 'ready' in locals() and not hold_confirmed:
+            if ('ready' in locals() and args.action in ('pulse', 'hold')
+                    and not hold_confirmed):
                 conn.write(b"STOP\n")
                 conn.flush()
         finally:

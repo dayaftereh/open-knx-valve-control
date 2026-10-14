@@ -27,10 +27,18 @@
     "M2_to_M8": "LOW"
   },
   "max_software_hold_ms": 180000,
-  "software_auto_off_time_approx_local": "2026-10-14T16:59:40+02:00",
-  "user_visual_led_observation": "PENDING",
+  "software_auto_off_time_approx_local": "16:59:40 MESZ only if no other STOP; NOT effective duration of this run",
+  "user_visual_led_observation": "User saw neither M1 nor OPEN illuminated during later inspection; observation time not established",
   "real_motor_connected": false,
   "knx_bus_connected": false,
   "flash_performed": false,
-  "github_push_performed": false
+  "github_push_performed": false,
+  "command_vs_physical_outcome": "Firmware acknowledged HOLD and later STATUS active=1, but NO GPIO voltage/current or actual LED activation verified",
+  "host_status_side_effect_discovered": {
+    "cause": "Old CLI emitted STOP in finally even after STATUS (hold_confirmed=False)",
+    "timeline": "16:56:40 HOLD accepted; 16:56:54 STATUS returned active=1 then CLI sent STOP when connection closed",
+    "likely_effect": "M1 and OPEN drive terminated about 14 seconds after start rather than lasting up to 180 seconds",
+    "device_stop_ack_observed": false,
+    "180s_auto_stop_tested_in_this_run": false
+  }
 }
