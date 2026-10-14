@@ -24,3 +24,5 @@ Evidence: [KNX042 runbook](../KNX042_MOTOR_LED_BRINGUP.md).
 - 2026-10-14 **17:13:01 MESZ after host STATUS fix:** new guarded M1 F 180s HOLD ACK; corrected STATUS read-only twice at 17:13:21 and 17:13:43, both `active=1`. Previous premature-stop bug did **not** recur. Physical LED observation still pending; timeout check pending. [Evidence](../KNX042_M1_AFTER_HOST_FIX_20261014.json).
 
 - 2026-10-14 17:25:28–17:26:29 MESZ: User-requested M1 CLOSE / IN2 test without firmware flash, bounded 100 × 400ms `PULSE 1 R` with each AUTO-STOP acknowledged and 200ms nominal dark gap. Initial and final USB state `armed=0 active=0`, host exit0, 13/13 offline host tests PASS. **Physical CLOSE LED sighting pending**. [Live evidence](../KNX042_M1_CLOSE_BLINK_20261014.json).
+
+- 2026-10-14 17:58:51–17:59:52 MESZ: user LED rework complete; guarded M2 OPEN `PULSE 2 F` 100x400ms real USB test PASS (100 ACK + 100 AUTO-STOP), initial/final inactive. 16/16 offline tests PASS. M2/OPEN visual LED confirmation pending; no motor/KNX connection or MCU flash. [Evidence](../KNX042_M2_OPEN_BLINK_20261014.json).

@@ -1,0 +1,38 @@
+{
+  "slice": "KNX042",
+  "date": "2026-10-14",
+  "test": "M2 OPEN LED-only test after user's rework of remaining indicator LEDs",
+  "hardware": "V1.2, RP2040, KNX042 isolated USB firmware",
+  "usb": {
+    "port": "COM7",
+    "vidpid": "2E8A:000A",
+    "serial": "E464401787522D33"
+  },
+  "physical_assumptions": "KNX bus disconnected, no connected motor actuators, USB-only power according to user's earlier confirmation; user reports only LED soldering since then",
+  "controller_firmware_reflashed": false,
+  "script": "tools/knx042_motor_led_blink.py",
+  "start_local": "2026-10-14T17:58:51+02:00",
+  "end_local": "2026-10-14T17:59:52+02:00",
+  "command": "PULSE 2 F",
+  "expected_gpio_during_400ms_pulse": {
+    "M2_EN": "GPIO11 HIGH (LED16 via R54)",
+    "OPEN_IN1": "GPIO18 HIGH (OPEN LED via R41)",
+    "CLOSE_IN2": "GPIO19 LOW",
+    "all_other_motor_enables": "LOW"
+  },
+  "duration_per_pulse_max_ms": 400,
+  "nominal_off_gap_ms": 200,
+  "pulses_requested": 100,
+  "pulses_acked": 100,
+  "each_auto_stop_acknowledged": true,
+  "usb_pretest_status": "KNX042 STATUS armed=0 active=0",
+  "usb_final_status": "KNX042 STATUS armed=0 active=0",
+  "cli_exit_code": 0,
+  "host_offline_regressions": "16/16 PASS",
+  "actual_m2_indicator_seen": "PENDING_USER_FEEDBACK",
+  "actual_open_indicator_seen": "PENDING_USER_FEEDBACK",
+  "motor_current_or_output_voltage_measured": false,
+  "motor_connected": false,
+  "knx_bus_activated": false,
+  "github_push_performed": false
+}
