@@ -98,3 +98,7 @@ Der aktuelle Git-Stand und das fertig geprüfte KNX029-Offline-Firmwarepaket lie
 ## KNX031-Nachtrag – Rohdaten aus dem internen ATtiny-Temperatur-UART
 
 Für einen späteren **separat freigegebenen** Rohmitschnitt der RP2040-Serial2 ↔ ATtiny ALT1 PA1/PA2-Leitung steht die rein dateibasierte [KNX031 UART-Analyse](KNX031_UART_TRACE_OFFLINE.md) bereit. Der LLO-Home-USB-CDC-Anschluss und die CH340G-Programmer-CN1-TXD/RXD-Pins liefern nicht automatisch diesen internen UART1-Verkehr. Keine Portöffnung in der Auswerte-CLI, keine Aufzeichnung ohne sicheren Spannungs-/GND-/Pegelcheck, keine elektrische oder motorische Freigabe durch einen guten CRC.
+
+## KNX036 Desktop-Erstkontakt (14.10.2026; neue Anlaufstelle)
+
+Nach dem KNX035-U11-Überhitzungsereignis wurde der aktuelle 19-Commit-Home-Fortschritt **ohne GitHub-Push** zum LLO Desktop zurücktransferiert. [KNX036](KNX036_DESKTOP_USB_FIRST_CONTACT.md) dokumentiert die inzwischen live geprüften Host-Ports `COM1` (lokal) und `COM3` (Intel-AMT-SOL), beide **nicht** als UPDI/RP2040-Kandidaten. Board-/Programmer-USB-Verbindungen haben noch **keine neuen PnP-Einträge** geliefert. Das eigene RP2040 USB-CDC-Build-Projekt enthält keine KNX-/Motorfunktionen und hat einen explizit gesperrten PlatformIO-Upload. **CN1.1 = 5 V** und **U25 = 3,3-V-Logik** bleiben inkompatibilitätsverdächtig, bis Pegel/isolierte Versorgung nachgewiesen sind; zunächst nur CH340G-Gerät PC-seitig **ohne 2×3-Kabel** enumerieren. R17-U9, F1, D1, U6 und KNX-/Motor-Gates bleiben separate reale STOP-Punkte.
