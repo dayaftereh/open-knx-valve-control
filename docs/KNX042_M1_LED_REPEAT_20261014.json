@@ -1,0 +1,34 @@
+{
+  "slice": "KNX042",
+  "kind": "M1 LED repeat requested by user",
+  "date": "2026-10-14",
+  "hardware": "RP2040 KNX042 isolated diagnostic, USB CDC COM7, serial E464401787522D33",
+  "prerequisite": "User previously confirmed KNX disconnected, USB-only supply, no physical motors",
+  "preflight": {
+    "usb_vidpid": "2E8A:000A",
+    "source_git": "main clean ahead32",
+    "pre_status": "KNX042 STATUS armed=0 active=0"
+  },
+  "command": "tools/knx042_motor_led_control.py hold --channel 1 --direction F (with 4 host safety flags)",
+  "start_time_local": "2026-10-14T15:06:27+02:00",
+  "serial_arming_ack": "KNX042 ARMED 15s; NO KNX OR MOTORS",
+  "serial_hold_ack": "KNX042 HOLD M1 F 180s",
+  "followup_usb_status": {
+    "at_utc": "2026-10-14T13:06:51Z",
+    "status": "KNX042 STATUS armed=0 active=1"
+  },
+  "gpio_expected": {
+    "M1_EN": "GPIO10 HIGH",
+    "IN1": "GPIO18 HIGH",
+    "IN2": "GPIO19 LOW",
+    "M2_to_M8": "LOW"
+  },
+  "firmware_auto_stop_limit_seconds": 180,
+  "actual_led_visual_observation": "PENDING_USER_FEEDBACK",
+  "actual_output_voltage_measurement": "NOT_PERFORMED",
+  "active_off_verified_after_timeout": false,
+  "firmware_flashing_performed": false,
+  "knx_activation_performed": false,
+  "connected_motors_present": false,
+  "github_push_performed": false
+}
