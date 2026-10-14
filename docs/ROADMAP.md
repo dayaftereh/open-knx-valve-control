@@ -1,5 +1,9 @@
 # OpenKNXValveControl - ASH Slice Roadmap
 
+**KNX043 NEXT – PicoScope LLO Desktop (15.10.2026):**
+
+Der Nutzer bringt die V1.2-Platine morgen zum Desktop; PicoScope 6 installiert, Hardware noch nicht nachgewiesen. Gesicherte passive RX-only Firmware laeuft zuletzt auf LLO Home COM8. An JMP3 **Pad 2 (U9 KNX_TX)** und optional **Pad 3 (RP2040 GPIO0)** den LOW-Ruhepegel sowie Boot-/Reset-Pegel ohne KNX-Bus und ohne Motoren messen. JMP3 Pad1 ist RX, kein TX. Jumperkonfiguration/3.3V/GND stromlos pruefen. Ein USB-only LOW-Nachweis ist **keine KNX-Busfreigabe**. [Runbook](KNX043_PICOSCOPE_DESKTOP_HANDOVER_20261015.md), [Messwerte offen](KNX043_PICOSCOPE_MEASUREMENTS_20261015.json).
+
 **Prioritaet KNX043 (14.10.2026): LLO Home KNX-Bench – Vorbereitung fertig, physischer Bus gesperrt.**
 
 M1 OPEN/CLOSE und M2 OPEN LED-Pfade wurden bestaetigt, restliche Motor-LED-Tests auf Wunsch zurueckgestellt. Home hat ETS6/Pio/OpenKNXproducer, keinen angeschlossenen Controller/KNX-Adapter. Kompiliertes RX-only-Sketch und auslesbarer Home-KNX-Preflight mit Rollback/Hashes bereit; direkte TPUart-Produktfimware ist fuer STKNX KNX_TX unpassend. U11-Hitzeereignis, R17 HIGH-Pullup und Boot/Brownout-Ruhelage sind KNX-Blocker. [KNX043 Plan](KNX043_HOME_KNX_BENCH_READINESS.md), [Gate](KNX043_HOME_KNX_GATE.json).

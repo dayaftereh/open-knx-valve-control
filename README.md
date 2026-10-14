@@ -1,5 +1,9 @@
 # Open KNX Valve Control
 
+**KNX043 PicoScope-Uebergabe LLO Desktop fuer 15.10.2026:**
+
+Die RP2040-Platine wird laut Nutzer morgen zum LLO Desktop mit PicoScope 6 gebracht. Projekt bereits heute auf Home/Desktop identisch commit cc6eb38 (vor dem Handover); zuletzt auf Home laeuft KNX043 RX-only auf COM8. **JMP3 Pad 2 = KNX_TX/U9 Pin24, JMP3 Pad3 = RP2040 GPIO0; JMP2 Pad2 = KNX_RX/U9 Pin23, Pad1 = RP2040 GPIO1.** Erst spannungsfrei pruefen, dann ausschliesslich USB und Oszilloskop, **kein KNX-Bus und keine Motoren**. [Messplan 15.10.2026](docs/KNX043_PICOSCOPE_DESKTOP_HANDOVER_20261015.md).
+
 **KNX043 LLO Home – KNX-Bench vorbereitet, Busanschluss GESPERRT:**
 
 Desktop und Home waren auf Git 9d77dbe synchron; ETS6, OpenKNXproducer und PIO auf Home gefunden. Neuer separater STKNX-RX-Only-Sketch offline kompiliert, Host-Capture und Hardware-Gates erstellt; Board auf dem Transportweg. R17/KNX_TX-U9-U11 und Versorgungs-Rueckspeisung nach ehemaliger U11-Ueberhitzung muessen vor einem KNX-Busanschluss elektrisch qualifiziert werden. [KNX043 Home-Bench](docs/KNX043_HOME_KNX_BENCH_READINESS.md). Kein KNX-Anschluss und kein Firmwareflash.

@@ -1,0 +1,72 @@
+{
+  "schema": "knx043-picoscope-measurements/v1",
+  "planned_date": "2026-10-15",
+  "prepared_on": "2026-10-14",
+  "status": "NOT_MEASURED_NO_SCOPE_CONNECTED",
+  "workstation": "LLO Desktop",
+  "board": "OpenKNXValveControl V1.2 / U9 STKNXTR / RP2040",
+  "firmware_expected": "KNX043 STKNX passive RX-only, last verified Home COM8 on 2026-10-14",
+  "user_reported_rework": {
+    "R17": "desoldered",
+    "U11": "resoldered, measured 68 ohm",
+    "U9": "correct intended chip"
+  },
+  "no_knx_bus_or_motors_during_measurement": null,
+  "picoscope_hardware_connected": null,
+  "picoscope_model": null,
+  "picoscope_version": "PicoScope 6 installed on Desktop; hardware/model pending",
+  "oscilloscope_ground_point": null,
+  "oscilloscope_probe_attenuation": null,
+  "desktop_usb_port": null,
+  "desktop_usb_serial": null,
+  "testpoints": {
+    "JMP3_pad_2_U9_KNX_TX": {
+      "net": "KNX_TX",
+      "connected_to": "U9 pin24",
+      "usb_only_steady_dc_volts": null,
+      "reset_peak_volts": null,
+      "reset_high_pulse_us": null,
+      "usb_reconnect_peak_volts": null,
+      "bootsel_peak_volts": null,
+      "picoscope_file": null
+    },
+    "JMP3_pad_3_RP2040_GPIO0": {
+      "net": "KNX_TX'",
+      "connected_to": "RP2040 GPIO0",
+      "usb_only_steady_dc_volts": null,
+      "reset_peak_volts": null,
+      "usb_reconnect_peak_volts": null,
+      "bootsel_peak_volts": null,
+      "picoscope_file": null
+    },
+    "JMP2_pad_2_U9_KNX_RX": {
+      "net": "KNX_RX",
+      "connected_to": "U9 pin23",
+      "usb_only_dc_volts": null,
+      "picoscope_file": null
+    },
+    "JMP2_pad_1_RP2040_GPIO1": {
+      "net": "KNX_RX'",
+      "connected_to": "RP2040 GPIO1",
+      "usb_only_dc_volts": null,
+      "picoscope_file": null
+    }
+  },
+  "jumper_configurations_as_found": {
+    "JMP1": null,
+    "JMP2": null,
+    "JMP3": null
+  },
+  "R17_pad_short_to_3v3_ruled_out": null,
+  "U9_U11_visual_thermal_health_verified": null,
+  "d1_f1_jmp1_supply_backfeed_verified": null,
+  "tx_low_in_rom_reset_brownout_qualified": null,
+  "isolated_knx_tp_bench_available": null,
+  "physical_knx_tp_bus_test_authorized": false,
+  "notes": [
+    "All physical measurements null until actually observed.",
+    "JMP3 pad1 is KNX_RX' (not TX); JMP2 pad3 is KNX_TX' (not RX).",
+    "No KNX TP / motor loads or external power for first PicoScope tests.",
+    "Even successful USB-only measurement does not auto-authorize KNX bus."
+  ]
+}

@@ -1,0 +1,54 @@
+# KNX043 – PicoScope-Handover LLO Desktop (15.10.2026)
+
+**Erstellt am:** 14.10.2026. **Nächster Prüfstand:** LLO Desktop, `C:\ASH\Workspace\Projects\open-knx-valve-control`. **Priorität:** KNX-TX-Ruhepegel/Reset ohne KNX-Bus. **Status:** Vorbereitung; **kein Oszilloskop angeschlossen, keine Pegelmessung durchgeführt, keine KNX-Busfreigabe**.
+
+## 1. Ausgangsstand
+
+- LLO Home und LLO Desktop am 14.10.2026 vor diesem Handover: identisch `main`, Git `cc6eb38`, beide CLEAN (47 Commits vor `origin/main`; nicht gepusht).
+- Board heute auf **LLO Home** erfolgreich mit separatem **KNX043 STKNX RX-only**-Image per USB-BOOTSEL/UF2 geflasht; Firmware antwortete dort auf **COM8**, USB-Seriennummer `E464401787522D33`, mit `KNX043 STATUS armed=0 listen=0 buffered=0 dropped=0`. **COM8 ist nicht automatisch der spätere Desktop-Port.**
+- Nutzer bestätigt **R17 ausgelötet**, **U11 neu verlötet und mit 68 Ω gemessen**, **U9 richtiger Chip-Typ**. Ein vorheriges U11-Überhitzungsereignis ist damit noch nicht vollständig elektrisch geklärt; keine Messung zu U9 und Reset-/Brownout-Pegeln.
+- Desktop-Agent v0.8.2 erreichbar. **PicoScope 6** installiert: `C:\Program Files (x86)\Pico Technology\PicoScope6\PicoScope.exe`. Scope-Hardware derzeit nicht nachgewiesen/noch nicht zur Verfügung. PicoScope nicht automatisch starten oder mit der Platine verbinden.
+- KNX/IP-Schnittstelle auf Home zuvor netzwerkseitig unter **192.168.178.5:3671** (SCN-IP000.03, eigene Adresse 1.0.1) gefunden; kein Beweis für einen **isolierten Testbus**. **Kein Busanschluss und keine ETS-Programmierung** bis Hardware-Gates erfüllt sind.
+
+## 2. Exakte Jumper-Pad-Netze aus V1.2-PCB-JSON
+
+Quellbasis: `schematic/pcb_knx-valve-control_v1.2.json` (nicht aus einer Fotoannahme). Die drei Pads eines Jumpers sind **nicht** elektrisch gleichbedeutend; keine Brücken setzen, bis die tatsächlich bestückte Lage geprüft wurde.
+
+| Bauteil / Pad | PCB-Netz | Warum |
+| --- | --- | --- |
+| **JMP3 Pad 2** | `KNX_TX` | **U9 Pin 24 (STKNX-Seite)** – vorrangiger PicoScope-Messpunkt |
+| **JMP3 Pad 3** | `KNX_TX'` | **RP2040 GPIO0-Seite** – Vergleich mit Pad 2, sofern Jumperlage es zulässt |
+| JMP3 Pad 1 | `KNX_RX'` | **Nicht KNX_TX!** Nicht versehentlich als TX messen oder auf 2/3 brücken |
+| **JMP2 Pad 2** | `KNX_RX` | U9 Pin 23, erst später Empfangssignal |
+| **JMP2 Pad 1** | `KNX_RX'` | RP2040 GPIO1, erst später Empfangssignal |
+| JMP2 Pad 3 | `KNX_TX'` | **Nicht KNX_RX!** Nicht versehentlich mit Pad 1/2 kurzschließen |
+| R17 Pad 1 | `KNX_TX` | Ursprünglicher 10-kΩ-Pull-up, laut Nutzer ausgelötet |
+| R17 Pad 2 | `3.3V` | Nächster netzseitiger Vergleich zur stromlosen Brücken-/Widerstandsprüfung |
+
+**Vor der Messung** auf der physischen Platine die Padnummerierung anhand Layout/Fotos verifizieren. Ein versehentliches Verbinden von JMP3-Pad 1 mit 2/3 oder JMP2-Pad 3 mit 1/2 kann RX/TX zusammenschalten. Für die gesamte geplante erste Messreihe bleibt die KNX-TP-Klemme komplett **abgeklemmt**.
+
+## 3. Messfolge mit PicoScope 6 (nur USB, keine Motoren)
+
+1. Platine, USB und alle übrigen Spannungsquellen vor Anschluss der Messleitung **stromlos** lassen. **Kein KNX-TP, keine Antriebe, keine externe 5-V- oder KNX-Versorgung, kein UPDI.** Den Schutzleiter-/Massebezug des am PC angeschlossenen PicoScope berücksichtigen.
+2. Sichtkontrolle R17-Lötpads (kein Zinnsteg zu 3,3 V); U11 und U9 auf Verfärbung/Hitzeschäden prüfen. JMP3-Konfiguration und Board-GND mit Schaltplan/Multimeter **stromlos** identifizieren. U11=68 Ω stammt bisher aus Nutzerangabe. Keine Widerstandsmessung an eingeschalteter Platine.
+3. **Oszilloskop-Masse nur an verifizierten Platinen-GND anschließen**, keinesfalls an KNX_A, KNX_B oder den USB-/KNX-Versorgungszweig. CH A als **10:1-Tastkopf** an **JMP3 Pad 2** (`KNX_TX` / U9). Falls zweiter Kanal sicher erreichbar, CH B an **JMP3 Pad 3** (`KNX_TX'` / RP2040 GPIO0). Keine benachbarten Pads mit der Tastkopfspitze kurzschließen. CH B kann später nach Umstecken für JMP2 dienen.
+4. PicoScope 6 mit **DC-Kopplung**, Tastkopf-Einstellung **10:1**, konservativem vertikalen Bereich um 3,3-V-Logik und zunächst **1–10 ms/Div** einstellen. Zusätzlich kurzer Zeitbereich **etwa 50–200 µs/Div** zur Glitchsuche. Für schnelles Umschalten/Trigger ein Single-Shot mit positiver Flanke nahe **0,5–1 V** als Suchhilfe verwenden; das ist noch **kein** fachlicher STKNX-Grenzwert.
+5. Erst bei sicherem Masse- und Tastkopfanschluss die Platine **nur über USB** versorgen. USB-Seriennummer und den neuen Desktop-COM-Port **live** identifizieren; KNX043-READY-Banner und lesendes `STATUS` auf `listen=0` prüfen. Im aktuellen RX-only-Image soll GPIO0 **nach Setup** LOW sein. JMP3 Pad 2 **separat beurteilen**, weil die U9-Versorgungsdomäne im USB-only-Betrieb nicht automatisch als aktiv belegt gilt.
+6. **Aufzeichnen:** (A) stabiler USB-/Firmware-Normalbetrieb; (B) kontrollierter Reset/Neustart über vorgesehenen Reset/RUN (Lage erst prüfen); (C) USB abstecken und wieder verbinden, sofern sicher vorbereitet, um Einschalt-/Ausschalttransienten zu sehen; (D) wenn möglich kurz ROM-BOOTSEL **ohne KNX**, damit der Firmware-unabhängige GPIO-Zustand sichtbar wird. Keine absichtlich herbeigeführten Kurzschlüsse/Brownout-Experimente. Ein normales USB-Aus-/Einstecken ersetzt keine vollständige Brownout-Qualifizierung.
+7. **Pegel protokollieren:** JMP3 Pad 2 und ggf. Pad 3 – DC-Low-Pegel, beobachtetes High/Peak, Impulsdauern und Zeitbezug zu Reset/Boot. PicoScope-Rohaufzeichnung/Screenshot in den Projekt-Arbeitsbereich ablegen; im Messprotokoll auf die Datei verweisen. **Ein dauerhaft HIGH, relevante Glitches oder unplausible Spannungen ⇒ KNX-Busanschluss weiterhin gesperrt.**
+8. Optional für **RX** erst nach TX-Baseline: CH A an **JMP2 Pad 2**, CH B an **JMP2 Pad 1**. Das passive Empfangssignal bleibt ohne angeschlossenen KNX-Bus möglicherweise statisch; daraus **keine KNX-Kommunikationsfähigkeit** folgern. Der RX-Eingang am RP2040 muss mit 3,3-V-Logik kompatibel sein.
+
+**Wichtige Einschränkung:** Selbst wenn das Oszilloskop in USB-only-Betrieb überall LOW zeigt, folgt daraus **noch keine Freigabe** für den KNX-Bus. Erst U9/U11-Elektro-/Thermikzustand, 3,3-V-/5-V-/KNX-Versorgung und `D1/F1/JMP1`-Rückspeisung sowie Reset-/ROM-/Brownout-Failsafe in der tatsächlichen Versorgungsumgebung nachweisen. Beim STKNX bedeutet **KNX_TX HIGH aktiv**, also potenziell Busstrom/U11-Erwärmung. Ein produktiver Haus-KNX ist **kein Ersttestbus**.
+
+## 4. Prüfdatensatz – morgen mit Messwerten füllen
+
+Vorbereitet: [KNX043 PicoScope Messwerte](KNX043_PICOSCOPE_MEASUREMENTS_20261015.json). **Alle Messwerte derzeit `null`**. Messung am Scope braucht eine neue legitime Desktop-Write-Session; keine fremde Session übernehmen.
+
+**Nächster Chat:** Sobald die Platine am LLO Desktop angekommen ist, erst Agent/Session/Git und USB-Geräte/COM prüfen, danach PicoScope-Hardware finden und die oben vorbereitete **busfreie** Messung ausführen. **Keine neue Firmware, kein KNX-Busanschluss, kein ETS-Telegramm und kein GitHub-Push ohne neuen konkreten Auftrag.**
+
+## 5. Quellen im Repository
+
+- [KNX035 STKNX-TX-Hardwarekonflikt](KNX035_STKNX_TX_IDLE_HAZARD.md)
+- [KNX043 Flash-Bestätigung](KNX043_RX_ONLY_FLASH_HOME_20261014.json)
+- [KNX043 elektrische Sicherheits-Gates](KNX043_HOME_KNX_GATE.json)
+- [KNX043 ausführlicher Bench-Plan](KNX043_HOME_KNX_BENCH_READINESS.md)
