@@ -28,3 +28,12 @@ Evidence: [KNX042 runbook](../KNX042_MOTOR_LED_BRINGUP.md).
 - 2026-10-14 17:58:51–17:59:52 MESZ: user LED rework complete; guarded M2 OPEN `PULSE 2 F` 100x400ms real USB test PASS (100 ACK + 100 AUTO-STOP), initial/final inactive. 16/16 offline tests PASS. M2/OPEN visual LED confirmation pending; no motor/KNX connection or MCU flash. [Evidence](../KNX042_M2_OPEN_BLINK_20261014.json).
 
 - 2026-10-14: New [8-channel 1s LED sequence](../KNX042_ALL_MOTOR_LED_SEQUENCE.md) (M1 CLOSE/OPEN through M8 CLOSE/OPEN, 1s ON + 1s OFF, 5 rounds/160s) built via Arduino-Pico, 22/22 KNX042 regressions PASS, UF2 checked/rollback saved. **Not flashed** because picotool reboot -f -u cannot reach ROM BOOTSEL over CDC; manual USB_BOOT required. [Build evidence](../KNX042_ALL_LED_SEQUENCE_BUILD_EVIDENCE.json).
+
+
+## Prioritaetswechsel 2026-10-14: KNX043 Home-Bench vor M3–M8
+
+Der Nutzer transportiert die Platine zu LLO Home und priorisiert KNX; M1 OPEN+CLOSE und M2 OPEN visuell positiv, die restlichen M3–M8-LED-Checks sind **bewusst zurueckgestellt**, nicht als bestanden markiert. KNX042 bleibt als **einziger** offener ASH-Slice-Marker erhalten; kein paralleler _OPEN_KNX043. Im selben kontrollierten Write-Slice wurden KNX043 Home-Inventur, Hardware-Sicherheits-Gates, RX-only-Sketch und Offline-Checks vorbereitet. [KNX043 Home-Bench](../KNX043_HOME_KNX_BENCH_READINESS.md).
+
+**Physischer Blocker:** U11 wurde bei KNX + 5V heiss, R17 zieht STKNX-KNX_TX HIGH, produktive TPUart-Serial1-UART idle HIGH und unbekannte U9/U11-Schaeden. Keine Busbestromung vor stromlosem Hardwareabgleich, TX-LOW-Reset- und Brownout-Pruefung, sauberem USB-/KNX-Versorgungsnachweis und gesonderter Freigabe. Am LLO Home ist die Platine noch nicht angeschlossen. Kein Firmware-Flash/KNX-Versuch.
+
+**Next exact action:** Bei Ankunft auf Home erst Foto/Status R17-U9-U11, Jumper und Rails stromlos, USB-C ohne Bus nur nach Power-Freigabe, COM/Geraete-ID erfassen und die [KNX043 Gate-Felder](../KNX043_HOME_KNX_GATE.json) mit realen Messungen aktualisieren. Dann elektrischen Buskontakt separat freigeben. Keinen alten TPUart-Controller am STKNX einsetzen.

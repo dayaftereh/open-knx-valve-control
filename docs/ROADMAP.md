@@ -1,5 +1,9 @@
 # OpenKNXValveControl - ASH Slice Roadmap
 
+**Prioritaet KNX043 (14.10.2026): LLO Home KNX-Bench – Vorbereitung fertig, physischer Bus gesperrt.**
+
+M1 OPEN/CLOSE und M2 OPEN LED-Pfade wurden bestaetigt, restliche Motor-LED-Tests auf Wunsch zurueckgestellt. Home hat ETS6/Pio/OpenKNXproducer, keinen angeschlossenen Controller/KNX-Adapter. Kompiliertes RX-only-Sketch und auslesbarer Home-KNX-Preflight mit Rollback/Hashes bereit; direkte TPUart-Produktfimware ist fuer STKNX KNX_TX unpassend. U11-Hitzeereignis, R17 HIGH-Pullup und Boot/Brownout-Ruhelage sind KNX-Blocker. [KNX043 Plan](KNX043_HOME_KNX_BENCH_READINESS.md), [Gate](KNX043_HOME_KNX_GATE.json).
+
 **KNX042 OPEN:** M1 OPEN/CLOSE und M2 OPEN bereits auf realem RP2040 per USB und LED-Beobachtung bestaetigt; neues eigenstaendiges M1..M8 LED-Sequenz-Sketch (je CLOSE/OPEN 1s, 1s aus, 5 Runden) erfolgreich gebaut und mit altem UF2 gesichert, **Flash/realer 8-Kanal-Test noch ausstehend (USB_BOOT manuell erforderlich)**. [Sequenz](KNX042_ALL_MOTOR_LED_SEQUENCE.md), [Runbook](KNX042_MOTOR_LED_BRINGUP.md), [Host-Fix](KNX042_STATUS_SIDE_EFFECT_FIX_20261014.md).
 
 **KNX041 software fix:** Product temperature bridge UART write-readiness guard changed to boolean readiness after KNX040 real UART confirmation; regression and remaining hardware gate in [KNX041 notes](KNX041_TEMPERATURE_BRIDGE_READY_FIX.md).

@@ -118,3 +118,8 @@ Das WinLibs-7z-Archiv (109762824 Bytes) wurde gegen das offizielle Release-SHA25
 Der eingeschlossene KNX027 Scope-Audit ist fuer die genau zwei bekannten `controller.ini`-Pins erweitert: fremde Firmware-/ETS-/PCB-Aenderungen und geaenderte USB-Upload-Freigaben bleiben weiterhin verboten. Native Simulation, Software-Queue-ACK und `ARDUINO` Compile-Hardlock sind kein Nachweis einer elektrisch abgesicherten H-Bruecke.
 
 **Letzter End-to-End-Check:** `tools/home_offline_check.ps1 -ControllerBuild` lief als LLO-Home-ASH-Job `job-000072` **exit 0**, wieder mit derselben UF2-SHA256 `6b3e82f30e71d9e6bffd56d5418379e18a998f73fc8befddd68478e18975d805`. Damit ist nicht nur der isolierte Python-Builder, sondern auch das reproduzierbare PowerShell-Runbook praktisch geprueft. Weder USB-Reset noch Upload.
+
+
+## LLO Home KNX043 Live-Inventur 14.10.2026
+
+ETS6 unter C:\Program Files (x86)\ETS6\ETS6.exe, Python/Pio und OpenKNXproducer v3.12.2 vorhanden; vorhandenes KNX029-Controller/ATtiny-Paket sowie KNX042-Images SHA-verifiziert. Kein physischer RP2040 COM-Port und keine KNX/IP-/USB-Interface-Freigabe. Der LLO-Home-ROOT ist nun **fuehrender Teststand**; letzter vor KNX043 gepruefter Desktop=Home Git-HEAD 9d77dbe (clean). RX-only KNX043-Programm, Pruefskripte und offene Hardware-Gates dokumentiert in [KNX043 Home Bench](KNX043_HOME_KNX_BENCH_READINESS.md). Kein KNX-Bus angeschlossen.

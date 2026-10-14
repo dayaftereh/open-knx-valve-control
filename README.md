@@ -1,5 +1,9 @@
 # Open KNX Valve Control
 
+**KNX043 LLO Home – KNX-Bench vorbereitet, Busanschluss GESPERRT:**
+
+Desktop und Home waren auf Git 9d77dbe synchron; ETS6, OpenKNXproducer und PIO auf Home gefunden. Neuer separater STKNX-RX-Only-Sketch offline kompiliert, Host-Capture und Hardware-Gates erstellt; Board auf dem Transportweg. R17/KNX_TX-U9-U11 und Versorgungs-Rueckspeisung nach ehemaliger U11-Ueberhitzung muessen vor einem KNX-Busanschluss elektrisch qualifiziert werden. [KNX043 Home-Bench](docs/KNX043_HOME_KNX_BENCH_READINESS.md). Kein KNX-Anschluss und kein Firmwareflash.
+
 **KNX042 USB-LED-Tests:** RP2040 real geflasht; M1 OPEN/CLOSE und M2 OPEN mit sichtbaren LEDs bestaetigt. Eigenstaendiges 8-Kanal-Sketch (M1..M8 CLOSE/OPEN, 1s ein/1s aus, 5 Runden) kompiliert und inklusive Rollback gesichert, **noch nicht geflasht**; [Sequenzanleitung](docs/KNX042_ALL_MOTOR_LED_SEQUENCE.md), [Bring-up-Runbook](docs/KNX042_MOTOR_LED_BRINGUP.md). KNX und Motoren bleiben abgeklemmt.
 
 **KNX041:** The production temperature bridge UART write-readiness guard now uses boolean `availableForWrite() <= 0` (software only; no productive flashing). See [KNX041 notes](docs/KNX041_TEMPERATURE_BRIDGE_READY_FIX.md).

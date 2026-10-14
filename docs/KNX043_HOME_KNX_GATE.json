@@ -1,0 +1,40 @@
+{
+  "schema": "knx043-home-knx-bench/v1",
+  "status": "BLOCKED_AWAIT_HARDWARE_ELECTRICAL_VERIFICATION",
+  "prepared_on": "2026-10-14",
+  "board": "OpenKNXValveControl PCB V1.2; STKNXTR U9; RP2040 U18; U11 R68",
+  "location": "LLO Home",
+  "user_report": "Board in transit; no serial COM available and no KNX bus connected",
+  "requirement": "Record actual evidence before any KNX TP power/bus test; no field below is automatically satisfied by source/build success",
+  "observations": {
+    "board_visual_no_short_or_heat_damage": null,
+    "u9_pin24_knx_tx_pullup_r17_removed_without_pad_bridge": null,
+    "u11_actual_68ohm_and_thermal_damage_checked": null,
+    "f1_rating_current_limit_reviewed": null,
+    "d1_bypass_usb_knx_backfeed_reviewed": null,
+    "jmp1_power_source_position_measured": null,
+    "jmp2_knx_rx_to_rp_gpio1_continuity_verified": null,
+    "jmp3_knx_tx_to_rp_gpio0_continuity_verified": null,
+    "knx_tx_low_no_bus_at_reset_boot_and_firmware_running": null,
+    "knx_tx_low_no_bus_at_brownout_or_usb_replug": null,
+    "u9_u11_postincident_electrical_inspection_approved": null,
+    "board_usb_only_3v3_and_5v_within_safe_limits": null,
+    "no_actual_motor_connected": null,
+    "dedicated_isolated_knx_tp_supply_and_interface_identified": null,
+    "knx_usb_or_ip_interface_ready_on_home": null,
+    "rx_only_firmware_for_stknx_loaded_after_boot_gate": null,
+    "user_explicit_release_for_separate_knx_connection_test": null
+  },
+  "facts": {
+    "R17_existing_design": "10k pull-up KNX_TX to 3V3; as-built removal not confirmed",
+    "U11_excessive_heat": "Previously observed when KNX and 5V connected, cause not yet measured",
+    "U11_design": "68 ohm / 2W, PCB vendor metadata mismatched",
+    "RP2040_TX": "GPIO0; default UART idle HIGH incompatible with STKNX active-HIGH pulse input",
+    "RP2040_RX": "GPIO1 -> KNX_RX' via JMP2 -> U9 pin23 KNX_RX",
+    "STKNX_RX_idle": "LOW; HIGH during 35us active bus pulse",
+    "STKNX_TX_idle": "LOW; HIGH 35us then LOW 69us for active logic0",
+    "motor_standby": "TB6612 STBY hardwired HIGH; no independent STO"
+  },
+  "measurement_log": [],
+  "later_connection_policy": "NEVER_AUTOMATICALLY_AUTHORIZE_KNX_POWER; completion only requests qualified manual review"
+}

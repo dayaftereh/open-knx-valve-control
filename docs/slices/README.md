@@ -60,3 +60,8 @@ Ausfuehrlicher Ablauf: [RECOVERY_HANDOFF.md](../reference/ash/RECOVERY_HANDOFF.m
 - Ausgangspunkt und offene technische Punkte stehen in [ARCHITECTURE.md](../ARCHITECTURE.md), [PCB-Audit](../PCB_V1_2_AUDIT.md), [ETS-Audit](../ETS_PRODUCT_AUDIT.md) und [Power-Konzept](../POWER_SUPPLY_CONCEPT.md).
 
 **ASH-Kernquellen:** [PROJECT_PROTOCOL](../reference/ash/PROJECT_PROTOCOL.md), [PROJECT_PROFILES](../reference/ash/PROJECT_PROFILES.md), [SLICE_PROTOCOL](../reference/ash/SLICE_PROTOCOL.md), [SLICE_TEMPLATE](../reference/ash/SLICE_TEMPLATE.md), [RECOVERY_HANDOFF](../reference/ash/RECOVERY_HANDOFF.md) und [EXAMPLES](../reference/ash/EXAMPLES.md).
+
+
+## Standortwechsel LLO Home 14.10.2026
+
+Fuer den KNX043-Bench-Prep ist **LLO Home** (C:\_myspace\workspace\open-knx-valve-control) der aktive Projekt- und Test-Root. Desktop verbleibt eine synchronisierte Quellkopie, aber nicht gleichzeitiger Schreibrechner. Die alte Desktop-Wiederaufnahme oben beschreibt die historische Standardumgebung; vor jeder neuen Session aktuellen Owner, Root, HEAD und einzige _OPEN-Marker erneut live pruefen. Die vorhandene _OPEN_KNX042-Marker-Datei dokumentiert den expliziten Prioritaetswechsel zu KNX043 ohne zweiten parallelen _OPEN-Marker.
