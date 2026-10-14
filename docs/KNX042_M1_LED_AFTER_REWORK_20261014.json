@@ -1,0 +1,36 @@
+{
+  "slice": "KNX042",
+  "local_date": "2026-10-14",
+  "reason": "User resoldered/rotated an indicator LED and requested a repeated M1 LED-only test",
+  "hardware_identity": {
+    "port": "COM7",
+    "usb_vidpid": "2E8A:000A",
+    "usb_serial": "E464401787522D33"
+  },
+  "assumed_setup_from_user": "Only USB supply, KNX bus not connected, motors disconnected. No new power sources reported.",
+  "firmware": "Already flashed KNX042 diagnostic (no flash this test)",
+  "initial_usb_status": "KNX042 STATUS armed=0 active=0",
+  "started_at_local": "2026-10-14T16:56:40+02:00",
+  "host_result": {
+    "exit_code": 0,
+    "arm_ack": "KNX042 ARMED 15s; NO KNX OR MOTORS",
+    "hold_ack": "KNX042 HOLD M1 F 180s"
+  },
+  "followup_usb_status": {
+    "local_time": "2026-10-14T16:56:54+02:00",
+    "value": "KNX042 STATUS armed=0 active=1"
+  },
+  "expected_gpio": {
+    "M1_EN": "GPIO10 HIGH",
+    "OPEN_IN1": "GPIO18 HIGH",
+    "CLOSE_IN2": "GPIO19 LOW",
+    "M2_to_M8": "LOW"
+  },
+  "max_software_hold_ms": 180000,
+  "software_auto_off_time_approx_local": "2026-10-14T16:59:40+02:00",
+  "user_visual_led_observation": "PENDING",
+  "real_motor_connected": false,
+  "knx_bus_connected": false,
+  "flash_performed": false,
+  "github_push_performed": false
+}
