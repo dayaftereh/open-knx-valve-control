@@ -1,6 +1,6 @@
 # Open KNX Valve Control
 
-**KNX042 LED motor bring-up (preparation only):** isolated, time-bounded USB motor-pin diagnostic built; physical KNX isolation and live LED checks are pending. [Runbook](docs/KNX042_MOTOR_LED_BRINGUP.md).
+**KNX042 USB-LED-Tests:** RP2040 real geflasht; M1 OPEN/CLOSE und M2 OPEN mit sichtbaren LEDs bestaetigt. Eigenstaendiges 8-Kanal-Sketch (M1..M8 CLOSE/OPEN, 1s ein/1s aus, 5 Runden) kompiliert und inklusive Rollback gesichert, **noch nicht geflasht**; [Sequenzanleitung](docs/KNX042_ALL_MOTOR_LED_SEQUENCE.md), [Bring-up-Runbook](docs/KNX042_MOTOR_LED_BRINGUP.md). KNX und Motoren bleiben abgeklemmt.
 
 **KNX041:** The production temperature bridge UART write-readiness guard now uses boolean `availableForWrite() <= 0` (software only; no productive flashing). See [KNX041 notes](docs/KNX041_TEMPERATURE_BRIDGE_READY_FIX.md).
 

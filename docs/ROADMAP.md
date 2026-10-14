@@ -1,6 +1,6 @@
 # OpenKNXValveControl - ASH Slice Roadmap
 
-**KNX042 OPEN:** isolated USB M1-LED diagnostic real-flashed, USB ARM/HOLD acknowledged; earlier OPEN LED observed. Post-LED-rework test stopped unexpectedly by STATUS host cleanup; electrical result remains open. [Runbook](KNX042_MOTOR_LED_BRINGUP.md), [host fix](KNX042_STATUS_SIDE_EFFECT_FIX_20261014.md).
+**KNX042 OPEN:** M1 OPEN/CLOSE und M2 OPEN bereits auf realem RP2040 per USB und LED-Beobachtung bestaetigt; neues eigenstaendiges M1..M8 LED-Sequenz-Sketch (je CLOSE/OPEN 1s, 1s aus, 5 Runden) erfolgreich gebaut und mit altem UF2 gesichert, **Flash/realer 8-Kanal-Test noch ausstehend (USB_BOOT manuell erforderlich)**. [Sequenz](KNX042_ALL_MOTOR_LED_SEQUENCE.md), [Runbook](KNX042_MOTOR_LED_BRINGUP.md), [Host-Fix](KNX042_STATUS_SIDE_EFFECT_FIX_20261014.md).
 
 **KNX041 software fix:** Product temperature bridge UART write-readiness guard changed to boolean readiness after KNX040 real UART confirmation; regression and remaining hardware gate in [KNX041 notes](KNX041_TEMPERATURE_BRIDGE_READY_FIX.md).
 

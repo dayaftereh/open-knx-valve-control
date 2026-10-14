@@ -1,6 +1,6 @@
 # KNX042 - USB-only eight-channel motor LED first contact
 
-**Status:** OPEN / physical preflight pending. Do not claim Gate 4.
+**Status:** OPEN / M1 OPEN+CLOSE and M2 OPEN LEDs visually PASS; remaining channels and real 8-channel sequence flash pending. Do not claim Gate 4.
 
 - **Gate 1:** V1.2 pinout and known KNX/power/STBY risks assessed.
 - **Gate 2:** isolated KNX042 firmware and guarded USB pulse client implemented.
@@ -26,3 +26,5 @@ Evidence: [KNX042 runbook](../KNX042_MOTOR_LED_BRINGUP.md).
 - 2026-10-14 17:25:28–17:26:29 MESZ: User-requested M1 CLOSE / IN2 test without firmware flash, bounded 100 × 400ms `PULSE 1 R` with each AUTO-STOP acknowledged and 200ms nominal dark gap. Initial and final USB state `armed=0 active=0`, host exit0, 13/13 offline host tests PASS. **Physical CLOSE LED sighting pending**. [Live evidence](../KNX042_M1_CLOSE_BLINK_20261014.json).
 
 - 2026-10-14 17:58:51–17:59:52 MESZ: user LED rework complete; guarded M2 OPEN `PULSE 2 F` 100x400ms real USB test PASS (100 ACK + 100 AUTO-STOP), initial/final inactive. 16/16 offline tests PASS. M2/OPEN visual LED confirmation pending; no motor/KNX connection or MCU flash. [Evidence](../KNX042_M2_OPEN_BLINK_20261014.json).
+
+- 2026-10-14: New [8-channel 1s LED sequence](../KNX042_ALL_MOTOR_LED_SEQUENCE.md) (M1 CLOSE/OPEN through M8 CLOSE/OPEN, 1s ON + 1s OFF, 5 rounds/160s) built via Arduino-Pico, 22/22 KNX042 regressions PASS, UF2 checked/rollback saved. **Not flashed** because picotool reboot -f -u cannot reach ROM BOOTSEL over CDC; manual USB_BOOT required. [Build evidence](../KNX042_ALL_LED_SEQUENCE_BUILD_EVIDENCE.json).

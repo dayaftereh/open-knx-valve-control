@@ -1,0 +1,57 @@
+{
+  "slice": "KNX042",
+  "date": "2026-10-14",
+  "requested_feature": "M1..M8 each CLOSE 1s, then OPEN 1s, repeat 5 rounds with 1s all-off between each step",
+  "source_sketch": "tools/knx042_led_sequence/src/main.cpp",
+  "platformio_file": "tools/knx042_led_sequence/platformio.ini",
+  "usb_host": "tools/knx042_led_sequence_control.py",
+  "test_file": "tools/test_knx042_led_sequence.py",
+  "build": "PASS",
+  "all_knx042_regression_tests": "22/22 PASS",
+  "uf2_structural_validation": "PASS, all 283 UF2 blocks valid, addresses 0x10000000..0x10011a00",
+  "new_firmware": {
+    "path": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX042-ALL-MOTOR-LED-SEQUENCE-20261014\\knx042-all-motor-led-sequence-5rounds.uf2",
+    "bytes": 144896,
+    "sha256": "959cde9090d8ddc1258971fed548aa01c823254105ae1ac3f292fb01790c2875",
+    "uf2_blocks": 283,
+    "first_address_hex": "0x10000000",
+    "last_address_hex": "0x10011a00"
+  },
+  "backup_previous_firmware": {
+    "path": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX042-ALL-MOTOR-LED-SEQUENCE-20261014\\rollback-knx042-m1-180s.uf2",
+    "bytes": 153088,
+    "sha256": "7e3dc4fe5cb92544558d3d42c71fbb54afb61c3bb29e21d9bb1676fb4961cb6d"
+  },
+  "sequence": {
+    "motors": 8,
+    "directions_per_motor": [
+      "CLOSE",
+      "OPEN"
+    ],
+    "rounds": 5,
+    "on_ms": 1000,
+    "off_ms": 1000,
+    "nominal_total_seconds": 160,
+    "software_max_seconds": 180,
+    "boot_auto_run": false
+  },
+  "target": {
+    "chip": "RP2040 Rev B2",
+    "flash_bytes": 16777216,
+    "usb_serial": "E464401787522D33",
+    "usb_vidpid_app": "2E8A:000A"
+  },
+  "safety": {
+    "KNX_bus": "PHYSICALLY_DISCONNECTED_REQUIRED",
+    "motor_actuators": "UNPLUGGED_REQUIRED",
+    "supply": "USB_ONLY_REQUIRED",
+    "hardware_sto": false
+  },
+  "attempted_auto_bootsel": "picotool reboot -f -u returned unable to locate reset interface",
+  "flash_performed": false,
+  "hardware_usb_sequence_started": false,
+  "hardware_led_visual_observation": "PENDING_AFTER_USER_USB_BOOT",
+  "current_flashed_firmware": "old KNX042 M1 hold plus 400ms pulse diagnostic",
+  "user_action_required": "Physically enter BOOTSEL using USB_BOOT while keeping KNX and motors disconnected",
+  "git_push": false
+}
