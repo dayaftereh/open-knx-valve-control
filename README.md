@@ -1,5 +1,7 @@
 # Open KNX Valve Control
 
+**KNX042 LED motor bring-up (preparation only):** isolated, time-bounded USB motor-pin diagnostic built; physical KNX isolation and live LED checks are pending. [Runbook](docs/KNX042_MOTOR_LED_BRINGUP.md).
+
 **KNX041:** The production temperature bridge UART write-readiness guard now uses boolean `availableForWrite() <= 0` (software only; no productive flashing). See [KNX041 notes](docs/KNX041_TEMPERATURE_BRIDGE_READY_FIX.md).
 
 Controller for up to **eight motorized underfloor-heating valve actuators** with KNX integration. This repository contains firmware, KNX product-description sources, electronics schematics/PCB exports and DIN-rail enclosure models.

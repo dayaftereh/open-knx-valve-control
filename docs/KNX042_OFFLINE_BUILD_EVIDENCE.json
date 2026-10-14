@@ -1,0 +1,35 @@
+{
+  "slice": "KNX042",
+  "date": "2026-10-14",
+  "state": "SOFTWARE_ONLY_READY_PHYSICAL_GATE_PENDING",
+  "target": "RP2040 isolated no KNX/no motors",
+  "uf2_sha256": "e31d4083c1ee9f381592e6b0dbb712623d6eeec55cf4dadd973af0a77df08c3d",
+  "uf2_bytes": 152576,
+  "uf2_local_path": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX042-motor-led-usb-only-20261014\\knx042-motor-led-usb-only.uf2",
+  "source_sha256": "e97f63346d06aed0950ec6470cbe85aacb3313f202946c3b2fe1b2ec1223bd56",
+  "temperature_uart_preserved": true,
+  "motor_pulse_ms": 400,
+  "arm_expiration_ms": 15000,
+  "motor_gpio_enable": [
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17
+  ],
+  "common_direction_gpio": [
+    18,
+    19
+  ],
+  "usb_port_verified": "COM7",
+  "usb_serial_verified": "E464401787522D33",
+  "real_motor_pulses_executed": 0,
+  "flash_executed": false,
+  "led_observations": "NOT PERFORMED",
+  "original_knx040_uf2_sha256": "e9de4dcb66a0afd4fa906d5a5591bc7785cb6c8bc71f57e20bb4104069c31639",
+  "knx_bus_physical_isolation_verified": false,
+  "knx_bus_control_attempted": false
+}
