@@ -1,0 +1,107 @@
+{
+  "schema": "openknx-valvecontrol/knx039-live-readback-evidence-v1",
+  "date": "2026-10-14",
+  "device": {
+    "com": "COM4",
+    "usb_vidpid": "1A86:7523",
+    "interface": "UPDI",
+    "reported_label_from_user": "ATtiny 2316",
+    "measured_signature": "1E9521",
+    "confirmed_model": "ATtiny3216",
+    "measurement": "pymcuprog ping returned 1E9521"
+  },
+  "programmer": {
+    "board": "Units UPDI V1.2",
+    "logical_RTS_for_UPDI": true,
+    "logical_DTR_for_UPDI": true,
+    "RTS_line_voltage_measured": false,
+    "physical_port_connection_validated_by_successful_response": true,
+    "power_voltage_compatibility_measured": false
+  },
+  "calls": [
+    {
+      "operation": "ping",
+      "memory": null,
+      "status": "PASS",
+      "nvm_write": false
+    },
+    {
+      "operation": "read",
+      "memory": "flash",
+      "status": "PASS",
+      "nvm_write": false
+    },
+    {
+      "operation": "read",
+      "memory": "eeprom",
+      "status": "PASS",
+      "nvm_write": false
+    },
+    {
+      "operation": "read",
+      "memory": "fuses",
+      "status": "PASS",
+      "nvm_write": false
+    },
+    {
+      "operation": "read",
+      "memory": "user_row",
+      "status": "PASS",
+      "nvm_write": false
+    }
+  ],
+  "readback": {
+    "directory": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX039-ATtiny3216-readback-20261014",
+    "flash": {
+      "bytes": 32768,
+      "non_ff_bytes": 1888,
+      "file": "attiny3216-existing-flash.hex",
+      "sha256": "048d09437f46cd7b6107fb7649ef1a7dcf469dab4ada59d125a7a6f1846bd5b7"
+    },
+    "eeprom": {
+      "bytes": 256,
+      "all_ff": true,
+      "file": "attiny3216-existing-eeprom.hex",
+      "sha256": "7a0629b48f8b078188ed3e8272583181490dc4efe8f12716b8ef13a18f8b58b8"
+    },
+    "fuses": {
+      "bytes": 9,
+      "file": "attiny3216-existing-fuses.hex",
+      "sha256": "182283f959a4d8582a034561aa21040710dee3bb4f086f603763ff057339e5ec"
+    },
+    "user_row": {
+      "bytes": 32,
+      "all_ff": true,
+      "file": "attiny3216-existing-user-row.hex"
+    },
+    "all_hex_checksums_valid": true,
+    "manifest": "readback_manifest.json"
+  },
+  "new_temperature_build": {
+    "image_location": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX038-ATtiny3216-offline-20261014\\attiny3216-temperature.hex",
+    "image_sha256": "f3d118db90d8776de1b661a206f4bdcd025066bf1b27425335edd439dba95c6a",
+    "flash_defined_bytes": 8655,
+    "different_defined_bytes": 8450,
+    "first_different_address": "0x2",
+    "firmware_matches_existing_flash": false,
+    "uploaded_to_target": false
+  },
+  "actions_not_performed": {
+    "chip_erase": false,
+    "flash_write": false,
+    "fuse_write": false,
+    "eeprom_write": false,
+    "user_row_write": false,
+    "HV_UPDI_recovery": false,
+    "KNX_bus_test": false,
+    "motor_test": false,
+    "RP2040_reflash": false
+  },
+  "source_hazards_open": {
+    "target_UPDI_3v3_level_measured": false,
+    "target_USB_5v_backfeed_isolated": false,
+    "R17_pullup_correction_electrically_verified": false,
+    "U9_post_overheat_intact_verified": false
+  },
+  "result": "UPDI_SIGNATURE_AND_MEMORY_READBACK_PASS_NO_NVM_WRITE"
+}

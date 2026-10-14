@@ -1,4 +1,4 @@
-# LLO Home reproducible software-only QA for OpenKNXValveControl (KNX028).
+# LLO Home/Desktop reproducible software-only QA for OpenKNXValveControl (KNX028).
 # Usage:
 # powershell -NoProfile -ExecutionPolicy Bypass -File tools/home_offline_check.ps1
 # powershell -NoProfile -ExecutionPolicy Bypass -File tools/home_offline_check.ps1 -Native
@@ -10,17 +10,25 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
-$env:PLATFORMIO_CORE_DIR = 'C:\Users\ll\.platformio'
+# Resolve the PlatformIO environment on either LLO Home or LLO Desktop.
+$platformioRoot = $null
+foreach ($candidate in @('C:\Users\ll\.platformio', 'C:\Users\LLO\.platformio')) {
+    $candidatePy = Join-Path $candidate 'penv\Scripts\python.exe'
+    $candidatePio = Join-Path $candidate 'penv\Scripts\pio.exe'
+    if ((Test-Path -LiteralPath $candidatePy) -and (Test-Path -LiteralPath $candidatePio)) {
+        $platformioRoot = $candidate
+        break
+    }
+}
+if ($null -eq $platformioRoot) { throw 'LLO PlatformIO/Python executables are missing' }
+$env:PLATFORMIO_CORE_DIR = $platformioRoot
 # Git is invoked by the SYSTEM agent on a repository owned by user 'll'.
 # This grants trust to this process and its children only, not globally.
 $env:GIT_CONFIG_COUNT = '1'
 $env:GIT_CONFIG_KEY_0 = 'safe.directory'
 $env:GIT_CONFIG_VALUE_0 = $root.Replace('\', '/')
-$python = 'C:\Users\ll\.platformio\penv\Scripts\python.exe'
-$pio = 'C:\Users\ll\.platformio\penv\Scripts\pio.exe'
-if (!(Test-Path -LiteralPath $python) -or !(Test-Path -LiteralPath $pio)) {
-    throw 'LLO Home PlatformIO/Python executables are missing'
-}
+$python = Join-Path $platformioRoot 'penv\Scripts\python.exe'
+$pio = Join-Path $platformioRoot 'penv\Scripts\pio.exe'
 Push-Location $root
 try {
     function Run-PythonTest([string]$script) {
@@ -46,6 +54,10 @@ try {
                           'tools/test_knx034_usb_only.py',
                           'tools/audit_knx035_stknx_tx.py',
                           'tools/test_knx035_tx_hazard.py',
+                          'tools/test_knx036_usb_diag.py',
+                          'tools/test_knx037_rp_usb_workflow.py',
+                          'tools/test_knx038_updi_readiness.py',
+                          'tools/test_knx039_live_readback.py',
                           'tools/audit_ash_workflow.py')) {
         Run-PythonTest $script
     }

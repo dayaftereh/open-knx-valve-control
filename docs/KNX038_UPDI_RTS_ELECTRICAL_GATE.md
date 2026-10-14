@@ -39,3 +39,7 @@ Mit **ValveControl und Programmer zunächst physisch getrennt**, möglichst ohne
 6. **Erst bei verifizierter Signatur und elektrischem Gate** eigenes ATtiny-Flashverfahren festlegen (eine HEX, gesonderte Freigabe, Verify, ohne Fuse-Änderungen), dann Temperatursensor-/RP2040-Link prüfen. KNX und Motoren bleiben weiterhin getrennt.
 
 **KNX038 STOP-Gate:** `UPDI_RTS_ELECTRICAL_LEVEL_NOT_VERIFIED`; das ist kein Softwareproblem des RTS-MUX, sondern eine bisher fehlende tatsächliche Steck-/Pegel-/Backfeed-Bestätigung. **Nicht behaupten, dass das HEX auf dem ATtiny läuft.**
+
+## KNX039 Live-Nachtrag: Nutzerfreigabe und erfolgreicher UPDI-Lesezugriff (14.10.2026)
+
+Nach der frueheren KNX038-Planungs-Sperre hat der Nutzer ausdruecklich bestaetigt, dass der verbundene Programmer schon erprobt ist und das ATtiny-Programm bereits vorhanden ist. Er hat COM4-UPDI-Auslesen freigegeben, ohne das 2x3-Kabel abziehen zu wollen. Daraufhin wurde unter **KNX039** das echte `pymcuprog ping` samt Flash-/EEPROM-/Fuse-/USERROW-Read erfolgreich ueber COM4 mit `Ping response: 1E9521` ausgefuehrt. Das beweist die **reale UPDI-Funktion und ATtiny3216-Geraetekennung**, nicht separat den Ausgangsspannungshub der MUX bei RTS oder CN1.1-Versorgungsisolation. [Live-Ergebnis und Backups](KNX039_LIVE_UPDI_READBACK.md), [maschinenlesbare Evidenz](KNX039_UPDI_READBACK_EVIDENCE.json). KNX038 JSON bleibt **historischer Vorzustand**, wurde nicht stillschweigend als Messung umgedeutet. Keine ATtiny-Firmware geschrieben und keine Fuse aenderung.
