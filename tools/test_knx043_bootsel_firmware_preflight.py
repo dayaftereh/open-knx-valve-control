@@ -82,9 +82,16 @@ class ReadonlyUf2Tests(unittest.TestCase):
 
     def test_real_template_candidate_hashes_match(self):
         # No USB connection, flash access, or serial driver calls in this test.
+        # The LLO Home and LLO Desktop archive directories differ.
+        candidates = [
+            p.BUILD,
+            Path(r"C:\ASH\Workspace\Builds\OpenKNXValveControl\KNX043_HOME_KNX_BENCH_20261014"),
+        ]
+        available = [folder for folder in candidates if
+                     all((folder / name).is_file() for name, _ in p.IMAGES.values())]
+        self.assertTrue(available, "Local KNX043 UF2 backup images are missing")
         for _, (name, sha) in p.IMAGES.items():
-            path = p.BUILD / name
-            checked = p.check_uf2(path, sha)
+            checked = p.check_uf2(available[0] / name, sha)
             self.assertTrue(checked["hash_ok"])
 
 
