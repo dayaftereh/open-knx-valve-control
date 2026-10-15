@@ -94,5 +94,20 @@
     "reset_bootsel_brownout_levels_measured": false,
     "does_not_pass_any_combined_physical_safety_gate": true,
     "knx_tp_bus_connection_authorized": false
+  },
+  "desktop_usb_scope_10x_observation": {
+    "date": "2026-10-15",
+    "evidence": "docs/KNX043_PICOSCOPE_MEASUREMENTS_20261015.json",
+    "probe_ratio": "10x user confirmed",
+    "scope_input_coarse_plusminus_volts": 5,
+    "scope_input_refined_plusminus_volts": 0.5,
+    "coarse_uncalibrated_mean_tip_volts": 0.76413,
+    "refined_uncalibrated_mean_tip_volts": 0.08526,
+    "refined_uncalibrated_max_tip_volts": 0.13087,
+    "sample_count_both_runs": 800000,
+    "zero_baseline_verified": false,
+    "physical_PAD_and_scope_GND_not_independently_verified": true,
+    "reset_BOOTSEL_brownout_measured": false,
+    "knx_power_authorized": false
   }
 }

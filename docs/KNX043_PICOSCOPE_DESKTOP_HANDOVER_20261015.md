@@ -75,3 +75,20 @@ Der Nutzer meldet: Tastkopf **1:1**, **Kanal A**, Messspitze am **KNX_TX**. Der 
 Rohdaten/Summary auf LLO Desktop: C:/ASH/Workspace/Builds/OpenKNXValveControl/KNX043-PicoScope-20261015 mit knx043_picoscope_chA_summary.json und vier .i16le-Dateien (je 100.000 Int16-ADC-Werte little-endian). Die vier SHA256-Werte stehen im [Messprotokoll](KNX043_PICOSCOPE_MEASUREMENTS_20261015.json). Wiederverwendbarer [PicoSDK-Kanal-A-Recorder](../tools/knx043_picoscope_usb_tx_capture.ps1) unterstützt 1x und 10x, x86 PowerShell wegen PicoScope6-DLL.
 
 **WICHTIGE EINSCHRÄNKUNG:** Ein 1:1-Tastkopf kann eine schwach vorgespannte Leitung belasten und eventuell LOW vortäuschen. **Messung mit korrekt geschaltetem 10:1-Tastkopf wiederholen**, sowohl Tastkopfschalter als auch Recorderparameter ProbeRatio 10; Masseklemme muss an geprüftem Platinen-GND liegen. JMP3 Pad 2 ist U9 KNX_TX, Pad 3 die RP2040-GPIO0-Seite. Erst danach gezielt Reset-/Boot-Transienten aufzeichnen. **KNX-Bus bleibt physisch getrennt und alle Motoren abgesteckt.** Keine Busfreigabe ohne U9/U11-, D1/F1/JMP1-, Reset-/Brownout- und Versorgungsgates.
+
+## Live 10:1-Prüfung mit zwei Messbereichen – 15.10.2026
+
+Nach Nutzerbestätigung **10:1 bereit** wurden acht weitere **passive** Kanal-A-Blöcke mit jeweils 100.000 Messpunkten (498,4 ms) auf dem LLO Desktop erfasst. KNX043 RP2040 an USB COM7, keine KNX- oder Motoraktivierung, **kein Reset**.
+
+| PicoScope-Eingangsbereich | Tastkopf-Skalierung | Mittelwert an der Spitze (rechnerisch) | Maximum (rechnerisch) | Beobachtung |
+| --- | --- | ---: | ---: | --- |
+| ±5 V | 10:1 | 0,76413 V | 1,31182 V | Grober Bereich; etwa 2 ADC-Stufen |
+| **±0,5 V** | **10:1** | **0,08526 V** | **0,13087 V** | Empfindlicher Bereich, 0 Samples über 0,5 V |
+
+Je Reihe 400.000 Messpunkte und 1,9936 s reine Aufzeichnungszeit, alle PicoSDK-Aufrufe erfolgreich, kein ADC-Überlauf. Die Rohdaten sind in den beiden Unterordnern **10x_steady_usb** und **10x_refined_500mV** des Messarchivs archiviert; SHA-256 und Messwerte stehen im [Messprotokoll](KNX043_PICOSCOPE_MEASUREMENTS_20261015.json).
+
+**Die unterschiedlichen Messbereichswerte sind ein wichtiges Kalibrierungsproblem, kein belegter KNX-TX-HIGH-Impuls.** In beiden Messbereichen lagen die ADC-Rohwerte nahe zwei nativen 8-Bit-Stufen; die Skalierung dieses kleinen ADC-Offsets mit dem Bereich kann den rechnerischen Spannungswert von 0,764 V auf 0,085 V verändern. Daher dürfen wir aus dem groben Bereich weder einen realen TX-HIGH-Pegel ableiten noch den empfindlichen Wert als kalibrierte TX-Spannung behaupten.
+
+**Nächster notwendiger Messschritt:** Mit unverändert **10:1** und unveränderter PicoScope-Konfiguration **±0,5 V Scope-Eingang** die Messspitze vorsichtig auf einen vorher eindeutig identifizierten **Platinen-GND-Punkt** legen, Masseklemme an Platinen-GND belassen, und den Nullpunkt aufzeichnen. **Nicht KNX_A/KNX_B oder 3,3V versehentlich kurzschließen.** Danach Messspitze zurück auf **JMP3 Pad 2 / U9 KNX_TX**, gleiche Einstellung, zweiten Vergleich aufzeichnen. Ohne echten GND-Nullpunkt und genau identifiziertes Jumper-Pad bleibt die quantitative LOW-Aussage bedingt.
+
+Reset-/BOOTSEL-/Brownout-Pegel und die U9/U11-, R17-, D1/F1/JMP1- und Rückspeisungsprüfungen stehen weiter aus. **Keine KNX-TP-Busfreigabe**.

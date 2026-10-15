@@ -7,6 +7,7 @@ param(
     [ValidateRange(5,100000)][uint32]$Timebase=625,
     [ValidateRange(1,8)][int]$Repeats=4,
     [ValidateSet(1,10)][int]$ProbeRatio=1,
+    [double]$InputRangeVolts=5,
     [string]$OutputDir="C:\ASH\Workspace\Builds\OpenKNXValveControl\KNX043-PicoScope-20261015"
 )
 $ErrorActionPreference="Stop"
@@ -48,12 +49,15 @@ try {
     $model=Info $handle 3
     $serial=Info $handle 4
     if($model -notmatch '^3205D'){throw "Unexpected PicoScope model $model"}
-    Check "channel A DC 1x +/-5V" ([Knx043Pico3000a]::ps3000aSetChannel($handle,0,1,1,8,[single]0))
+    if($InputRangeVolts -eq 0.5){$sdkRange=5}
+    elseif($InputRangeVolts -eq 5){$sdkRange=8}
+    else{throw "Supported PicoScope input ranges: +/-0.5V and +/-5V"}
+    Check "channel A DC +/-$InputRangeVolts V" ([Knx043Pico3000a]::ps3000aSetChannel($handle,0,1,1,$sdkRange,[single]0))
     Check "trigger disabled" ([Knx043Pico3000a]::ps3000aSetSimpleTrigger($handle,0,0,0,2,0,0))
     $maxAdc=[int16]0
     Check "ADC max" ([Knx043Pico3000a]::ps3000aMaximumValue($handle,[ref]$maxAdc))
     if($maxAdc -le 0){throw "Invalid ADC max"}
-    $TipScale=[double](5*$ProbeRatio)
+    $TipScale=[double]($InputRangeVolts*$ProbeRatio)
     $intervalNs=[single]0
     $maxSamples=[int]0
     Check "timebase" ([Knx043Pico3000a]::ps3000aGetTimebase2($handle,$Timebase,$Samples,[ref]$intervalNs,1,[ref]$maxSamples,0))
@@ -111,7 +115,7 @@ try {
        measured_utc=[DateTime]::UtcNow.ToString("o");
        workstation="LLO Desktop";
        probe_ratio=$ProbeRatio;probe_user_setting=("$($ProbeRatio)x");
-       analog_channel="A";coupling="DC";input_range_volts_peak=5;tip_range_volts_peak=$TipScale;
+       analog_channel="A";coupling="DC";input_range_volts_peak=$InputRangeVolts;tip_range_volts_peak=$TipScale;
        actual_probe_position="KNX_TX according to user, pad index and ground clip not independently observed";
        hardware_model=$model;hardware_serial=$serial;adc_full_scale=$maxAdc;
        scope_driver="ps3000a PicoScope6 x86 bundled DLL";
