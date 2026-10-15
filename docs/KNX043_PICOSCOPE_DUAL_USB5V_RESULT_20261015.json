@@ -1,0 +1,196 @@
+{
+  "schema": "knx043-dual-USB5V-KNXTX-bounce-evidence/v1",
+  "date": "2026-10-15",
+  "host": "LLO Desktop",
+  "user_observation": "The USB plug repeatedly switched on/off during previous test; user confirmed CH B actual probe ratio 1:1 on board point called +5V; CH A remains 10:1 on KNX_TX; both shared ground per user instructions.",
+  "scope": {
+    "model": "3205DMSO",
+    "serial": "GX118/0047",
+    "capture_status": "TRIGGERED_CAPTURE_COMPLETED",
+    "armed_utc": "2026-10-15T13:48:21.8716285Z",
+    "captured_utc": "2026-10-15T13:54:25.5406924Z",
+    "trigger_channel": "B user-reported USB-side +5V",
+    "trigger_tip_volts": 2.5,
+    "trigger_direction": "rising",
+    "auto_trigger": false,
+    "A_user_signal": "KNX_TX U9 pin24 via JMP3 pad2",
+    "A_probe_ratio": 10,
+    "A_input_range_plus_minus_v": 0.5,
+    "B_user_signal": "USB+5V at user-chosen board point, location not independently checked",
+    "B_probe_ratio": 1,
+    "B_input_range_plus_minus_v": 10,
+    "sampling_interval_us": 7.984,
+    "pretrigger_ms": 798.4,
+    "posttrigger_ms": 3193.6,
+    "samples_per_channel": 500000,
+    "samples_bytes_per_channel": 1000000,
+    "raw_A_file": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX043-PicoScope-20261015\\dual_CHB_USB5V_rising_run01\\chA_KNX_TX_i16le.bin",
+    "raw_A_SHA256": "d5b5c17ee86d50586565fa087e90199047daf7fe7f9c1f1f87dba1f53811d5bc",
+    "raw_B_file": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX043-PicoScope-20261015\\dual_CHB_USB5V_rising_run01\\chB_USB_5V_i16le.bin",
+    "raw_B_SHA256": "0e38a10a1ad1d7f2f798ba6a33e159fbf229c779a6646faacafee07ecbb343c9",
+    "saved_result": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX043-PicoScope-20261015\\dual_CHB_USB5V_rising_run01\\dual_capture_result.json",
+    "capture_state_static_metadata_inaccurate": "capture_state.json labels both probes 10x; correct capture invocation and result: A 10x, B 1x. Raw samples and result unchanged.",
+    "no_board_action_by_agent": true
+  },
+  "power_rising_falling_observed": {
+    "at_start_of_analog_capture_B_v": 4.255967,
+    "initial_HIGH_at_sample_0_is_not_a_power_on_edge": true,
+    "hysteresis_low_under_2V_and_high_over_3V_events": [
+      {
+        "value_v": 4.256,
+        "at_sample": 0,
+        "event": "USB5V_HIGH",
+        "relative_to_trigger_ms": -798.4
+      },
+      {
+        "value_v": 1.998,
+        "at_sample": 98950,
+        "event": "USB5V_LOW",
+        "relative_to_trigger_ms": -8.383
+      },
+      {
+        "value_v": 3.301,
+        "at_sample": 100000,
+        "event": "USB5V_HIGH",
+        "relative_to_trigger_ms": 0
+      },
+      {
+        "value_v": 1.998,
+        "at_sample": 101407,
+        "event": "USB5V_LOW",
+        "relative_to_trigger_ms": 11.233
+      }
+    ],
+    "brief_supply_rebound_from_low_above3V_at_trigger": true,
+    "supply_fell_under2V_again_at_ms": 11.233,
+    "time_above3V_total_ms": 781.889,
+    "first_index_under_0p2V": 142070,
+    "USB5V_first_under_0p2V_relative_ms": 335.8869,
+    "B_max_v": 4.777005,
+    "B_min_v": 0.0,
+    "interpretation": "Within the common four-second capture, the voltage at user-identified 5V point drops below2V, rebounds above3V, then drops below2V about11.2ms later and decays near0V. This confirms an unstable measured supply during the connection attempt, consistent with intermittent USB contact but does not identify whether connector, cable, board, or supply protection causes it."
+  },
+  "KNX_TX_vs_power": {
+    "A_peak_max_v": 0.567483,
+    "A_min_v": -0.174551,
+    "A_mean_uncorrected_v": 0.079203,
+    "A_peak_sample_and_supply": {
+      "sample": 187674,
+      "time_relative_to_5V_trigger_ms": 699.9892,
+      "KNX_TX_v": 0.567483,
+      "B_supply_v_at_same_sample": 0.086737
+    },
+    "A_first_above_0p5_relative_ms": 79.353,
+    "A_count_above_0p5V": 5596,
+    "A_total_time_above_0p5V_ms": 44.6785,
+    "A_max_single_contiguous_over_0p5_us": 734.528,
+    "A_pulse_runs_above_0p5_count": 1528,
+    "A_high_runs_gap_5_to_30ms_median": 19.178,
+    "category_statistics": {
+      "B_above_3V": {
+        "count": 97932,
+        "duration_total_ms": 781.889,
+        "TX_max_v": 0.130875,
+        "TX_mean_v_uncorrected": 0.045696,
+        "TX_samples_over_0p5V": 0
+      },
+      "B_2V_to_3V": {
+        "count": 2661,
+        "duration_total_ms": 21.245,
+        "TX_max_v": 0.087199,
+        "TX_mean_v_uncorrected": 0.043601,
+        "TX_samples_over_0p5V": 0
+      },
+      "B_0p2V_to_under2V": {
+        "count": 46004,
+        "duration_total_ms": 367.296,
+        "TX_max_v": 0.523807,
+        "TX_mean_v_uncorrected": 0.088094,
+        "TX_samples_over_0p5V": 60
+      },
+      "B_below_0p2V": {
+        "count": 353403,
+        "duration_total_ms": 2821.57,
+        "TX_max_v": 0.567483,
+        "TX_mean_v_uncorrected": 0.087598,
+        "TX_samples_over_0p5V": 5536
+      }
+    },
+    "correlation_inference": "All 5596 >0.5V TX observations occurred with measured supply below2V, and 5536 with supply below0.2V. With supply above3V there were zero >0.5V TX samples, maximum approx0.131V. The +0.567V TX maximum occurs approx700ms after 5V rising trigger while B~0.087V. This favors floating/unpowered pickup rather than a demonstrated powered TX HIGH, but electrical causation is not proved."
+  },
+  "USB_log": {
+    "observations_utc": [
+      {
+        "utc": "2026-10-15T13:47:57.255+00:00",
+        "event": "USB_STATE_CHANGE",
+        "rp2040_cdc_ports": [],
+        "rp2040_rom_boot_ports": [
+          {
+            "port": "COM6",
+            "description": "RP2 Boot (Interface 0) (COM6)",
+            "vid": 11914,
+            "pid": 3,
+            "serial": "E0C9125B0D9B"
+          }
+        ],
+        "rpi_rp2_boot_volume": []
+      },
+      {
+        "utc": "2026-10-15T13:54:16.027+00:00",
+        "event": "USB_STATE_CHANGE",
+        "rp2040_cdc_ports": [],
+        "rp2040_rom_boot_ports": [],
+        "rpi_rp2_boot_volume": []
+      },
+      {
+        "utc": "2026-10-15T13:54:34.444+00:00",
+        "event": "USB_STATE_CHANGE",
+        "rp2040_cdc_ports": [],
+        "rp2040_rom_boot_ports": [
+          {
+            "port": "COM6",
+            "description": "RP2 Boot (Interface 0) (COM6)",
+            "vid": 11914,
+            "pid": 3,
+            "serial": "E0C9125B0D9B"
+          }
+        ],
+        "rpi_rp2_boot_volume": []
+      }
+    ],
+    "monitor_end_status": "STOP_REQUESTED",
+    "ROM_USB_device_present_after_test": true,
+    "ROM_USB_vidpid": "2E8A:0003",
+    "ROM_boot_COM_port": "COM6",
+    "ROM_disconnected_at_utc": "2026-10-15T13:54:16.027+00:00",
+    "ROM_returned_at_utc": "2026-10-15T13:54:34.444+00:00",
+    "OS_usb_event_polling_seconds": 0.4,
+    "interpretation": "USB ROM device disappeared and later returned; event times are OS polling observations, not exact power-rail or contact times. The analog capture ended before the ROM USB device returned."
+  },
+  "steady_after_replug": {
+    "capture_utc": "2026-10-15T13:59:33.3962509Z",
+    "A_tx_peak_v": 0.130875,
+    "A_tx_mean_uncorrected_v": 0.072282,
+    "A_tx_samples_over0p5": 0,
+    "B_voltage_mean_uncorrected_v": 4.260071,
+    "B_voltage_range_v": [
+      4.16923,
+      4.342704
+    ],
+    "samples_per_channel": 500000,
+    "result_file": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX043-PicoScope-20261015\\dual_USB5V_post_reinsert_steady01\\dual_capture_result.json",
+    "A_raw_sha256": "df392705eae186be1272b211387ae85f8150a0081b038e355013ac9cd209df4c",
+    "B_raw_sha256": "164ce6b0375e2870d1f4e7634301a82945146447116a22da257bd0ae47e93995",
+    "caution": "A stable ~4.26V at user-identified 5V point is less than nominal USB 5V and should be verified with a DMM and actual schematic net/pad before diagnosing a supply fault; probe loading/contact/rail position and calibration not independently verified."
+  },
+  "physical_safety": {
+    "KNX_TP_bus_connected_during_test": false,
+    "motors_connected_during_test": false,
+    "physical_probe_contacts_or_GND_verified_by_agent": false,
+    "firmware_writes": false,
+    "active_board_power_or_output_commands_by_agent": false,
+    "KNX_TP_bus_connection_authorized": false,
+    "all_17_electrical_hardware_gates_qualified": false,
+    "next_hardware_check": "Verify B probe true 5V schematic net and GND, confirm ~4.26V with DMM, then U9/U11 integrity and D1/F1/JMP1 power backfeed. Do not energize KNX TP bus or motors without complete qualification."
+  }
+}

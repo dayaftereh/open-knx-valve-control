@@ -1,0 +1,71 @@
+{
+  "schema": "knx043-usb-bootsel-picoscope-observation/v1",
+  "date": "2026-10-15",
+  "host": "LLO Desktop",
+  "test": "RP2040 USB disconnect, user holds BOOTSEL during reconnect; PicoScope Channel A x10 connected to user-described JMP3 Pad 2 KNX_TX, no KNX TP or motors",
+  "usb_events": [
+    {
+      "time_utc": "2026-10-15T12:42:13.560Z",
+      "state": "Firmware COM7",
+      "vidpid": "2E8A:000A",
+      "serial": "E464401787522D33"
+    },
+    {
+      "time_utc": "2026-10-15T12:48:02.046Z",
+      "state": "USB application disappeared"
+    },
+    {
+      "time_utc": "2026-10-15T12:55:11.980Z",
+      "state": "RP2 Boot ROM interface COM6",
+      "vidpid": "2E8A:0003",
+      "serial": "E0C9125B0D9B"
+    }
+  ],
+  "rom_volume": {
+    "RPI_RP2_detected": false,
+    "comment": "Boot USB VID/PID observed, but volume drive was not mounted. Old watcher incorrectly labeled boot COM6 as an application CDC reconnect; recorded raw logs preserved unchanged; source fixed."
+  },
+  "scope_transition": {
+    "trigger": "rising over 0.25 V at probe tip",
+    "captured_utc": "2026-10-15T12:48:05.1661520Z",
+    "sample_count": 400000,
+    "sample_interval_ns": 1984,
+    "window_ms": 793.6,
+    "maximum_tip_v": 0.436454,
+    "minimum_tip_v": -0.349102,
+    "samples_above_0p35_v": 1923,
+    "samples_above_0p5_v": 0,
+    "raw_sha256": "595ad26c0133a1aa26ce775447ac6eab126b10abec83a8eb04310a3b98f5d92b",
+    "pattern": "Positive and negative approximately 20-ms-periodic oscillations consistent with possible pickup on an unpowered or floating node; not independently diagnosed",
+    "timing_caution": "Capture completed after application USB disappearance but before first ROM USB enumeration. Not evidence that the impulse happened during powered BOOTSEL entry."
+  },
+  "rom_steady_scope": {
+    "when": "After ROM USB 2E8A:0003 was detected",
+    "channel": "A",
+    "probe_ratio": 10,
+    "input_range_plusminus_v": 0.5,
+    "sample_count": 400000,
+    "total_window_ms": 1993.6,
+    "mean_uncorrected_tip_v": 0.071793,
+    "max_uncorrected_tip_v": 0.174551,
+    "minimum_uncorrected_tip_v": 0,
+    "samples_above_0p5v": 0,
+    "note": "Near previously measured oscilloscope GND offset; not an absolute calibrated TX voltage and does not prove other power states."
+  },
+  "evidence_paths": {
+    "usb": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX043-PicoScope-20261015\\bootsel_usb_watch_run01",
+    "triggered": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX043-PicoScope-20261015\\bootsel_tx_scope_run01",
+    "rom_steady": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX043-PicoScope-20261015\\bootsel_rom_steady_tx_chA_10x"
+  },
+  "safety": {
+    "knx_bus_energized_during_test": false,
+    "user_reported_bus_and_motors_disconnected": true,
+    "exact_probe_ground_independently_verified": false,
+    "actual_3v3_or_u9_rail_time_aligned_measured": false,
+    "any_firmware_written": false,
+    "knx_telegram_sent": false,
+    "rom_boot_tx_fail_low_all_conditions_verified": false,
+    "knx_tp_connection_authorized": false,
+    "remaining": "R17 pads, U9/U11 thermal condition, F1/D1/JMP1 power-backfeed, actual bus-powered fail-low, and brownout not qualified."
+  }
+}

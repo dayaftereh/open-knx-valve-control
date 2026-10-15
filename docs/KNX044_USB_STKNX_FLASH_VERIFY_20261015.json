@@ -1,0 +1,130 @@
+{
+  "schema": "knx044-rp2040-usb-only-stknx-diagnostic-flash/v1",
+  "date": "2026-10-15",
+  "host": "LLO Desktop Agent",
+  "hardware": {
+    "board": "OpenKNXValveControl PCB V1.2",
+    "rp2040_flash_id": "E464401787522D33",
+    "rom_USB_serial": "E0C9125B0D9B",
+    "ROM_vidpid": "2E8A:0003",
+    "application_vidpid": "2E8A:000A",
+    "app_port": "COM7",
+    "STKNX_U9": "STKNXTR user-reported",
+    "R17_pullup_removed": "user-reported, not independently continuity measured",
+    "U11_68ohm_resoldered": "user-reported, not rechecked thermally/electrically under KNX bus power",
+    "KNX_bus_connected": false,
+    "motors_connected": false,
+    "USB_only": true,
+    "ground_and_probe_location_independently_verified": false
+  },
+  "firmware": {
+    "installed_type": "KNX043_STKNX_RX_ONLY_DIAGNOSTIC",
+    "installed_is_production_KNX_ETS_firmware": false,
+    "image_source": "C:/ASH/Workspace/Builds/OpenKNXValveControl/KNX043_HOME_KNX_BENCH_20261014/knx043-passive-rx-only-NOT-FLASHED.uf2",
+    "historical_filename_NOT_FLASHED_is_obsolete": true,
+    "image_bytes": 146432,
+    "UF2_blocks": 286,
+    "image_sha256": "8b2a3d92c567bf38596d0afff9f1c7d527e5ef3be81ca798609b31a1e7f82e5f",
+    "preflash_first256KiB_flash_sha256": "3b1943cdc0780c3851d952bc00fd67396f0d4326ef114505b2c12a0de876c774",
+    "preflash_286_UF2_blocks_exact_match": true,
+    "picotool_target_flash_id": "E464401787522D33",
+    "picotool_load_options": [
+      "-u",
+      "-v"
+    ],
+    "picotool_load_exit_code": 0,
+    "picotool_flash_verification_result": "OK",
+    "picotool_reboot_to_application_exit_code": 0,
+    "post_software_start_firmware_USB_response": "KNX043 STATUS armed=0 listen=0 buffered=0 dropped=0",
+    "post_software_start_USB_status_checks": 12,
+    "post_software_start_USB_status_checks_success": 12,
+    "firmware_KNX_TX_gpio0_pin_digitalWrite_HIGH_occurrences": 0,
+    "firmware_tx_gpio0_driven_low_after_firmware_setup": true,
+    "firmware_motor_enable_pins_driven_low_after_firmware_setup": true,
+    "firmware_has_no_KNX_transmit_protocol": true,
+    "old_main_product_transport": "TPUART Serial1 19200 8E1, incompatible with direct STKNX without hardware glue",
+    "KNX_ETS_or_regulation_functionality_verified": false
+  },
+  "scope": {
+    "model": "PicoScope3205D MSO",
+    "serial": "GX118/0047",
+    "user_reported_probe_on": "JMP3 Pad 2 STKNX KNX_TX (U9 pin24)",
+    "physical_attenuation": 10,
+    "input_fullscale_volts": 0.5,
+    "steady_app_monitor_start_utc": "2026-10-15T14:50:17.2816274Z",
+    "steady_app_monitor_end_utc": "2026-10-15T14:51:17.2978138Z",
+    "monitor_duration_s": 60,
+    "trigger_threshold_at_probe_tip_v": 0.35,
+    "hardware_trigger_observed": false,
+    "raw_waveform_from_monitor_saved": false,
+    "USB_COM7_visible_during_monitor": true,
+    "boot_test_mode_capture_saved": true,
+    "boot_free_run_capture_A_peak_v": 0.174551,
+    "boot_free_run_capture_A_samples_over_0p5_v": 0,
+    "boot_free_run_not_definitively_aligned_to_reboot": true,
+    "conclusion": "During 60s after verified KNX043 app boot, physical Pico hardware positive-edge trigger at 0.35V tip did not fire; no significant sustained active high was observed. Does NOT exclude <0.35V or very short transients and is not a qualification for STKNX under bus power."
+  },
+  "USB": {
+    "ROM_to_app_events": [
+      {
+        "utc": "2026-10-15T14:45:35.298+00:00",
+        "event": "USB_STATE_CHANGE",
+        "rp2040_cdc_ports": [],
+        "rp2040_rom_boot_ports": [
+          {
+            "port": "COM6",
+            "description": "RP2 Boot (Interface 0) (COM6)",
+            "vid": 11914,
+            "pid": 3,
+            "serial": "E0C9125B0D9B"
+          }
+        ],
+        "rpi_rp2_boot_volume": []
+      },
+      {
+        "utc": "2026-10-15T14:46:50.411+00:00",
+        "event": "USB_STATE_CHANGE",
+        "rp2040_cdc_ports": [],
+        "rp2040_rom_boot_ports": [],
+        "rpi_rp2_boot_volume": []
+      },
+      {
+        "utc": "2026-10-15T14:46:50.771+00:00",
+        "event": "USB_STATE_CHANGE",
+        "rp2040_cdc_ports": [
+          {
+            "port": "COM7",
+            "description": "Serielles USB-Gerät (COM7)",
+            "vid": 11914,
+            "pid": 10,
+            "serial": "E464401787522D33"
+          }
+        ],
+        "rp2040_rom_boot_ports": [],
+        "rpi_rp2_boot_volume": []
+      }
+    ],
+    "monitor_status": "WINDOW_EXPIRED",
+    "post_boot_state": "application USB VID 2E8A PID 000A COM7 serial E464401787522D33",
+    "serial_command_type": "STATUS only, read-only"
+  },
+  "tests": {
+    "KNX043_regressions": 55,
+    "KNX043_failed": 0,
+    "ASH_workflow_checks": 30,
+    "ASH_workflow_failed": 0,
+    "software_source_status": "KNX TX only digitalWrite(pin0, LOW), no HIGH and no Serial1"
+  },
+  "remaining_requirements": {
+    "physical_17_hardware_bus_gates_all_qualified": false,
+    "U9_U11_thermal_issue_resolved_under_bounded_isolated_KNX_load": false,
+    "R17_pad_isolation_measured_power_off": false,
+    "F1_D1_JMP1_protection_and_power_path_confirmed": false,
+    "ROM_bootsel_brownout_and_KNX_power_TX_fail_low_all_states": false,
+    "direct_STKNX_TP_software_stack_and_ETS_knxprod_complete": false,
+    "isolated_KNX_bus_RX_test_performed": false,
+    "KNX_TP_bus_connection_approved": false
+  },
+  "no_undocumented_KNX_bus_motors_or_firmware_transmission": true,
+  "git_commit_or_push_performed": false
+}

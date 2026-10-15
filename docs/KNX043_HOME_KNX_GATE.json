@@ -141,5 +141,35 @@
     "all_KNX_bus_power_safety_gates_satisfied": false,
     "does_not_pass_combined_physical_safety_gate": true,
     "connection_to_KNX_TP_bus_authorized": false
+  },
+  "desktop_usb_scope_dual_USB5V_20261015": {
+    "report": "docs/KNX043_PICOSCOPE_DUAL_USB5V_RESULT_20261015.json",
+    "date": "2026-10-15",
+    "reported_probe_A": "KNX_TX JMP3 pad2 physical x10",
+    "reported_probe_B": "board +5V point physical x1 (net not independently verified)",
+    "B_supply_below2V_8p383ms_before_trigger": true,
+    "B_supply_above3V_at_trigger": true,
+    "B_supply_below2V_11p233ms_after_trigger": true,
+    "A_TX_max_tip_v": 0.567483,
+    "A_TX_samples_above0p5V": 5596,
+    "A_TX_samples_above0p5V_while_B_above3V": 0,
+    "A_TX_samples_above0p5V_while_B_below0p2V": 5536,
+    "ROM_USB_reconnected_after_capture": true,
+    "post_reconnection_B_mean_v": 4.260071,
+    "B_5V_point_correct_net_and_voltage_confirmed_by_DMM": false,
+    "U9_and_U11_backfeed_and_thermal_safe_measured": false,
+    "KNX_TP_bus_connection_authorized": false
+  },
+  "desktop_KNX044_RX_only_USB_flash_live": {
+    "date": "2026-10-15",
+    "report": "docs/KNX044_USB_STKNX_FLASH_VERIFY_20261015.json",
+    "flashed_and_verified": true,
+    "UF2_preflash_byte_for_byte_matching_blocks": 286,
+    "boot_application_USB_COM7": true,
+    "USB_STATUS_calls_successful": 12,
+    "pico_60s_rising_0p35V_detected": false,
+    "raw_trace_for_negative_trigger_saved": false,
+    "active_KNX_PHY_transmitter_installed": false,
+    "KNX_bus_connection_authorized": false
   }
 }
