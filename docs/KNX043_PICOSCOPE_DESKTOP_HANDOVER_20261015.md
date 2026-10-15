@@ -128,3 +128,27 @@ Neue Rohdaten (vier 16-Bit-ADC-Aufzeichnungen je 200.000 Bytes plus SDK-JSON) au
 **Nicht getestet:** KNX_TX bei Reset, ROM-BOOTSEL, Brownout und mit KNX-TP-Busversorgung. U9/U11 nach dem Wärmeereignis, R17-Pads und D1/F1/JMP1-Rückspeisung sind weiterhin offene Hardware-Prüfgates. Ein USB-only-LOW **erteilt keine Busfreigabe**. Kein Bus, keine Motoren, keine Firmwareänderung, kein Reset während dieser Messung.
 
 **Vorgeschlagene nächste Prüffolge:** Tastkopf an KNX_TX/JMP3 Pad 2 belassen (10:1, Masse PCB-GND). Falls der Nutzer den nächsten Schritt ausdrücklich freigibt, Scope für einen getriggerten oder durchgehend erfassten **kontrollierten Reset/RUN-Test** vorbereiten, dann den Nutzer den Reset auslösen lassen und mögliche HIGH-Impulse samt Dauer dokumentieren. **Nicht ohne Freigabe automatisch resetten.**
+
+## KNX043 – RUN-Taster unter aktivem PicoScope-Trigger (15.10.2026)
+
+Die **zweite** hardwareseitig getriggerte PicoScope-Messung war ab **11:52:29 UTC (13:52:29 MESZ)** scharf. Der Nutzer meldete, den RUN-Taster des RP2040 gedrückt zu haben. Der PicoScope-Host beobachtete:
+
+| Zeit (MESZ) | Beobachtung |
+| --- | --- |
+| 13:52:29 | PicoScope 3205DMSO, Kanal A, 10:1, auf steigende Flanke **über 0,35 V an der Tastkopfspitze** scharf; automatischer Trigger deaktiviert |
+| **14:11:08** | RP2040 **COM7 nicht mehr sichtbar** |
+| **14:11:09** | RP2040 **COM7 wieder sichtbar** |
+| 14:12:43 | Trigger geordnet beendet: **STOP_REQUESTED_NO_TRIGGER**; keine Reset-Wellenform gespeichert |
+| danach | KNX043-Firmware antwortet mit STATUS armed=0 listen=0 buffered=0 dropped=0 auf COM7 |
+
+Der Verlust und die Wiederkehr von COM7 erfolgten **innerhalb** des scharfen Triggerfensters und passen zum berichteten RUN-Reset. Die Differenz von **0,805 s** ist lediglich der Abstand zweier zeitlich gepollter COM-Sichtbarkeitsereignisse, **keine gemessene Dauer des elektrischen Resets**.
+
+**Kein hardwareseitiger Trigger über 0,35 V am benutzerseitig verbundenen KNX_TX.** Dies ist eine negative Triggerbeobachtung bei einem durch USB-Wiederanmeldung bezeugten Neustart, **aber keine gespeicherte analog-zeitaufgelöste Wellenform des Resetvorgangs**. Sehr kurze Impulse, Flanken unter der Triggergrenze, nicht unabhängig verifizierter Tastkopf-/GND-Kontakt und andere Versorgungszustände sind dadurch nicht ausgeschlossen. Der erste, vorangegangene Lauf hatte nach zehn Minuten lediglich TIMEOUT_NO_TRIGGER und einen Tastendruck nicht zeitlich zuordnen können.
+
+Nach Neustart vier separate **USB-only-Ruheaufnahmen zu je 100.000 Punkten**, 10:1, Kanal A, Eingang +/-0,5 V: 400.000 Samples / 1,9936 s insgesamt, **unkorrigierter Mittelwert 0,054876 V**, Maximum **0,130875 V**, kein Wert über 0,5 V. Der Offset des Oszilloskops ist darin weiterhin enthalten.
+
+Quellen: [Maschinenlesbarer Reset-Befund](KNX043_PICOSCOPE_RUN_RESET_20261015.json), [PicoScope-Messprotokoll](KNX043_PICOSCOPE_MEASUREMENTS_20261015.json) und [passiver RUN-Trigger-Recorder](../tools/knx043_picoscope_reset_trigger.ps1). SHA256-geprüfte Roharchive liegen in den Builds und werden auf Home gespiegelt.
+
+**Weiterhin gesperrt:** KNX-TP-Busversorgung/Telegramme, weil R17-Pads, STKNX U9/U11 nach Überhitzung, F1/D1/JMP1-KNX/USB-Rückspeisung, BOOTSEL/Brownout und tatsächliche KNX-Versorgungsdomäne nicht vollständig gemessen sind. Keine Änderung an Motoren, Firmware oder ETS. **Alle 17 kombinierten Sicherheits-Gates bleiben unverifiziert.**
+
+Als nächste unabhängige Messung bietet sich ROM-BOOTSEL/USB-Spannungswechsel bzw. U9/U11-Versorgungswegkontrolle mit einem zweiten Referenzkanal an. Ein einzelner RUN-Reset bei USB-only ist keine KNX-Busfreigabe.

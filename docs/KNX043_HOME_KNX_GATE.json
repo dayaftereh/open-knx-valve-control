@@ -129,5 +129,17 @@
     "reset_bootsel_brownout_qualification": false,
     "bus_connection_authorized": false,
     "evidence": "docs/KNX043_PICOSCOPE_MEASUREMENTS_20261015.json"
+  },
+  "desktop_usb_scope_RUN_reset_observation": {
+    "date": "2026-10-15",
+    "evidence": "docs/KNX043_PICOSCOPE_RUN_RESET_20261015.json",
+    "user_reported_physical_RUN_press": true,
+    "USB_COM7_disappearance_and_return_observed": true,
+    "oscilloscope_hardware_rising_trigger_0p35V_fired": false,
+    "no_raw_reset_waveform_saved": true,
+    "usb_only_low_during_all_board_power_states_qualified": false,
+    "all_KNX_bus_power_safety_gates_satisfied": false,
+    "does_not_pass_combined_physical_safety_gate": true,
+    "connection_to_KNX_TP_bus_authorized": false
   }
 }

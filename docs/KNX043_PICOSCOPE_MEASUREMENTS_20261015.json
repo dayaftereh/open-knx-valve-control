@@ -2,7 +2,7 @@
   "schema": "knx043-picoscope-measurements/v1",
   "planned_date": "2026-10-15",
   "prepared_on": "2026-10-14",
-  "status": "USER_REPORTED_GND_BRACKETED_BY_10X_TX_STEADY_USB_ONLY_RESET_NOT_TESTED",
+  "status": "USB_RUN_RESET_COM_REENUMERATION_NO_TRIGGER_OVER_0P35V_OTHER_SAFETY_GATES_PENDING",
   "workstation": "LLO Desktop",
   "board": "OpenKNXValveControl V1.2 / U9 STKNXTR / RP2040",
   "firmware_expected": "KNX043 STKNX passive RX-only, last verified Home COM8 on 2026-10-14",
@@ -73,7 +73,8 @@
     "2026-10-15: user confirmed probe x10. Coarse +/-5V scope input x10 produced apparent 0.764V mean at tip, whereas higher-resolution +/-0.5V input x10 produced 0.08526V mean/0.13087V max; same ~2 ADC-code baseline across ranges makes uncalibrated absolute voltage uncertain.",
     "Zero-level verification with 10x probe tip touching verified board GND is NEXT, not yet performed. Controlled reset and KNX TP remain untested.",
     "2026-10-15: GND user-confirmed tip measurement with same PicoScope 10x and +/-0.5V range: 400k raw ADC samples, mean0.07924V, max0.17455V. Previously TX mean0.08526V; differential0.00602V below ~0.0435V discrete quantization step; near-noise comparison only, not verified reset-safe TX.",
-    "2026-10-15: User returned x10 probe to KNX_TX after GND. Four 100k-sample steady USB-only captures give mean 0.07893V vs prior user-GND 0.07924V, TX-GND -0.31mV, well below 43.52mV observed ADC code step. No reset/BOOTSEL or KNX TP test performed."
+    "2026-10-15: User returned x10 probe to KNX_TX after GND. Four 100k-sample steady USB-only captures give mean 0.07893V vs prior user-GND 0.07924V, TX-GND -0.31mV, well below 43.52mV observed ADC code step. No reset/BOOTSEL or KNX TP test performed.",
+    "15.10.2026: Nutzer betätigte RUN. COM7 verschwand 12:11:08.803Z und erschien 12:11:09.609Z während PicoScope positive-edge +0.35V ARMED. Kein Trigger, keine Reset-Wellenform gespeichert; 400.000 spätere USB-only-TX-Messungen max ca.0.131V. Kein KNX-Bus-Freigabesignal."
   ],
   "picoscope_serial": "GX118/0047",
   "firmware_actual": "KNX043 PASSIVE RX READY; STATUS armed=0 listen=0 buffered=0 dropped=0",
@@ -249,5 +250,16 @@
     "KNX_TP_bus_connected_or_tested": false,
     "KNX_TP_connection_authorized": false,
     "interpretation": "User-reported KNX_TX after GND has mean ~0.07893V, GND prior ~0.07924V; diff -0.31mV is far below observed ~43.52mV discrete ADC step. No meaningful steady TX_HIGH under USB-only, but absolute millivolt voltage and all reset/brownout/KNX-powered safety claims remain unverified."
+  },
+  "USB_RUN_reset_hardware_trigger": {
+    "report_file": "docs/KNX043_PICOSCOPE_RUN_RESET_20261015.json",
+    "com_port_reeumerated_observed": true,
+    "physical_RUN_pressed_by_user": true,
+    "threshold_tip_volts": 0.35,
+    "hardware_trigger_fired": false,
+    "trigger_scope_waveform_saved": false,
+    "after_reset_400k_steady_samples_mean_volts_uncorrected": 0.054876,
+    "after_reset_max_tip_volts_uncorrected": 0.130875,
+    "actual_knx_bus_authorized": false
   }
 }

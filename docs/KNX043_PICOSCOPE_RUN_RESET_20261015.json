@@ -1,0 +1,90 @@
+{
+  "schema": "knx043-usb-run-reset-no-trigger/v1",
+  "date": "2026-10-15",
+  "location": "LLO Desktop (USB-only bench)",
+  "user_reported_action": "User confirmed a short physical press/release of the RP2040 RUN button during the second armed PicoScope recording.",
+  "probe": "CH A, user-reported JMP3 Pad2 KNX_TX (U9 pin24), 10x, ground clip reportedly PCB GND; physical pad/clip not independently inspected",
+  "scope": {
+    "hardware_model": "PicoScope 3205DMSO",
+    "serial": "GX118/0047",
+    "scope_input_range_plus_minus_volts": 0.5,
+    "effective_probe_tip_range_plus_minus_volts": 5.0,
+    "hardware_trigger": "positive edge over 0.35 V at probe tip",
+    "trigger_ADC_counts": 2276,
+    "no_auto_trigger": true,
+    "armed_at_utc": "2026-10-15T11:52:29.3077554Z",
+    "stopped_at_utc": "2026-10-15T12:12:43.4256943Z",
+    "state": "STOP_REQUESTED_NO_TRIGGER",
+    "recording_sample_interval_ns_if_triggered": 1984,
+    "pretrigger_samples": 100000,
+    "posttrigger_samples": 300000,
+    "raw_waveform_for_run_transition_saved": false,
+    "why_no_raw_waveform": "PicoScope hardware did not report a threshold crossing. A triggered ADC block is stored only when the threshold is crossed. A lack of trigger cannot exclude subthreshold or extremely short transients."
+  },
+  "reset_usb_evidence": {
+    "com_port": "COM7",
+    "board_serial_confirmed_after_event": "E464401787522D33",
+    "port_events_UTC": [
+      {
+        "com_port_visible": true,
+        "utc": "2026-10-15T11:52:29.5140763Z"
+      },
+      {
+        "com_port_visible": false,
+        "utc": "2026-10-15T12:11:08.8035789Z"
+      },
+      {
+        "com_port_visible": true,
+        "utc": "2026-10-15T12:11:09.6089307Z"
+      }
+    ],
+    "visibility_detection_separation_seconds": 0.805352,
+    "time_resolution_caveat": "COM-port enumeration polled about every 150 ms. Event timestamps mark observation, not precisely when physical RUN pin changed or duration of reset.",
+    "interpretation": "COM7 disappeared and reappeared while Pico trigger active, consistent with user-reported reset.",
+    "first_run_limited": "Initial run01 timed out without an observed reset; excluded as reset evidence."
+  },
+  "after_run_firmware": {
+    "port": "COM7",
+    "usb_serial": "E464401787522D33",
+    "read_only_command": "status",
+    "actual_response": "KNX043 STATUS armed=0 listen=0 buffered=0 dropped=0",
+    "verified": true
+  },
+  "after_run_steady_CH_A": {
+    "mode": "passive block, trigger disabled",
+    "input_range_plus_minus_volts": 0.5,
+    "probe_ratio": 10,
+    "sample_interval_ns": 4984,
+    "four_capture_windows_ms_total": 1993.6,
+    "sample_count": 400000,
+    "minimum_tip_volts": 0.0,
+    "maximum_tip_volts": 0.130875,
+    "mean_tip_volts_uncorrected": 0.054876,
+    "number_samples_over_0p5_volts": 0,
+    "scope_digitizer_offset_not_removed": true,
+    "raw_file_dir": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX043-PicoScope-20261015\\10x_TX_post_RUN_500mV",
+    "raw_sha256": {
+      "chA_usb_only_01.i16le": "751abe7c2e2a8ccf075d15643c12892b9842d9232bdca03d6c68cc57091f93cf",
+      "chA_usb_only_02.i16le": "8eb256fe127b14c65598cfdce788f5d8496e709d10f90bd2eff90d1d7b93c922",
+      "chA_usb_only_03.i16le": "cd9de5d0336a22de087c3339b377cb5b2e1ee6a84e6ae63ebe135e80cd7de25f",
+      "chA_usb_only_04.i16le": "be9958a383d50999b234607a631445612bcd75f3f0fa2d4cd11bac4aee71c8a9"
+    },
+    "summary_file": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX043-PicoScope-20261015\\10x_TX_post_RUN_500mV\\knx043_picoscope_chA_summary.json"
+  },
+  "safety_conclusion": {
+    "physical_reset_occurred_observed_by_user": true,
+    "USB_port_reenumeration_during_scope_arm": true,
+    "no_scope_rising_trigger_above_0p35V_during_arm": true,
+    "absolute_voltage_waveform_during_reset_captured": false,
+    "rom_bootsel_low_verified": false,
+    "brownout_low_verified": false,
+    "KNX_bus_power_tested": false,
+    "R17_pad_U9_U11_D1_F1_JMP1_power_verified": false,
+    "hardware_thermal_damage_cleared": false,
+    "KNX_bus_connection_authorized": false,
+    "motor_load_connection_authorized": false,
+    "scope_ground_and_exact_pad_verified_by_agent": false,
+    "no_KNX_or_motor_output_command_by_agent": true,
+    "conclusion": "A USB RUN/reset-associated COM re-enumeration was witnessed during a properly armed 0.35V rising-edge Pico trigger, without a trigger. No significant >=0.35V rising transition was detected at the probed signal; this observation alone does not guarantee fail-LOW on ROM/BOOTSEL/brownout or actual KNX-powered circuitry."
+  }
+}
