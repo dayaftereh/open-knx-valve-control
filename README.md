@@ -1,5 +1,7 @@
 # Open KNX Valve Control
 
+**KNX047 - 15.10.2026, LLO Home USB-Check PASS / KNX-Bus NO-GO:** Git \`f647cec\` war vor dieser Dokumentation clean und mit \`origin/main\` synchron. RP2040 USB-C \`COM8\` (2E8A:000A, E464401787522D33) meldete \`KNX043 STATUS armed=0 listen=0 buffered=0 dropped=0\`. Die 17 KNX-Hardware-Gates sind **alle offen**. Kein KNX-Bus, kein Motor, kein Flash und kein RX-Capture; naechster Schritt sind stromlose Messungen und eine separate sichere KNX-Teststrecke. [KNX047 Messplan](docs/KNX047_HOME_STKNX_RX_PREFLIGHT_20261015.md) / [Evidenz](docs/KNX047_HOME_STKNX_RX_PREFLIGHT_20261015.json).
+
 **KNX043 PicoScope-Uebergabe LLO Desktop fuer 15.10.2026:**
 
 Die RP2040-Platine wird laut Nutzer morgen zum LLO Desktop mit PicoScope 6 gebracht. Projekt bereits heute auf Home/Desktop identisch commit cc6eb38 (vor dem Handover); zuletzt auf Home laeuft KNX043 RX-only auf COM8. **JMP3 Pad 2 = KNX_TX/U9 Pin24, JMP3 Pad3 = RP2040 GPIO0; JMP2 Pad2 = KNX_RX/U9 Pin23, Pad1 = RP2040 GPIO1.** Erst spannungsfrei pruefen, dann ausschliesslich USB und Oszilloskop, **kein KNX-Bus und keine Motoren**. [Messplan 15.10.2026](docs/KNX043_PICOSCOPE_DESKTOP_HANDOVER_20261015.md).

@@ -1,0 +1,71 @@
+{
+  "schema": "knx047-home-stknx-rx-preflight/v1",
+  "observed_at_local": "2026-10-15T22:39:00+02:00",
+  "agent": {
+    "name": "LLO Home",
+    "online": true,
+    "version": "0.7.9",
+    "os": "windows",
+    "session_id": "ses-20261015T203914-5a3850a88729"
+  },
+  "git_baseline": {
+    "branch": "main",
+    "head": "f647cec87ceb018329015eaf9b04fb87dceba765",
+    "origin_main": "f647cec87ceb018329015eaf9b04fb87dceba765",
+    "worktree_clean": true
+  },
+  "usb": {
+    "port": "COM8",
+    "vid": "2E8A",
+    "pid": "000A",
+    "serial": "E464401787522D33",
+    "live_status": "KNX043 STATUS armed=0 listen=0 buffered=0 dropped=0",
+    "status_command_read_only": true
+  },
+  "image": {
+    "uf2_sha256": "8b2a3d92c567bf38596d0afff9f1c7d527e5ef3be81ca798609b31a1e7f82e5f",
+    "bytes": 146432,
+    "flash_readback_verified": false,
+    "reflash_attempted": false
+  },
+  "schematic": {
+    "revision": "V1.2",
+    "pdf_sha256": "e7e452f1b517dabe077e9ac3987d3c1565464005b7a744beb8b53b3181c52789",
+    "json_sha256": "3c36ba0775ec04b5798b3084b04206ac4e7e4b07a125af9c1239a3e8c7deb367"
+  },
+  "electrical_gate": {
+    "file": "docs/KNX043_HOME_KNX_GATE.json",
+    "total": 17,
+    "verified": 0,
+    "unknown": 17,
+    "decision": "BLOCKED_AWAIT_HARDWARE_EVIDENCE",
+    "independently_physically_inspected": false,
+    "knx_tp_connection_authorized": false
+  },
+  "risk_flags": [
+    "U11_prior_thermal_event",
+    "R17_reported_removed_not_measured",
+    "U9_unqualified_after_overheat",
+    "F1_T2_5A_vs_630mA_design",
+    "D1_bypassed",
+    "JMP1_Q1_power_backfeed_unknown",
+    "TX_not_hardware_fail_low_during_reset_brownout",
+    "VCCCORE_RX_3V3_compatibility_unknown",
+    "USB_5V_point_previously_about_4_26V_unconfirmed",
+    "KNX_B_shared_with_board_GND"
+  ],
+  "prohibited_during_knx047": [
+    "flash_firmware",
+    "send_knx_telegram",
+    "start_rx_capture_before_hardware_gate",
+    "connect_production_knx_bus",
+    "operate_motor",
+    "close_knx042_open_slice",
+    "git_push"
+  ],
+  "read_only_status_evidence": true,
+  "knx_receive_signal_proven": false,
+  "physical_measurements_taken": false,
+  "isolated_knx_testbus_ready": false,
+  "next": "Require user-performed unpowered photos and DMM results for R17/U11/U9, JMP2/3, D1/F1/JMP1; next independent power-path and fail-low hardware review; only then separately approved isolated KNX bus."
+}

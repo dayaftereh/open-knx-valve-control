@@ -1,5 +1,7 @@
 # OpenKNXValveControl - ASH Slice Roadmap
 
+**KNX047 - Stand 15.10.2026 (NO-GO KNX-Bus):** Der KNX046-UF2-Flash wird nicht wiederholt. LLO Home am selben Git-Stand \`f647cec\`, USB \`COM8\` und RX-only STATUS im KNX047-Check erneut erfolgreich. 17/17 physische KNX-Gates weiterhin ohne Messbeleg. R17/U11/U9, JMP2/3, D1/F1/JMP1, Versorgung/VCCCORE und Reset-/Brownout-TX zuerst stromlos/USB-only pruefen; **noch keine KNX-TP-Verbindung**. [KNX047 Vorpruefung](KNX047_HOME_STKNX_RX_PREFLIGHT_20261015.md). Der bereits offene \`_OPEN_KNX042_MOTOR_LED_BRINGUP.md\` bleibt bewusst unveraendert, kein zweiter offener Slice.
+
 **KNX043 NEXT – PicoScope LLO Desktop (15.10.2026):**
 
 Der Nutzer bringt die V1.2-Platine morgen zum Desktop; PicoScope 6 installiert, Hardware noch nicht nachgewiesen. Gesicherte passive RX-only Firmware laeuft zuletzt auf LLO Home COM8. An JMP3 **Pad 2 (U9 KNX_TX)** und optional **Pad 3 (RP2040 GPIO0)** den LOW-Ruhepegel sowie Boot-/Reset-Pegel ohne KNX-Bus und ohne Motoren messen. JMP3 Pad1 ist RX, kein TX. Jumperkonfiguration/3.3V/GND stromlos pruefen. Ein USB-only LOW-Nachweis ist **keine KNX-Busfreigabe**. [Runbook](KNX043_PICOSCOPE_DESKTOP_HANDOVER_20261015.md), [Messwerte offen](KNX043_PICOSCOPE_MEASUREMENTS_20261015.json).
