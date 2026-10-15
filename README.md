@@ -1,5 +1,8 @@
 # Open KNX Valve Control
 
+**KNX050 / 16.10.2026 - KNX048-RX-only erfolgreich auf RP2040 geflasht:** Bus physisch laut Nutzer getrennt, offizieller UF2-ROM-Kopiervorgang erfolgreich. COM8 und vier neue STATUS-Antworten bestaetigen \`capacity=16383 observed=0 dropped=0 listen=0\`. **Realer KNX-Empfang noch nicht geprueft; alle 17 physischen Sicherheits-Gates bleiben offen.** [KNX050 Live-Flashbericht](docs/KNX050_HOME_KNX048_USB_FLASH_20261016.md) und [Evidenz](docs/KNX050_HOME_KNX048_USB_FLASH_20261016.json). Kein Git-Push.
+
+
 **KNX049 / 16.10.2026:** KNX048-RX-only-Image und Rollback auf LLO Home erneut SHA-/UF2-verifiziert, USB COM8 zeigt weiterhin KNX043, neue Firmware daher **noch nicht geflasht**. KNX-TP laut letzter Nutzeraussage angeschlossen; Firmware-Reset/BOOTSEL und RX-Capture deshalb bis zur physischen Trennung und Sicherheitspruefung ausgesetzt. [KNX049 sicherer USB-only-Upgradeplan](docs/KNX049_HOME_KNX048_DEPLOY_PLAN_20261016.md).
 
 **KNX048 - RX-Puffer vergroessert, NICHT auf Hardware installiert (15.10.2026):** KNX043 hatte nur 256/255 Flankenplaetze (ca. 2 KiB). Neuer **16.384er Ring (16.383 nutzbar, 128 KiB)**, kurze USB-Zeilen, blockweiser PC-Empfang, Restpuffer-Drain und beobachteter Datenverlust als eigene Telemetrie. **62/62 Tests** und RP2040-Build PASS; **neue UF2 nur offline unter Builds**, weiterhin alte KNX043 auf COM8. Alle 17 KNX-Hardware-Gates ungeklaert: **keine Bus-/Flash-Freigabe**. [KNX048 Pufferbericht](docs/KNX048_RX_BUFFER_20261015.md).

@@ -1,0 +1,69 @@
+{
+  "schema": "knx050-home-usb-rx-only-flash/v1",
+  "observed_utc": "2026-10-15T22:14:20.076Z",
+  "board": "OpenKNXValveControl V1.2 RP2040",
+  "user_report": {
+    "knx_tp_physically_disconnected": true,
+    "report_is_user_statement": true,
+    "independently_verified": false,
+    "motors_externally_inspected": false
+  },
+  "device": {
+    "before_usb_cdc": {
+      "port": "COM8",
+      "vid": "2E8A",
+      "pid": "000A",
+      "serial": "E464401787522D33"
+    },
+    "after_usb_cdc": {
+      "port": "COM8",
+      "vid": "2E8A",
+      "pid": "000A",
+      "serial": "E464401787522D33"
+    }
+  },
+  "boot": {
+    "method": "Arduino-Pico 1200 baud DTR event (serial tool error during immediate disconnect) -> official RPI-RP2 mass storage",
+    "serial_host_open_exit_code": 1,
+    "rom_volume": "D:",
+    "rom_label": "RPI-RP2",
+    "rom_info_verified": true,
+    "rom_pid0003_com_observed": false,
+    "cdc_disappear_utc": "2026-10-15T22:13:34.607Z",
+    "rom_volume_appear_utc": "2026-10-15T22:13:34.962Z"
+  },
+  "firmware": {
+    "type": "KNX048 STKNX RX-only 16K edge buffer",
+    "uf2_source": "C:\\_myspace\\workspace\\Builds\\OpenKNXValveControl\\KNX048_RX_BUFFER_20261015\\knx048-passive-rx-16k-NOT-FLASHED.uf2",
+    "sha256": "af6aa0f228bb6b294bd31f35a3c68b8758afe2e3213da7344a7fffa5f236e70a",
+    "bytes": 166400,
+    "uf2_blocks": 325,
+    "rom_copy_destination": "D:\\KNX048_RX_ONLY.uf2",
+    "copy_exit": 0,
+    "copy_end_utc": "2026-10-15T22:14:19.112Z",
+    "rom_disappear_utc": "2026-10-15T22:14:19.545Z",
+    "cdc_appear_utc": "2026-10-15T22:14:20.076Z",
+    "status_replies": 4,
+    "all_passed": true,
+    "new_status": "KNX043 STATUS armed=0 listen=0 buffered=0 dropped=0 capacity=16383 high_water=0 observed=0",
+    "independent_flash_readback": false
+  },
+  "observation": {
+    "capture_started": false,
+    "knx_tp_connected_by_agent": false,
+    "knx_frame_sent": false,
+    "motor_commanded": false,
+    "firmware_reflashed_again": false,
+    "ring_usable": 16383,
+    "real_knx_edges_measured": false
+  },
+  "safety_gate": {
+    "path": "docs/KNX043_HOME_KNX_GATE.json",
+    "physical_checks_passed": 0,
+    "physical_checks_total": 17,
+    "knx_tp_bus_approved": false
+  },
+  "usb_event_watch": "C:\\_myspace\\workspace\\Builds\\OpenKNXValveControl\\KNX050_HOME_RX_ONLY_FLASH_20261016\\usb_rom_app_watch\\usb_events.jsonl",
+  "git_baseline": "7cae6bc0c6ee4700b72e06c0128b6e259925b686",
+  "git_pushed": false
+}

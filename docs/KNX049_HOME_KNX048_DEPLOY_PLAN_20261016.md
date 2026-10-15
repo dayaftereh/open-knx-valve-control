@@ -1,5 +1,8 @@
 # KNX049 – KNX048-Firmwareupdate und passiver KNX-RX-Nachweis (LLO Home)
 
+**Abschlussnotiz KNX050 / 16.10.2026:** Die hier formulierte Bedingung fuer ein USB-only-Upgrade wurde durch die Nutzerbestaetigung der physisch abgetrennten KNX-Leitung erfuellt. KNX048 wurde daraufhin erfolgreich per UF2-ROM aufgespielt und ueber \`capacity=16383\` auf COM8 verifiziert. Dieser Text bleibt als *historischer Vorbereitungsplan* erhalten. [Tatsaechliches Flash-Protokoll](KNX050_HOME_KNX048_USB_FLASH_20261016.md); die 17 KNX-TP-Hardwaregates bleiben ungeprueft.
+
+
 **Datum:** 16.10.2026 (MESZ). **Status:** Update-Image verifiziert, *Hardware-Flash gesperrt solange KNX-TP laut Nutzer angeschlossen ist*. Keine neue Write-Slice-Datei: `docs/slices/_OPEN_KNX042_MOTOR_LED_BRINGUP.md` bleibt einziger offener ASH-Slice.
 
 ## 1. Livezustand und verifizierter Softwarestand

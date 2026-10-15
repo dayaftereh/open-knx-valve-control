@@ -1,5 +1,8 @@
 # OpenKNXValveControl - ASH Slice Roadmap
 
+**KNX050 / 16.10.2026: USB-only-Flash KNX048 PASS.** Offizielles \`RPI-RP2\`-UF2-Flash nach Nutzerbestaetigung der physischen KNX-Abtrennung, anschliessend RP2040 \`COM8\` vierfach erfolgreich mit neuem Ring \`capacity=16383\` verifiziert. Keine KNX-Telegramme/kein Motor, \`listen=0\`, alle 17 KNX-TP-Hardwaregates weiter offen. Naechstes Ziel: sichere elektrische Freigabe und isolierter passiver KNX-RX-Test, **keine Verbindung zum Hausbus**. [KNX050 Bericht](KNX050_HOME_KNX048_USB_FLASH_20261016.md).
+
+
 **KNX049 / 16.10.2026: KNX048-Firmware bereit, Flash HALT bei angeschlossenem KNX-TP.** USB COM8 zeigt noch alte KNX043, neues 16K-Ring-UF2 (SHA-/Blockpruefung PASS) und alter Rollback bereit. 62/62 KNX043/KNX048 Tests und ASH 30/30 PASS; 0/17 KNX-Hardwaregates verifiziert. Nach Nutzermeldung KNX-TP auf V1.2 angeschlossen; deshalb keine BOOTSEL-/Reset-/Capture-Aktion. [KNX049 Deployment-/RX-Abnahmeplan](KNX049_HOME_KNX048_DEPLOY_PLAN_20261016.md). KNX042 bleibt einziger offener ASH-Slice.
 
 **KNX048 Software-Maintenance (15.10.2026):** USB-KNX_RX-Firmware offline auf 16.384 Ring-Slots mit Ueberlauf- und Datenabgleich erweitert; kompakte Flankenformate, 50.000er Simulationsstrom, 62/62 Tests und PIO-RP2040-Build PASS (53,5 % RAM). Alt-Firmware auf Hardware weiterhin 256 Slots, neue UF2 noch **NICHT geflasht**. Realer KNX-Empfang und 17 Hardware-Gates BLOCKED, keine KNX-TP-Freigabe. [KNX048](KNX048_RX_BUFFER_20261015.md); KNX042 offen beibehalten.
