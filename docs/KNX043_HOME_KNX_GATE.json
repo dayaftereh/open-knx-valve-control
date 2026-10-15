@@ -108,6 +108,13 @@
     "zero_baseline_verified": false,
     "physical_PAD_and_scope_GND_not_independently_verified": true,
     "reset_BOOTSEL_brownout_measured": false,
-    "knx_power_authorized": false
+    "knx_power_authorized": false,
+    "user_reported_GND_tip_zero_capture_performed": true,
+    "GND_uncorrected_tip_mean_v": 0.079241,
+    "prior_TX_uncorrected_tip_mean_v": 0.085262,
+    "TX_minus_GND_sequential_difference_mV": 6.021,
+    "approx_one_native_code_tip_step_mV": 43.52,
+    "zero_baseline_not_independently_confirmed_caveat": "Probe tip was user-reported at PCB GND; relative 6mV reading is below 1 discrete ADC step, no independent electrical confirmation of the contact.",
+    "still_not_reset_or_KNX_bus_safe": true
   }
 }

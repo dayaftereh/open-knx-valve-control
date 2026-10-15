@@ -8,6 +8,7 @@ param(
     [ValidateRange(1,8)][int]$Repeats=4,
     [ValidateSet(1,10)][int]$ProbeRatio=1,
     [double]$InputRangeVolts=5,
+    [ValidateSet("KNX_TX","GND","UNSPECIFIED")][string]$ProbePoint="UNSPECIFIED",
     [string]$OutputDir="C:\ASH\Workspace\Builds\OpenKNXValveControl\KNX043-PicoScope-20261015"
 )
 $ErrorActionPreference="Stop"
@@ -116,7 +117,8 @@ try {
        workstation="LLO Desktop";
        probe_ratio=$ProbeRatio;probe_user_setting=("$($ProbeRatio)x");
        analog_channel="A";coupling="DC";input_range_volts_peak=$InputRangeVolts;tip_range_volts_peak=$TipScale;
-       actual_probe_position="KNX_TX according to user, pad index and ground clip not independently observed";
+       actual_probe_position=("Probe tip on "+$ProbePoint+" according to user; exact location/ground clip not independently observed");
+       probe_position_source="operator report (not optically/electrically verified)";
        hardware_model=$model;hardware_serial=$serial;adc_full_scale=$maxAdc;
        scope_driver="ps3000a PicoScope6 x86 bundled DLL";
        trigger="disabled";samples_per_capture=$Samples;timebase=$Timebase;
@@ -124,7 +126,7 @@ try {
        no_knx_bus_physical_isolation_independently_verified=$false;
        board_firmware_controlled=$false;
        no_reset_or_bootsel_transition_requested_or_measured=$true;
-       disclaimer="Voltage only describes user-attached channel A; 1x probe may load weakly biased nets. USB-only LOW does not authorize KNX."
+       disclaimer="Voltage describes the user-attached channel A; probe loading, quantization and DC offset may affect weakly biased nets. No KNX bus approval."
     }
     $json=ConvertTo-Json -InputObject $result -Depth 10
     $path=[IO.Path]::Combine($OutputDir,"knx043_picoscope_chA_summary.json")

@@ -52,7 +52,8 @@ class Knx043PicoScopeRangeContract(unittest.TestCase):
         self.assertEqual(fine["samples"], 400000)
         self.assertGreater(coarse["mean_tip_volts"], fine["mean_tip_volts"] * 5)
         self.assertLess(fine["maximum_tip_volts"], 0.5)
-        self.assertFalse(ten["instrument_zero_baseline_measured_with_tip_to_GND"])
+        self.assertTrue(ten["instrument_zero_baseline_measured_with_tip_to_GND"])
+        self.assertFalse(ten["zero_baseline_independently_verified_by_agent"])
         self.assertFalse(ten["automatically_authorizes_KNX_TP_bus"])
         self.assertFalse(self.ev["physical_knx_tp_bus_test_authorized"])
 
@@ -60,7 +61,23 @@ class Knx043PicoScopeRangeContract(unittest.TestCase):
         self.assertTrue(self.gate["observations"])
         self.assertTrue(all(v is None for v in self.gate["observations"].values()))
         self.assertFalse(self.gate["desktop_usb_scope_10x_observation"]["zero_baseline_verified"])
+        self.assertTrue(self.gate["desktop_usb_scope_10x_observation"]["user_reported_GND_tip_zero_capture_performed"])
         self.assertFalse(self.gate["desktop_usb_scope_10x_observation"]["knx_power_authorized"])
+
+    def test_calibrated_reference_is_not_confused_with_verified_electrical_gate(self):
+        gnd = self.ev["channel_a_10x_GND_reference"]
+        rel = self.ev["channel_a_10x_GND_relative_to_earlier_KNX_TX"]
+        self.assertEqual(gnd["sample_count"], 400000)
+        self.assertFalse(gnd["physical_contact_independently_verified"])
+        self.assertEqual(gnd["probe_ratio"], 10)
+        self.assertEqual(gnd["scope_input_range_plus_minus_v"], 0.5)
+        self.assertLess(rel["TX_minus_GND_mean_tip_millivolts"], rel["approx_adc_code_step_millivolts"])
+        self.assertFalse(rel["physical_KNX_connection_authorized"])
+
+    def test_capture_has_explicit_probe_point_metadata(self):
+        self.assertIn('ValidateSet("KNX_TX","GND","UNSPECIFIED")', self.src)
+        self.assertIn('$ProbePoint', self.src)
+        self.assertNotIn('actual_probe_position="KNX_TX according to user', self.src)
 
 
 if __name__ == "__main__":

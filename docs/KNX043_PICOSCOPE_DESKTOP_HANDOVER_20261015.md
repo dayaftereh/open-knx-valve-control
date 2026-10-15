@@ -92,3 +92,21 @@ Je Reihe 400.000 Messpunkte und 1,9936 s reine Aufzeichnungszeit, alle PicoSDK-A
 **Nächster notwendiger Messschritt:** Mit unverändert **10:1** und unveränderter PicoScope-Konfiguration **±0,5 V Scope-Eingang** die Messspitze vorsichtig auf einen vorher eindeutig identifizierten **Platinen-GND-Punkt** legen, Masseklemme an Platinen-GND belassen, und den Nullpunkt aufzeichnen. **Nicht KNX_A/KNX_B oder 3,3V versehentlich kurzschließen.** Danach Messspitze zurück auf **JMP3 Pad 2 / U9 KNX_TX**, gleiche Einstellung, zweiten Vergleich aufzeichnen. Ohne echten GND-Nullpunkt und genau identifiziertes Jumper-Pad bleibt die quantitative LOW-Aussage bedingt.
 
 Reset-/BOOTSEL-/Brownout-Pegel und die U9/U11-, R17-, D1/F1/JMP1- und Rückspeisungsprüfungen stehen weiter aus. **Keine KNX-TP-Busfreigabe**.
+
+## Live-Messung GND-Nullreferenz am 15.10.2026 (10:1)
+
+Nach Nachricht **"GND bereit"** meldet der Nutzer, dass die Tastkopfspitze auf einen Platinen-GND-Punkt verlegt wurde. PicoScope 3205D MSO Kanal A blieb bei **10:1**, **DC**, **+/-0,5 V am Scope-Eingang** (+/-5 V an der Tastkopfspitze), 100.000 Samples pro Block, vier Bloecke, 498,4 ms je Block, **400.000 Abtastwerte**.
+
+| Vergleich bei gleicher PicoScope-Einstellung | Unkorrigierter Mittelwert | Maximum | Bewertung |
+| --- | ---: | ---: | --- |
+| GND laut Nutzer, aktuelle Referenz | **0,07924 V** | 0,17455 V | Nullpunkt mit Offset/Quantisierung |
+| KNX_TX laut Nutzer, davor gemessen | **0,08526 V** | 0,13087 V | Frühere USB-only-Messung |
+| KNX_TX minus GND, zeitlich getrennte Fenster | **+0,00602 V** | – | Kleiner als typischer quantisierter Schritt |
+
+Die realen ADC-Werte treten vor allem bei ca. 283, 567, 851 Codes auf (entspricht ungefähr **43,52 mV pro beobachtetem Code-Schritt** an der 10:1-Tastkopfspitze). **6,02 mV Mittelwertdifferenz sind deshalb kein verlässlicher Absolutnachweis** der KNX_TX-Spannung. Nicht simultane Aufzeichnung, Geräte-Offset/Drift, die unverifizierte konkrete GND-Klemme und Tastkopfkontakt sind weitere Unsicherheiten. Die GND-Aufzeichnung enthält vereinzelte Werte bis 0,17455 V: Rauschen/Quantisierung am vermeintlichen Nullpunkt.
+
+Rohdaten der vier GND-Blöcke sowie die korrigierte Positionbezeichnung stehen im LLO-Desktop-Buildordner KNX043-PicoScope-20261015/10x_GND_zero_500mV; Prüfprotokoll in [KNX043-PicoScope-Messwerte](KNX043_PICOSCOPE_MEASUREMENTS_20261015.json). Der Recorder akzeptiert künftig die explizite Position ProbePoint=KNX_TX bzw. ProbePoint=GND, um eine fälschlich fest codierte Bezeichnung zu verhindern.
+
+**Ergebnis:** Beide Messungen liegen messtechnisch nahe am GND-Offset; **keine belegte dauerhafte TX-HIGH-Spannung im bisherigen USB-only-Ruhebetrieb**. Das bedeutet **nicht**, dass GPIO0/U9 KNX_TX während Reset, BOOTSEL, Brownout oder mit KNX-Versorgung sicher LOW bleibt. R17-Pads/U11/U9/F1/D1/JMP1 und die übrigen Hardware-Nachweise stehen aus. **Der KNX-TP-Bus bleibt abgeklemmt.**
+
+**Nächster Bedienerschritt:** Tastkopfspitze mit unverändertem 10:1-Tastkopf vom GND wieder auf **JMP3 Pad 2 = KNX_TX / U9 Pin 24** umsetzen, dabei keine benachbarten Pads kurzschließen. Auf Nutzerbestätigung ("TX bereit") mit identischen Parametern noch eine frische USB-only-Messung erfassen, um Drift einzugrenzen. Kein Reset-/Bus-Test automatisch auslösen.

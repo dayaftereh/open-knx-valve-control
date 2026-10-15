@@ -2,7 +2,7 @@
   "schema": "knx043-picoscope-measurements/v1",
   "planned_date": "2026-10-15",
   "prepared_on": "2026-10-14",
-  "status": "CHANNEL_A_1X_AND_10X_USB_ONLY_CAPTURED_OFFSET_AND_RESET_PENDING",
+  "status": "USER_REPORTED_GND_ZERO_CAPTURED_10X_DIFFERENTIAL_SMALL_RESET_PENDING",
   "workstation": "LLO Desktop",
   "board": "OpenKNXValveControl V1.2 / U9 STKNXTR / RP2040",
   "firmware_expected": "KNX043 STKNX passive RX-only, last verified Home COM8 on 2026-10-14",
@@ -71,7 +71,8 @@
     "2026-10-15: 400000 real 1x DC-coupled PicoScope Channel A samples captured and archived: min 0V, max 0.13118V, mean ~0.0775V; no >0.5V samples.",
     "No controlled reset, BOOTSEL, power transient or KNX TP bus test performed. Physical probe ground and exact jumper pad not independently verified.",
     "2026-10-15: user confirmed probe x10. Coarse +/-5V scope input x10 produced apparent 0.764V mean at tip, whereas higher-resolution +/-0.5V input x10 produced 0.08526V mean/0.13087V max; same ~2 ADC-code baseline across ranges makes uncalibrated absolute voltage uncertain.",
-    "Zero-level verification with 10x probe tip touching verified board GND is NEXT, not yet performed. Controlled reset and KNX TP remain untested."
+    "Zero-level verification with 10x probe tip touching verified board GND is NEXT, not yet performed. Controlled reset and KNX TP remain untested.",
+    "2026-10-15: GND user-confirmed tip measurement with same PicoScope 10x and +/-0.5V range: 400k raw ADC samples, mean0.07924V, max0.17455V. Previously TX mean0.08526V; differential0.00602V below ~0.0435V discrete quantization step; near-noise comparison only, not verified reset-safe TX."
   ],
   "picoscope_serial": "GX118/0047",
   "firmware_actual": "KNX043 PASSIVE RX READY; STATUS armed=0 listen=0 buffered=0 dropped=0",
@@ -159,8 +160,52 @@
       },
       "raw_summary_path": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX043-PicoScope-20261015\\10x_refined_500mV\\knx043_picoscope_chA_summary.json"
     },
-    "instrument_zero_baseline_measured_with_tip_to_GND": false,
+    "instrument_zero_baseline_measured_with_tip_to_GND": true,
     "measurement_interpretation": "At 10x the calculated value changes materially with scope input range: ~0.764V tip at +/-5V input but ~0.085V at +/-0.5V input. Raw ADC codes stay near 2 native 8-bit steps in both ranges, so the coarse reading likely reflects scope ADC offset/quantization rather than a proven 0.764V net voltage. The sensitive +/-0.5V input run saw maximum 0.131V tip and no samples >0.5V during 4x498.4ms windows. Probe short-to-verified-board-GND zero measurement, and ideally known 3V3 reference, are necessary before treating any reading as absolute. No reset/BOOTSEL/brownout, actual KNX power, current, or U9 electrical/thermal validation.",
-    "automatically_authorizes_KNX_TP_bus": false
+    "automatically_authorizes_KNX_TP_bus": false,
+    "zero_baseline_independently_verified_by_agent": false,
+    "zero_reference": "channel_a_10x_GND_reference; acquired afterward on same scope range, user-confirmed tip at PCB GND"
+  },
+  "channel_a_10x_GND_reference": {
+    "date": "2026-10-15",
+    "physical_probe_tip_position": "PCB GND according to user",
+    "physical_probe_ground_clip": "PCB GND instructed previously, cannot verify optically",
+    "user_confirmation": "GND bereit",
+    "scope_model": "3205DMSO",
+    "serial": "GX118/0047",
+    "probe_ratio": 10,
+    "scope_input_range_plus_minus_v": 0.5,
+    "DC_coupling": true,
+    "sample_count": 400000,
+    "acquisition_duration_ms": 1993.6,
+    "scope_max_adc": 32512,
+    "approx_effective_tip_quantization_step_v": 0.043522391732283464,
+    "mean_tip_volts_uncorrected": 0.079241,
+    "min_tip_volts_uncorrected": 0.0,
+    "max_tip_volts_uncorrected": 0.174551,
+    "samples_above_0p5_volts": 0,
+    "raw_folder": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX043-PicoScope-20261015\\10x_GND_zero_500mV",
+    "raw_sha256": {
+      "chA_usb_only_01.i16le": "c5ba6d28216e1ced07609901405e14aee9790cd9086bf69a40b0c63d8172b558",
+      "chA_usb_only_02.i16le": "b5ab77716551500fa116b487d6f03f0ec5895bc04476231e42c4170c38e810c8",
+      "chA_usb_only_03.i16le": "5c1174231d2da506b3ad2c030ee7ca6624cc843213b2a2c5e5c34f900a0eb86f",
+      "chA_usb_only_04.i16le": "8e155f6d31e806f612128f4631cb0310d5c7570e936c8a66e3061bdcdb54d774"
+    },
+    "json_summary_path": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX043-PicoScope-20261015\\10x_GND_zero_500mV\\knx043_picoscope_chA_summary.json",
+    "physical_contact_independently_verified": false,
+    "usb_only_no_knx_or_motor_command": true,
+    "reset_requested": false
+  },
+  "channel_a_10x_GND_relative_to_earlier_KNX_TX": {
+    "TX_capture_mean_tip_v_uncorrected": 0.085262,
+    "GND_capture_mean_tip_v_uncorrected": 0.079241,
+    "TX_minus_GND_mean_tip_v": 0.006021,
+    "TX_minus_GND_mean_tip_millivolts": 6.021,
+    "approx_adc_code_step_millivolts": 43.52,
+    "samples_per_position": 400000,
+    "same_probe_ratio_and_input_range": true,
+    "captured_sequentially_not_simultaneously": true,
+    "interpretation": "Difference about 6mV, far below a single observed ADC code step ~43.5mV and subject to drift. Cannot establish precise true TX voltage or fail-safe reset/ROM behavior. User-reported GND probe may have loading/ground-contact uncertainty.",
+    "physical_KNX_connection_authorized": false
   }
 }
