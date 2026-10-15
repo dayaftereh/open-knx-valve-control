@@ -13,6 +13,7 @@
 
 #include <Arduino.h>
 #include <string.h>
+#include <stdio.h>
 #ifndef ARDUINO_ARCH_RP2040
 #error "KNX043 passive receive diagnostic requires RP2040"
 #endif
@@ -29,16 +30,21 @@ constexpr uint8_t kMotorEnables[8] = {10, 11, 12, 13, 14, 15, 16, 17};
 constexpr uint32_t kArmLifetimeMs = 15000;
 constexpr uint32_t kMaxListenMs = 120000; // software-only
 constexpr uint32_t kHelloMs = 5000;
-constexpr unsigned kRing = 256;
+// 16,384 slots * 8 bytes = 128 KiB (16,383 usable, around 0.85 s
+// of worst-case 19,200 RX transitions/s). USB backpressure can still overflow.
+constexpr unsigned kRing = 16384;
 static_assert((kRing & (kRing - 1)) == 0, "Ring must be power-of-two");
 struct Edge {
     uint32_t timeUs;
     uint8_t level;
 };
+static_assert(sizeof(Edge) == 8, "RX edge must consume exactly 8 bytes");
 volatile Edge rxEdges[kRing] = {};
 volatile unsigned writeIndex = 0;
 volatile unsigned readIndex = 0;
 volatile uint32_t lostEdges = 0;
+volatile uint32_t totalEdges = 0;
+volatile uint32_t highWater = 0;
 volatile bool listenEnabled = false;
 bool armed = false;
 bool listening = false;
@@ -58,6 +64,7 @@ void allOutputsInactive() {
 
 void onKnxRxChange() {
     if (!listenEnabled) return;
+    ++totalEdges;  // counts attempted RX edges, including ring overflows
     const unsigned next = (writeIndex + 1U) & (kRing - 1U);
     if (next == readIndex) {
         ++lostEdges;
@@ -66,6 +73,8 @@ void onKnxRxChange() {
     rxEdges[writeIndex].timeUs = micros();
     rxEdges[writeIndex].level = digitalRead(kKnxRx) ? 1 : 0;
     writeIndex = next;
+    const unsigned buffered = (writeIndex - readIndex) & (kRing - 1U);
+    if (buffered > highWater) highWater = buffered;
 }
 
 void stopListen() {
@@ -80,9 +89,13 @@ void stopListen() {
 void printStatus() {
     if (!Serial) return;
     uint32_t missing;
+    uint32_t observed;
+    uint32_t peak;
     unsigned buffered;
     noInterrupts();
     missing = lostEdges;
+    observed = totalEdges;
+    peak = highWater;
     buffered = (writeIndex - readIndex) & (kRing - 1);
     interrupts();
     Serial.print(F("KNX043 STATUS armed="));
@@ -92,7 +105,13 @@ void printStatus() {
     Serial.print(F(" buffered="));
     Serial.print(buffered);
     Serial.print(F(" dropped="));
-    Serial.println(missing);
+    Serial.print(missing);
+    Serial.print(F(" capacity="));
+    Serial.print(kRing - 1U);
+    Serial.print(F(" high_water="));
+    Serial.print(peak);
+    Serial.print(F(" observed="));
+    Serial.println(observed);
 }
 
 void processCommand(const char *line) {
@@ -127,6 +146,8 @@ void processCommand(const char *line) {
         readIndex = 0;
         writeIndex = 0;
         lostEdges = 0;
+        totalEdges = 0;
+        highWater = 0;
         listenEnabled = true;
         interrupts();
         armed = false;
@@ -162,7 +183,9 @@ void pollUsb() {
 
 void emitRxEdges() {
     if (!Serial) return;
-    for (unsigned n = 0; n < 12; ++n) {
+    // Bounded batches keep polling USB commands responsive while the ISR
+    // independently queues new samples. Short records reduce CDC load.
+    for (unsigned n = 0; n < 96; ++n) {
         Edge edge{};
         bool got = false;
         noInterrupts();
@@ -174,10 +197,14 @@ void emitRxEdges() {
         }
         interrupts();
         if (!got) return;
-        Serial.print(F("KNX043 RX_EDGE time_us="));
-        Serial.print(edge.timeUs);
-        Serial.print(F(" level="));
-        Serial.println(edge.level);
+        char line[32];
+        const int count = snprintf(line, sizeof(line), "E %lu %u\n",
+                static_cast<unsigned long>(edge.timeUs),
+                static_cast<unsigned>(edge.level));
+        if (count > 0 && count < static_cast<int>(sizeof(line))) {
+            Serial.write(reinterpret_cast<const uint8_t *>(line),
+                         static_cast<size_t>(count));
+        }
     }
 }
 

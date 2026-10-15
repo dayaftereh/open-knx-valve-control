@@ -24,11 +24,13 @@ READY = "KNX043 PASSIVE RX READY"
 START_ACK = "KNX043 LISTENING RX_ONLY 120s TX_LOW"
 ARM_ACK = "KNX043 ARMED LISTEN_ONLY 15s TX_LOW"
 EDGE = re.compile(r"^KNX043 RX_EDGE time_us=(\d+) level=([01])$")
+COMPACT_EDGE = re.compile(r"^E (\d+) ([01])$")
+STATUS_FIELDS = re.compile(r"([a-z_]+)=(\d+)")
 MAX_CAPTURE_S = 120
 
 
 def parse_edge(line: str) -> dict[str, int] | None:
-    m = EDGE.fullmatch(line.strip())
+    m = EDGE.fullmatch(line.strip()) or COMPACT_EDGE.fullmatch(line.strip())
     if not m:
         return None
     return {"time_us": int(m[1]), "level": int(m[2])}
@@ -51,6 +53,81 @@ def pulse_widths(edges: list[dict[str, int]]) -> list[int]:
             high_since = None
     return widths
 
+
+
+def parse_status(line: str) -> dict[str, int]:
+    if not line.startswith("KNX043 STATUS "):
+        raise ValueError("Not a KNX043 STATUS line")
+    return {key: int(value) for key, value in STATUS_FIELDS.findall(line)}
+
+
+class EdgeStatistics:
+    """Incremental pulse checks: bounded PC memory even for a large capture."""
+
+    def __init__(self) -> None:
+        self.edge_count = 0
+        self.pulse_count = 0
+        self.nominal_count = 0
+        self.pulse_widths_sample_us: list[int] = []
+        self.last_high: int | None = None
+        self.last_level: int | None = None
+        self.sequence_errors = 0
+        self.unrecognized_lines = 0
+
+    def add(self, edge: dict[str, int]) -> None:
+        t, level = edge["time_us"], edge["level"]
+        self.edge_count += 1
+        if self.last_level is not None and self.last_level == level:
+            self.sequence_errors += 1
+        self.last_level = level
+        if level == 1:
+            self.last_high = t
+        elif self.last_high is not None:
+            width = (t - self.last_high) & 0xFFFFFFFF
+            self.last_high = None
+            self.pulse_count += 1
+            self.nominal_count += 25 <= width <= 55
+            if len(self.pulse_widths_sample_us) < 12:
+                self.pulse_widths_sample_us.append(width)
+
+
+class BufferedSerialLines:
+    """Read USB CDC in chunks instead of one Windows serial read per byte."""
+
+    def __init__(self, connection: Any):
+        self.connection = connection
+        self.pending = bytearray()
+
+    def readline(self) -> str:
+        while True:
+            marker = self.pending.find(b"\n")
+            if marker != -1:
+                data = bytes(self.pending[:marker])
+                del self.pending[:marker + 1]
+                return data.decode("ascii", errors="replace").strip()
+            if len(self.pending) > 1024:
+                raise RuntimeError("Oversized or incomplete USB diagnostic record")
+            waiting = max(1, min(int(getattr(self.connection, "in_waiting", 0)), 8192))
+            data = self.connection.read(waiting)
+            if not data:
+                return ""
+            self.pending.extend(data)
+
+
+def send_collect(connection: Any, reader: BufferedSerialLines, cmd: str,
+                 expected: str, callback, seconds: float = 15.0) -> str:
+    """Do not silently discard RX_EDGE lines when waiting for STOP/STATUS."""
+    connection.write((cmd + "\n").encode("ascii"))
+    connection.flush()
+    deadline = time.monotonic() + seconds
+    while time.monotonic() < deadline:
+        line = reader.readline()
+        if not line:
+            continue
+        if line.startswith(expected):
+            return line
+        callback(line)
+    raise RuntimeError("No USB diagnostic acknowledgment: " + expected)
 
 def require_physical_gate(path: Path, independently_reviewed: bool, isolated_testbus: bool) -> None:
     state = preflight.load_gate(path)
@@ -138,45 +215,84 @@ def run(argv: list[str] | None = None) -> int:
             "motor_output_commanded": False,
             "warning": "Physical RX pulses only; not validated KNX telegrams",
         }
-        edges = []
+        stats = EdgeStatistics()
         args.output.parent.mkdir(parents=True, exist_ok=True)
-        with args.output.open("x", encoding="utf-8") as report:
+        with args.output.open("x", encoding="utf-8", buffering=1024 * 1024) as report:
             report.write(json.dumps(header) + "\n")
-            end = time.monotonic() + args.seconds
-            while time.monotonic() < end:
-                line = conn.readline().decode("utf-8", errors="replace").strip()
-                if not line:
-                    continue
-                parsed = parse_edge(line)
-                if parsed is not None:
-                    edges.append(parsed)
-                    report.write(json.dumps({"kind": "edge", **parsed}) + "\n")
+            reader = BufferedSerialLines(conn)
+
+            def record_line(line: str) -> None:
+                edge = parse_edge(line)
+                if edge is not None:
+                    stats.add(edge)
+                    report.write(json.dumps({"kind": "edge", **edge}) + "\n")
                 elif line.startswith("KNX043 "):
                     report.write(json.dumps({"kind": "firmware", "line": line}) + "\n")
-            stopped = command(conn, "STOP", "KNX043 STOPPED RX_ONLY")
+                else:
+                    stats.unrecognized_lines += 1
+                    report.write(json.dumps({"kind": "unrecognized", "line": line}) + "\n")
+
+            end = time.monotonic() + args.seconds
+            while time.monotonic() < end:
+                line = reader.readline()
+                if line:
+                    record_line(line)
+
+            stopped = send_collect(conn, reader, "STOP", "KNX043 STOPPED RX_ONLY",
+                                   record_line)
             recording = False
-            result = command(conn, "STATUS", "KNX043 STATUS")
-            if "listen=0" not in result:
-                raise RuntimeError("Firmware still reports capture active after STOP: " + result)
-            widths = pulse_widths(edges)
+            # STOP inhibits new samples, but a full RP2040 ring and/or USB
+            # output queue may still hold samples. Drain until STATUS says
+            # buffered=0. Never use the legacy usb.send: it discards edges.
+            drained = False
+            result = ""
+            final_fields: dict[str, int] = {}
+            for _ in range(40):
+                result = send_collect(conn, reader, "STATUS", "KNX043 STATUS",
+                                      record_line)
+                final_fields = parse_status(result)
+                if final_fields.get("listen") != 0:
+                    raise RuntimeError("Firmware still listening after STOP: " + result)
+                if final_fields.get("buffered") == 0:
+                    drained = True
+                    break
+
+            firmware_dropped = final_fields.get("dropped")
+            firmware_observed = final_fields.get("observed")
+            expected_delivered = (firmware_observed - firmware_dropped
+                                  if firmware_observed is not None and firmware_dropped is not None
+                                  else None)
+            count_verified = (expected_delivered is not None
+                              and expected_delivered == stats.edge_count)
+            complete = (drained and firmware_dropped == 0 and count_verified
+                        and stats.unrecognized_lines == 0
+                        and stats.sequence_errors == 0)
             summary = {
                 "kind": "summary",
                 "time_utc": datetime.now(timezone.utc).isoformat(),
-                "edge_count": len(edges),
-                "pulse_count": len(widths),
-                "pulse_widths_us": widths,
-                "nominal_35us_pulses_25to55us": sum(25 <= w <= 55 for w in widths),
+                "edge_count": stats.edge_count,
+                "pulse_count": stats.pulse_count,
+                "nominal_35us_pulses_25to55us": stats.nominal_count,
+                "pulse_widths_sample_us": stats.pulse_widths_sample_us,
+                "edge_sequence_errors": stats.sequence_errors,
+                "unrecognized_usb_lines": stats.unrecognized_lines,
+                "firmware_dropped": firmware_dropped,
+                "firmware_observed": firmware_observed,
+                "firmware_ring_capacity": final_fields.get("capacity"),
+                "firmware_ring_high_water": final_fields.get("high_water"),
+                "expected_delivered": expected_delivered,
+                "pc_delivery_count_verified": count_verified,
+                "ring_and_usb_drained": drained,
+                "capture_coverage_complete": complete,
                 "stop": stopped,
                 "final_status": result,
-                "note": "No bit/frame/ETS decode; any dropped edges invalidate waveform coverage",
+                "note": "Raw GPIO edges only, NOT decoded KNX telegrams. "
+                        "Legacy firmware lacks observed counters and cannot prove complete coverage.",
             }
             report.write(json.dumps(summary) + "\n")
-        public_summary = {k: v for k, v in summary.items()
-                          if k != "pulse_widths_us"}
-        public_summary["pulse_widths_sample_us"] = widths[:12]
         print(json.dumps({"capture_path": str(args.output),
-                          "usb_port": device.device, **public_summary}, indent=2))
-        return 0
+                          "usb_port": device.device, **summary}, indent=2))
+        return 0 if complete else 2
     finally:
         # A read-only STATUS must NOT send STOP. A failed capture must.
         try:

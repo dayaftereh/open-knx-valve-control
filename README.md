@@ -1,5 +1,7 @@
 # Open KNX Valve Control
 
+**KNX048 - RX-Puffer vergroessert, NICHT auf Hardware installiert (15.10.2026):** KNX043 hatte nur 256/255 Flankenplaetze (ca. 2 KiB). Neuer **16.384er Ring (16.383 nutzbar, 128 KiB)**, kurze USB-Zeilen, blockweiser PC-Empfang, Restpuffer-Drain und beobachteter Datenverlust als eigene Telemetrie. **62/62 Tests** und RP2040-Build PASS; **neue UF2 nur offline unter Builds**, weiterhin alte KNX043 auf COM8. Alle 17 KNX-Hardware-Gates ungeklaert: **keine Bus-/Flash-Freigabe**. [KNX048 Pufferbericht](docs/KNX048_RX_BUFFER_20261015.md).
+
 **KNX047 - 15.10.2026, LLO Home USB-Check PASS / KNX-Bus NO-GO:** Git \`f647cec\` war vor dieser Dokumentation clean und mit \`origin/main\` synchron. RP2040 USB-C \`COM8\` (2E8A:000A, E464401787522D33) meldete \`KNX043 STATUS armed=0 listen=0 buffered=0 dropped=0\`. Die 17 KNX-Hardware-Gates sind **alle offen**. Kein KNX-Bus, kein Motor, kein Flash und kein RX-Capture; naechster Schritt sind stromlose Messungen und eine separate sichere KNX-Teststrecke. [KNX047 Messplan](docs/KNX047_HOME_STKNX_RX_PREFLIGHT_20261015.md) / [Evidenz](docs/KNX047_HOME_STKNX_RX_PREFLIGHT_20261015.json).
 
 **KNX043 PicoScope-Uebergabe LLO Desktop fuer 15.10.2026:**
