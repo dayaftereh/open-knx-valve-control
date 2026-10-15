@@ -66,3 +66,8 @@ Zusätzliche SHA-geprüfte Desktop-Messarchive befinden sich auf Home in `C:\_my
 - [RX-Only Source](../tools/knx043_passive_rx/src/main.cpp)
 
 **Ergebnis:** LLO Home ist softwareseitig bereit, die vorhandene KNX043-Firmware per USB zu erkennen und bei Bedarf erneut zu installieren. **Nicht** bereit zur gefahrlosen Verbindung mit dem KNX-TP-Bus, bis die physischen Sicherheitsprüfungen bestanden sind.
+
+
+## Nachtrag 15.10.2026 – KNX046 auf LLO Home tatsächlich ausgeführt
+
+Der Nutzer bestätigte nur USB ohne KNX-TP, Motor und Temperatursensor. Das zuvor beschriebene KNX043 RX-only-Image wurde über das RPI-RP2-Laufwerk D: installiert; Windows hat danach COM8 (2E8A:000A) erkannt. 3/3 KNX043-USB-Statusabfragen waren erfolgreich. [Flash-Ergebnis](KNX046_HOME_RX_ONLY_FLASH_20261015.md). Der physische KNX-Bus darf daraus nicht freigegeben werden; die 17 Sicherheitsgates sind weiterhin offen.
