@@ -116,5 +116,18 @@
     "approx_one_native_code_tip_step_mV": 43.52,
     "zero_baseline_not_independently_confirmed_caveat": "Probe tip was user-reported at PCB GND; relative 6mV reading is below 1 discrete ADC step, no independent electrical confirmation of the contact.",
     "still_not_reset_or_KNX_bus_safe": true
+  },
+  "desktop_usb_scope_10x_after_ground_return": {
+    "date": "2026-10-15",
+    "user_reported_probe_contact": "JMP3 pad2 KNX_TX, after GND",
+    "physical_contact_verified_by_agent": false,
+    "sampling": "x10, channel A DC, scope input +/-0.5V, 400k samples across four steady-state windows",
+    "mean_tip_volts_uncorrected": 0.07893177,
+    "prior_GND_mean_tip_volts_uncorrected": 0.07924135934424212,
+    "sequential_delta_TX_minus_GND_mV": -0.30959,
+    "approx_ADC_discrete_code_step_mV": 43.522,
+    "reset_bootsel_brownout_qualification": false,
+    "bus_connection_authorized": false,
+    "evidence": "docs/KNX043_PICOSCOPE_MEASUREMENTS_20261015.json"
   }
 }

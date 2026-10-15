@@ -110,3 +110,21 @@ Rohdaten der vier GND-Blöcke sowie die korrigierte Positionbezeichnung stehen i
 **Ergebnis:** Beide Messungen liegen messtechnisch nahe am GND-Offset; **keine belegte dauerhafte TX-HIGH-Spannung im bisherigen USB-only-Ruhebetrieb**. Das bedeutet **nicht**, dass GPIO0/U9 KNX_TX während Reset, BOOTSEL, Brownout oder mit KNX-Versorgung sicher LOW bleibt. R17-Pads/U11/U9/F1/D1/JMP1 und die übrigen Hardware-Nachweise stehen aus. **Der KNX-TP-Bus bleibt abgeklemmt.**
 
 **Nächster Bedienerschritt:** Tastkopfspitze mit unverändertem 10:1-Tastkopf vom GND wieder auf **JMP3 Pad 2 = KNX_TX / U9 Pin 24** umsetzen, dabei keine benachbarten Pads kurzschließen. Auf Nutzerbestätigung ("TX bereit") mit identischen Parametern noch eine frische USB-only-Messung erfassen, um Drift einzugrenzen. Kein Reset-/Bus-Test automatisch auslösen.
+
+## KNX_TX nach GND-Vergleich erneut gemessen (15.10.2026)
+
+Nach Nutzerbestätigung **"Fertig bereit"** wurde die Tastkopfspitze laut Nutzer zurück auf KNX_TX (JMP3 Pad 2 / U9 Pin 24) gesetzt. LLO Desktop prüfte RP2040 KNX043 auf COM7 im Zustand armed=0 listen=0 buffered=0 dropped=0 und erfasste mit PicoScope 3205DMSO Kanal A **passiv** vier weitere Blöcke je 100.000 Punkte bei **10:1, DC, +/-0,5 V Scope-Eingang**, 4,984 µs pro Sample (1,9936 s gesamte Aufzeichnungszeit).
+
+| Position (zeitversetzt, laut Nutzer) | Unkorrigierter Mittelwert | Maximum | Ergebnisse |
+| --- | ---: | ---: | --- |
+| KNX_TX vor GND | 0,085262 V | 0,130875 V | 400.000 Samples |
+| GND Referenz | 0,079241 V | 0,174551 V | 400.000 Samples |
+| **KNX_TX nach GND** | **0,078932 V** | **0,130875 V** | **400.000 Samples, 0 über 0,5 V** |
+
+Für die jüngste TX-Wiederholung ist **TX minus GND = -0,30959 mV**, wesentlich kleiner als die etwa **43,52 mV** pro beobachtetem nativen ADC-Code-Schritt. Dies spricht gegen einen anliegenden **signifikanten dauerhaften HIGH-Pegel** auf dem benutzerseitig identifizierten TX im USB-only-Ruhebetrieb. Es ist **keine** präzise Messung auf 0,3 mV Genauigkeit: Die ADC-Quantisierung, zeitlicher Drift und nicht unabhängig überprüfte Masse-/Padkontakte schließen einen exakten Absolutwert aus.
+
+Neue Rohdaten (vier 16-Bit-ADC-Aufzeichnungen je 200.000 Bytes plus SDK-JSON) auf LLO Desktop im Buildpfad C:/ASH/Workspace/Builds/OpenKNXValveControl/KNX043-PicoScope-20261015/10x_TX_after_GND_500mV. In [Messprotokoll](KNX043_PICOSCOPE_MEASUREMENTS_20261015.json) stehen prüfbare SHA-256-Prüfsummen. Der Recorder protokollierte diesmal mit ProbePoint=KNX_TX die tatsächliche Nutzerangabe statt einer fest codierten Position.
+
+**Nicht getestet:** KNX_TX bei Reset, ROM-BOOTSEL, Brownout und mit KNX-TP-Busversorgung. U9/U11 nach dem Wärmeereignis, R17-Pads und D1/F1/JMP1-Rückspeisung sind weiterhin offene Hardware-Prüfgates. Ein USB-only-LOW **erteilt keine Busfreigabe**. Kein Bus, keine Motoren, keine Firmwareänderung, kein Reset während dieser Messung.
+
+**Vorgeschlagene nächste Prüffolge:** Tastkopf an KNX_TX/JMP3 Pad 2 belassen (10:1, Masse PCB-GND). Falls der Nutzer den nächsten Schritt ausdrücklich freigibt, Scope für einen getriggerten oder durchgehend erfassten **kontrollierten Reset/RUN-Test** vorbereiten, dann den Nutzer den Reset auslösen lassen und mögliche HIGH-Impulse samt Dauer dokumentieren. **Nicht ohne Freigabe automatisch resetten.**

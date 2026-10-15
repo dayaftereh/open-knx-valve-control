@@ -80,5 +80,27 @@ class Knx043PicoScopeRangeContract(unittest.TestCase):
         self.assertNotIn('actual_probe_position="KNX_TX according to user', self.src)
 
 
+    def test_tx_repeat_after_ground_is_near_reference_but_not_bus_clearance(self):
+        tx = self.ev["channel_a_10x_TX_return_after_GND"]
+        zero = self.ev["channel_a_10x_GND_reference"]
+        self.assertEqual(tx["sample_count"], 400000)
+        self.assertEqual(zero["sample_count"], 400000)
+        self.assertEqual(tx["probe_ratio"], 10)
+        self.assertEqual(tx["scope_input_range_plus_minus_v"], 0.5)
+        self.assertLess(tx["uncorrected_max_tip_voltage_v"], 0.5)
+        self.assertEqual(tx["samples_above_0p5_tip_v"], 0)
+        self.assertLess(abs(tx["TX_minus_GND_sequential_mean_mV"]),
+                        tx["approx_ADC_code_step_mV"])
+        self.assertFalse(tx["controlled_reset_BOOTSEL_brownout_measured"])
+        self.assertFalse(tx["KNX_TP_connection_authorized"])
+        self.assertFalse(tx["physical_probe_tip_and_ground_independently_verified"])
+
+    def test_scope_ground_return_does_not_pass_an_electrical_gate(self):
+        measurement = self.gate["desktop_usb_scope_10x_after_ground_return"]
+        self.assertFalse(measurement["bus_connection_authorized"])
+        self.assertFalse(measurement["reset_bootsel_brownout_qualification"])
+        self.assertTrue(all(v is None for v in self.gate["observations"].values()))
+
+
 if __name__ == "__main__":
     unittest.main()
