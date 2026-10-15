@@ -52,3 +52,26 @@ Vorbereitet: [KNX043 PicoScope Messwerte](KNX043_PICOSCOPE_MEASUREMENTS_20261015
 - [KNX043 Flash-Bestätigung](KNX043_RX_ONLY_FLASH_HOME_20261014.json)
 - [KNX043 elektrische Sicherheits-Gates](KNX043_HOME_KNX_GATE.json)
 - [KNX043 ausführlicher Bench-Plan](KNX043_HOME_KNX_BENCH_READINESS.md)
+
+## Live-Erstprüfung PicoScope Kanal A – 15.10.2026
+
+**Echte USB-only-Messung, keine KNX-Busfreigabe.** Am LLO Desktop meldete der RP2040 COM7, Seriennummer E464401787522D33, Firmware KNX043 mit read-only STATUS armed=0 listen=0 buffered=0 dropped=0. PicoSDK konnte **PicoScope 3205D MSO, Seriennummer GX118/0047** direkt öffnen.
+
+Der Nutzer meldet: Tastkopf **1:1**, **Kanal A**, Messspitze am **KNX_TX**. Der tatsächliche Jumper-Pad und die Oszilloskop-Masseklemme wurden vom Agenten **nicht visuell überprüft**. Die Spannung ist daher zunächst ein **Kanal-A-Messwert nach Nutzerangabe**, kein bestätigtes JMP3-Pad-2-Gate.
+
+- PicoSDK ps3000a.dll: Eingang A DC, ±5 V, 1:1, Trigger aus.
+- Erste Kurzaufnahme: 16.000 Messpunkte / 31,744 ms: 0,04368–0,13118 V, Mittelwert 0,08419 V.
+- Vier anschließende Blockaufzeichnungen mit je 100.000 Punkten / 498,4 ms, Abstand 4,984 µs, zusammen 400.000 Messpunkte und 1,9936 s reine Aufzeichnungszeit:
+
+| Block | Min. | Max. | Mittelwert | > 0,5 V | Überlauf |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 1 | 0,000 V | 0,13118 V | 0,07911 V | 0 | 0 |
+| 2 | 0,000 V | 0,13118 V | 0,07682 V | 0 | 0 |
+| 3 | 0,000 V | 0,13118 V | 0,07801 V | 0 | 0 |
+| 4 | 0,000 V | 0,13118 V | 0,07618 V | 0 | 0 |
+
+**Gesamtmittel 0,07753 V.** In diesen vier Messfenstern war der an Kanal A angeschlossene Pegel stets unter 0,5 V. **Zwischen den Messfenstern, bei Reset/BOOTSEL/Brownout sowie mit KNX-TP wurde NICHT gemessen.**
+
+Rohdaten/Summary auf LLO Desktop: C:/ASH/Workspace/Builds/OpenKNXValveControl/KNX043-PicoScope-20261015 mit knx043_picoscope_chA_summary.json und vier .i16le-Dateien (je 100.000 Int16-ADC-Werte little-endian). Die vier SHA256-Werte stehen im [Messprotokoll](KNX043_PICOSCOPE_MEASUREMENTS_20261015.json). Wiederverwendbarer [PicoSDK-Kanal-A-Recorder](../tools/knx043_picoscope_usb_tx_capture.ps1) unterstützt 1x und 10x, x86 PowerShell wegen PicoScope6-DLL.
+
+**WICHTIGE EINSCHRÄNKUNG:** Ein 1:1-Tastkopf kann eine schwach vorgespannte Leitung belasten und eventuell LOW vortäuschen. **Messung mit korrekt geschaltetem 10:1-Tastkopf wiederholen**, sowohl Tastkopfschalter als auch Recorderparameter ProbeRatio 10; Masseklemme muss an geprüftem Platinen-GND liegen. JMP3 Pad 2 ist U9 KNX_TX, Pad 3 die RP2040-GPIO0-Seite. Erst danach gezielt Reset-/Boot-Transienten aufzeichnen. **KNX-Bus bleibt physisch getrennt und alle Motoren abgesteckt.** Keine Busfreigabe ohne U9/U11-, D1/F1/JMP1-, Reset-/Brownout- und Versorgungsgates.

@@ -2,7 +2,7 @@
   "schema": "knx043-picoscope-measurements/v1",
   "planned_date": "2026-10-15",
   "prepared_on": "2026-10-14",
-  "status": "NOT_MEASURED_NO_SCOPE_CONNECTED",
+  "status": "CHANNEL_A_KNX_TX_USER_REPORTED_STEADY_USB_ONLY_CAPTURED_RESET_PENDING",
   "workstation": "LLO Desktop",
   "board": "OpenKNXValveControl V1.2 / U9 STKNXTR / RP2040",
   "firmware_expected": "KNX043 STKNX passive RX-only, last verified Home COM8 on 2026-10-14",
@@ -12,13 +12,13 @@
     "U9": "correct intended chip"
   },
   "no_knx_bus_or_motors_during_measurement": null,
-  "picoscope_hardware_connected": null,
-  "picoscope_model": null,
-  "picoscope_version": "PicoScope 6 installed on Desktop; hardware/model pending",
+  "picoscope_hardware_connected": true,
+  "picoscope_model": "PicoScope 3205D MSO",
+  "picoscope_version": "PicoScope 6 installed, captured via ps3000a driver v2.1.54.2438",
   "oscilloscope_ground_point": null,
-  "oscilloscope_probe_attenuation": null,
-  "desktop_usb_port": null,
-  "desktop_usb_serial": null,
+  "oscilloscope_probe_attenuation": 1,
+  "desktop_usb_port": "COM7",
+  "desktop_usb_serial": "E464401787522D33",
   "testpoints": {
     "JMP3_pad_2_U9_KNX_TX": {
       "net": "KNX_TX",
@@ -67,6 +67,40 @@
     "All physical measurements null until actually observed.",
     "JMP3 pad1 is KNX_RX' (not TX); JMP2 pad3 is KNX_TX' (not RX).",
     "No KNX TP / motor loads or external power for first PicoScope tests.",
-    "Even successful USB-only measurement does not auto-authorize KNX bus."
-  ]
+    "Even successful USB-only measurement does not auto-authorize KNX bus.",
+    "2026-10-15: 400000 real 1x DC-coupled PicoScope Channel A samples captured and archived: min 0V, max 0.13118V, mean ~0.0775V; no >0.5V samples.",
+    "No controlled reset, BOOTSEL, power transient or KNX TP bus test performed. Physical probe ground and exact jumper pad not independently verified."
+  ],
+  "picoscope_serial": "GX118/0047",
+  "firmware_actual": "KNX043 PASSIVE RX READY; STATUS armed=0 listen=0 buffered=0 dropped=0",
+  "channel_a_steady_usb_measurement": {
+    "probe_location_user_reported": "KNX_TX, exact physical pad not independently confirmed",
+    "wiring_ground_independently_confirmed": false,
+    "scope_input": "channel A",
+    "coupling": "DC",
+    "probe_attenuation": "1x as reported by user",
+    "scope_range_v": "-5 to +5",
+    "adc_fullscale": 32512,
+    "scope_timebase": 625,
+    "time_interval_ns": 4984,
+    "sample_count": 400000,
+    "recorded_duration_ms": 1993.6,
+    "separate_captures": 4,
+    "minimum_voltage_v": 0,
+    "maximum_voltage_v": 0.13118,
+    "mean_voltage_v": 0.07753,
+    "threshold_0_5_v_count": 0,
+    "adc_overflow_count": 0,
+    "raw_capture_directory": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX043-PicoScope-20261015",
+    "raw_capture_manifest_sha256": {
+      "chA_usb_only_01.i16le": "9677f2196727e3139720e6a511ccc88ff70cd5f84c34c1252b3185669870b58e",
+      "chA_usb_only_02.i16le": "e8a827fd2b41b3e7cce32829c8c000fb258d3bb35232c1d768c64fc5ace556d9",
+      "chA_usb_only_03.i16le": "d92b8bc6b2c928b949a496bd878a03c019ca28fcc36b4662e1775d473b285a2f",
+      "chA_usb_only_04.i16le": "ea95cd32b0e4f6991e203a13f5dfc907464dd14d16c03a7b83e3d3113a3440f8"
+    },
+    "summary_path": "C:\\ASH\\Workspace\\Builds\\OpenKNXValveControl\\KNX043-PicoScope-20261015\\knx043_picoscope_chA_summary.json",
+    "firmware_reset_or_bootsel_event_measured": false,
+    "interpretation": "Channel A remains below 0.5 V during four steady USB-powered acquisitions; not a certified un-loaded, reset, brownout, or KNX-bus-safe voltage.",
+    "caution": "1x PicoScope probe loading and unverified scope ground/physical pad may alter weak STKNX TX bias. Repeat with correctly configured 10x probe."
+  }
 }

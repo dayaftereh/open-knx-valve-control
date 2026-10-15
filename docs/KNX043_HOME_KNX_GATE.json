@@ -80,5 +80,19 @@
     "firmware_running": true,
     "evidence": "docs/KNX043_RX_ONLY_FLASH_HOME_20261014.json",
     "knx_bus_connection_authorized": false
+  },
+  "desktop_usb_scope_first_observation": {
+    "date": "2026-10-15",
+    "measurement_record": "docs/KNX043_PICOSCOPE_MEASUREMENTS_20261015.json",
+    "observed_voltage_max_v": 0.13118,
+    "observed_voltage_mean_v": 0.07753,
+    "recorded_duration_ms": 1993.6,
+    "sample_count": 400000,
+    "pico_model": "3205DMSO",
+    "user_probe_setting": "1x",
+    "physical_ground_and_pad_not_independently_verified": true,
+    "reset_bootsel_brownout_levels_measured": false,
+    "does_not_pass_any_combined_physical_safety_gate": true,
+    "knx_tp_bus_connection_authorized": false
   }
 }
