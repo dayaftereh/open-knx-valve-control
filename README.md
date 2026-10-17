@@ -212,3 +212,5 @@ Mit ausdruecklicher Nutzerfreigabe wurde der **verbundene Units CH340 Programmer
 **KNX045 LLO Home RX-only Übergabe (15.10.2026):** [Git-Abgleich, KNX043-UF2-Hash, USB-Status-/Flash-Ablauf ohne KNX und gesperrte Hardware-Gates](docs/KNX045_LLO_HOME_RX_ONLY_HANDOVER_20261015.md). Die Platine ist aktuell nicht an LLO Home angeschlossen; keine KNX-Busfreigabe.
 
 **KNX046 LLO Home 15.10.2026:** KNX043 STKNX Read-only-UF2 über RPI-RP2 D: installiert. USB-Anwendung `COM8`, 3/3 STATUS-Abfragen erfolgreich. Kein KNX-Bus oder Motor angeschlossen; 17 physische Busfreigaben ausstehend. [Flash-/USB-Protokoll](docs/KNX046_HOME_RX_ONLY_FLASH_20261015.md).
+
+**KNX070 TP1-Decode / KNXnetIP-Crosscheck (17.10.2026):** [Dokumentation und reproduzierbare Offline-Tools](docs/KNX070_TP1_DECODE_AND_IP_COMPARE_20261017.md). 28/28 TP-Frames mit gueltiger Paritaet/Checksum/ACK, live 16/16 via MDT-KNXnet/IP in Adresse, APCI und Nutzdaten bestaetigt. Rein passiv; U11/D1/TX-Reset-Gates bleiben offen.

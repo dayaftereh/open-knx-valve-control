@@ -1,0 +1,2 @@
+# Optional isolated KNXnet/IP receive-only monitor (tested 2026-10-17 on Python 3.11)
+xknx==4.0.0
