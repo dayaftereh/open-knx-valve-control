@@ -1,5 +1,7 @@
 # OpenKNXValveControl - ASH Slice Roadmap
 
+**KNX078 / 18.10.2026 — TP1 TX + ACK PASS, KNX/IP nicht sichtbar:** Einmaliger RP2040/STKNX GroupValueWrite=0 auf ETS-freier 29/7/241 physikalisch korrekt, 50 GPIO0-Pulse, A-Bus-Einbruch 7.4-7.9V, alle 9 Bytes/Paritaet/Checksumme geprueft, ACK=0xCC. Parallel geoeffneter MDT-KNX/IP-Tunnel empfing 6 andere Frames, den Testframe nicht. **End-to-End Board->IP weiter OFFEN**; ETS-Linienkoppler-Filter und ETS-Busmonitor pruefen, ohne stilles Aendern/zweites Senden. Firmware LOCKED, tx_low=1 attempted=1. [KNX078 Bericht](KNX078_TP1_TX_SCOPE_ACK_IP_MONITOR_20261018.md).
+
 **KNX050 / 16.10.2026: USB-only-Flash KNX048 PASS.** Offizielles \`RPI-RP2\`-UF2-Flash nach Nutzerbestaetigung der physischen KNX-Abtrennung, anschliessend RP2040 \`COM8\` vierfach erfolgreich mit neuem Ring \`capacity=16383\` verifiziert. Keine KNX-Telegramme/kein Motor, \`listen=0\`, alle 17 KNX-TP-Hardwaregates weiter offen. Naechstes Ziel: sichere elektrische Freigabe und isolierter passiver KNX-RX-Test, **keine Verbindung zum Hausbus**. [KNX050 Bericht](KNX050_HOME_KNX048_USB_FLASH_20261016.md).
 
 
