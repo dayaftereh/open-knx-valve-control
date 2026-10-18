@@ -1,5 +1,7 @@
 # Open KNX Valve Control
 
+**KNX082 Hardware-Handover / 18.10.2026:** KNX081 End-to-End TX der Platine aus Kellerlinie 1.3 erfolgreich (Quelle 1.3.250 -> GA 29/7/241, Bus-ACK CC, KNX/IP-Empfang bestaetigt). Nutzer trennt nun PicoScope, plant CH340G/UPDI zum ATtiny3216, zwei DS18B20 an T0/T1 und zwei Motoren M1/M2; RP2040 soll nach dem Umbau BOOTSEL verwenden. **Verkabelung noch NICHT erneut geprueft, Motorfahrt nicht freigegeben; Mehrquellen-/CN1-5V-/Reset-Sicherheitsgates beachten.** [Aktuelles KNX082-Handover](docs/KNX082_HARDWARE_HANDOVER_20261018.md).
+
 **KNX050 / 16.10.2026 - KNX048-RX-only erfolgreich auf RP2040 geflasht:** Bus physisch laut Nutzer getrennt, offizieller UF2-ROM-Kopiervorgang erfolgreich. COM8 und vier neue STATUS-Antworten bestaetigen \`capacity=16383 observed=0 dropped=0 listen=0\`. **Realer KNX-Empfang noch nicht geprueft; alle 17 physischen Sicherheits-Gates bleiben offen.** [KNX050 Live-Flashbericht](docs/KNX050_HOME_KNX048_USB_FLASH_20261016.md) und [Evidenz](docs/KNX050_HOME_KNX048_USB_FLASH_20261016.json). Kein Git-Push.
 
 
