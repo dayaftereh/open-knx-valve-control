@@ -1,3 +1,9 @@
+# KNX087-Bestueckungsnachtrag / 19.10.2026
+
+R29 wurde vom Nutzer inzwischen ausdruecklich als **200 mOhm / 1 W tatsaechlich bestueckt** bestaetigt. Die aeltere fotobasierte Angabe unten (Wert nicht ablesbar) beschreibt nur den Pruefstand vom 13.10.2026; die widerspruechliche PCB-MPN SCR1206F1M1 ist daher nur noch ein Metadatenkonflikt. [Aktueller KNX087-Befund](KNX087_R29_200MOHM_1W_CONFIRMED_20261019.md).
+
+---
+
 # KNX033 – As-built-Sichtprüfung der bestückten V1.2-Platine (13.10.2026)
 
 **Ergebnis:** Erste Fotodokumentation und Soll-/Ist-Netzabgleich verfügbar. **Kein elektrischer Freigabenachweis; bis zur Klärung der Versorgung und F1 ausdrücklich keine Bestromung, kein USB-/UPDI-Flash, keine KNX-Busspeisung und keine Motoren.** Dieser Eintrag ergänzt den statischen [KNX022-Preflight](KNX022_STATIC_HW_READINESS.md); er schließt keines seiner zehn realen Hardware-Gates.

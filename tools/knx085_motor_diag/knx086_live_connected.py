@@ -167,6 +167,29 @@ def passive_085():
     return {"port":port,"updi":updi,"serial":BOARD_SERIAL,
             "status":status,"ina":ina,"last_lines":lines[-40:]}
 
+def summarize_r29_ina(lines):
+    """200 mOhm/1W user-confirmed R29, shared M_VCC; USB read-only math."""
+    m=host.latest(lines,host.INA)
+    value={"r29_ohms":0.2,"r29_rated_w":1,
+           "r29_source":"user-confirmed physically populated 2026-10-19",
+           "measures":"shared M_VCC rail, not M1 exclusively",
+           "physical_movement_observed":False}
+    if not m:
+        value["measurement_valid"]=False
+        return value
+    ok,bus,ma,overflow,idle=m.groups()
+    value["measurement_valid"]=ok=="1" and overflow=="0"
+    value["ina_bus_mv"]=int(bus)
+    value["motor_ready_idle_gate"]=idle=="1"
+    if value["measurement_valid"]:
+        current=int(ma)
+        value["shared_supply_ma_reported"]=current
+        value["shunt_drop_mv_inferred"]=round(current*0.2,3)
+        value["r29_dissipated_w_inferred"]=round((current/1000)**2*0.2,5)
+        value["m_vcc_idle_over_25ma_gate"]=current>25
+        value["motor_output_turned_on"]=False
+    return value
+
 def diagnose_085():
     """Read-only raw USB snapshot even if INA219 gate fails."""
     port,updi=board_ports()
@@ -184,7 +207,9 @@ def diagnose_085():
                 for line in lines),
             "TX or motor pins not all OFF")
     result={"port":port,"updi":updi,"mode":"READ_ONLY",
-            "motor_activated":False,"raw_usb_lines":lines}
+            "motor_activated":False,
+            "r29_and_ina":summarize_r29_ina(lines),
+            "raw_usb_lines":lines}
     try:
         result["motor_ready"]=bool(host.check_ina(lines) and
                                    host.check_status(lines,gate_required=True))
@@ -193,6 +218,7 @@ def diagnose_085():
         result["reason"]="INA219 idle voltage/current or temperature gate refused"
     save("KNX086_DIAGNOSTIC",result)
     return {"port":port,"updi":updi,"motor_ready":result["motor_ready"],
+            "r29_and_ina":result["r29_and_ina"],
             "selected_lines":[l for l in lines if l.startswith(("KNX085 STATUS",
                 "KNX085 INA","KNX085 MOTOR","KNX085 RXSTATS"))]}
 

@@ -34,9 +34,10 @@ namespace {''')
 
 one("uint8_t inputLength=0;\n", """uint8_t inputLength=0;
 
-// V1.2 U23 INA219: SDA=GPIO4 / SCL=GPIO5; 0x40 is a candidate
-// until physical A0/A1 and I2C readback are confirmed. R29 is NOT
-// considered characterized by the nominal schematic value alone.
+// V1.2 U23 INA219: SDA=GPIO4 / SCL=GPIO5; 0x40 verified live
+// INA I2C address 0x40 was confirmed by real USB telemetry.
+// R29 assembly confirmed by user 2026-10-19: 0.200 ohm / 1W.
+// M_VCC idle reading is still unexpectedly high with motors OFF.
 constexpr uint8_t kInaSda=4, kInaScl=5, kInaCandidate=0x40;
 constexpr uint32_t kInaIdleIntervalMs=200, kInaRunIntervalMs=8;
 Knx085::MotorGate motor;
@@ -66,8 +67,8 @@ void sampleIna(bool force=false) {
     Knx085::InaSample next{};
     next.readOk=readInaReg(0x01,shunt) && readInaReg(0x02,bus);
     if(next.readOk){
-        // INA219 raw shunt LSB = 10 uV. ONLY with verified R29=200 mOhm,
-        // 1 raw count = 0.05 mA; displayed mA is provisional until then.
+        // INA219 raw shunt LSB = 10 uV; user confirms R29=200 mOhm / 1 W.
+        // 1 raw count = 0.05 mA; high OFF-state reading still unresolved.
         next.currentMa=(static_cast<int32_t>(static_cast<int16_t>(shunt))*10)/200;
         next.busMv=static_cast<int>((bus>>3)*4);
         next.overflow=(bus&1u)!=0u;

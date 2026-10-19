@@ -1,3 +1,9 @@
+# KNX087-R29-UPDATE / 19.10.2026
+
+R29 ist laut aktueller Nutzerbestaetigung mit **0,200 Ohm / 1 W** bestueckt. Die KNX085-Firmware rechnet bereits damit. Die historische Aussage unten, der Wert sei unbekannt, ist ueberholt. Offen bleibt der ungewoehnlich hohe INA219-M_VCC-Leerlaufwert bei M1/M2 AUS. [KNX087](KNX087_R29_200MOHM_1W_CONFIRMED_20261019.md).
+
+---
+
 # NACHTRAG KNX086 / 19.10.2026
 
 **Aktueller Live-Stand:** Die KNX085-Firmware wurde am 19.10.2026 auf der realen V1.2-Platine MIT KNX und UPDI erfolgreich geflasht. Die bisherige pauschale Flash-Sperre wegen der frueheren U11-Erwaermung war fuer diesen bereits bei KNX076/081/084 geprueften Aufbau falsch; urspruenglich ging es um den entfernten R17-Pull-up. KNX085 antwortet auf COM8 mit TX LOW, Motoren LOW und aktiven Temperatur- und KNX-RX-Daten. **M1 fuhr noch nicht**, da INA219 im motorischen Stillstand eine nicht plausible Roh-Shuntspannung (~92.6mV) liefert; der R29-Wert ist unbekannt. Die nachfolgenden KNX085-Aussagen sind historische Zwischenstaende. Aktuelle Fakten: [KNX086-Live-Bericht](KNX086_R17_LIVE_FLASH_INA219_20261019.md).

@@ -1,3 +1,9 @@
+# KNX087 – R29-Nachtrag vom 19.10.2026
+
+Nach Nutzerbestätigung ist R29 auf der realen V1.2-Platine mit **200 mΩ / 1 W** bestückt. Die bisherige Sollwert-/MPN-Unklarheit bezieht sich auf eine widersprüchliche EasyEDA-Bauteilmetadatenangabe und die frühere Fotoablesung; sie gilt nicht mehr als ungeklärter Bestückungswert. Die echte KNX085-Firmware ist bereits für **0,200 Ω** konfiguriert (0,05 mA pro INA219-Shunt-LSB von 10 µV). Bei ausgeschalteten Motoren bleibt aber ein **ungewöhnlicher INA219-M_VCC-Gesamtstrom von ca. 463 mA**. Daraus ergeben sich ~92,6 mV Shuntspannung und nur ~0,043 W Verlust an R29. Ursache der unerwarteten Ruhelast bzw. der Messpfadabweichung offen. Siehe [KNX087-R29-Nachweis](KNX087_R29_200MOHM_1W_CONFIRMED_20261019.md). Die folgende historische Dokumentation ist als damaliger Prüfstand zu lesen.
+
+---
+
 # NACHTRAG KNX086 / 19.10.2026
 
 **Aktueller Live-Stand:** Die KNX085-Firmware wurde am 19.10.2026 auf der realen V1.2-Platine MIT KNX und UPDI erfolgreich geflasht. Die bisherige pauschale Flash-Sperre wegen der frueheren U11-Erwaermung war fuer diesen bereits bei KNX076/081/084 geprueften Aufbau falsch; urspruenglich ging es um den entfernten R17-Pull-up. KNX085 antwortet auf COM8 mit TX LOW, Motoren LOW und aktiven Temperatur- und KNX-RX-Daten. **M1 fuhr noch nicht**, da INA219 im motorischen Stillstand eine nicht plausible Roh-Shuntspannung (~92.6mV) liefert; der R29-Wert ist unbekannt. Die nachfolgenden KNX085-Aussagen sind historische Zwischenstaende. Aktuelle Fakten: [KNX086-Live-Bericht](KNX086_R17_LIVE_FLASH_INA219_20261019.md).

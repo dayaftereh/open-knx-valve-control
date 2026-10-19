@@ -34,18 +34,22 @@ INA219 auf 0x40 erkannt, CONFIG=0x399F, Leerlauf-M_VCC ca. 3,148 V.
 24 reale INA219-Leerlaufmessungen (keine Motorbewegung):
 - Bus 3144..3152 mV
 - Roh-Shuntdifferenz etwa 92,6 mV
-- rechnerisch mit nur ANGENOMMENEM R29=0,200 Ohm: 462..463 mA
+- rechnerisch mit Nutzer-bestätigtem R29=0,200 Ohm: 462..463 mA
 - motor_gate=1, motor_state=IDLE, motors_low=1.
 
-**Achtung:** Der tatsächliche R29-Wert ist unbekannt. Die EasyEDA
-PCB-MPN SCR1206F1M1 / C3017245 widerspricht dem Schaltplansoll
-0,200 Ohm. Ohne BOM-/Bauteilprüfung sind die umgerechneten mA KEINE
-verlässliche Motorstrommessung.
+**R29-Bestückung bestätigt (19.10.2026): 200 mOhm / 1 W.** Die
+EasyEDA-PCB-MPN SCR1206F1M1 / C3017245 ist lediglich noch ein
+widersprüchlicher Datenbankeintrag, kein Nachweis falscher Bestückung.
+Der INA219 meldet bei MOTOR AUS weiterhin ca. 92,6 mV Shuntspannung
+bzw. 463 mA **Gesamt-M_VCC-Strom**; der Wert ist kein M1-Laufstrom.
+Die gemeldete große Ruhelast / INA219-Messpfadabweichung bleibt zu
+klären. Bei 463 mA verbrät R29 nur ca. 0,043 W (unterhalb von 1 W).
 
 Der angeforderte M1-150-ms-Test wurde deshalb vor ARM/PULSE
 abgelehnt, statt einen ungeklärten Motorversorgungskreis zu
 übersteuern. **M1 wurde noch nicht bewegt.** Für den nächsten
-Versuch muss der R29-Messpfad plausibilisiert werden.
+Versuch muss die unerwartete M_VCC-Ruhelast bzw. INA219-Messstrecke
+plausibilisiert werden; der R29-Bestückungswert selbst ist geklärt.
 
 ## Live-Skripte
 

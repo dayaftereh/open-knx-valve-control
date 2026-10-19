@@ -1,3 +1,9 @@
+# KNX087 – R29-Nachtrag vom 19.10.2026
+
+Nach Nutzerbestätigung ist R29 auf der realen V1.2-Platine mit **200 mΩ / 1 W** bestückt. Die bisherige Sollwert-/MPN-Unklarheit bezieht sich auf eine widersprüchliche EasyEDA-Bauteilmetadatenangabe und die frühere Fotoablesung; sie gilt nicht mehr als ungeklärter Bestückungswert. Die echte KNX085-Firmware ist bereits für **0,200 Ω** konfiguriert (0,05 mA pro INA219-Shunt-LSB von 10 µV). Bei ausgeschalteten Motoren bleibt aber ein **ungewöhnlicher INA219-M_VCC-Gesamtstrom von ca. 463 mA**. Daraus ergeben sich ~92,6 mV Shuntspannung und nur ~0,043 W Verlust an R29. Ursache der unerwarteten Ruhelast bzw. der Messpfadabweichung offen. Siehe [KNX087-R29-Nachweis](KNX087_R29_200MOHM_1W_CONFIRMED_20261019.md). Die folgende historische Dokumentation ist als damaliger Prüfstand zu lesen.
+
+---
+
 # Main-board schematic V1.2 - electrical architecture and review
 
 **Review date:** 2026-10-09
