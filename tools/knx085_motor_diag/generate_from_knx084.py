@@ -244,6 +244,8 @@ one('''void loop() {
     }
 }
 ''')
+from enhance_trace import enhance
+source=enhance(source)
 target.write_text(source,encoding="utf8",newline="\n")
 monitor=Path(__file__).parent/"knx085_live_monitor.py"
 text=monitor.read_text(encoding="utf8").replace("KNX084","KNX085")

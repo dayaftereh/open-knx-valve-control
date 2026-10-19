@@ -1,7 +1,7 @@
 // KNX085 - passive KNX TP RX + ATtiny3216 temperature UART diagnostic.
 // KNX bus is LIVE on cellar line 1.3. DO NOT drive GPIO0 HIGH.
-// M1..M8 TB6612 enables and common direction outputs are ALWAYS LOW.
-// No KNX TX PIO, TPUart, Serial1, ACK generation, motor PWM or drive commands.
+// M1..M8 idle LOW; only gated KNX085 bench pulses can activate M1/M2.
+// No KNX TP TX; motor outputs require physical release, INA gate and USB ARM.
 // NOTE: firmware cannot guarantee GPIO0 and motor levels during BOOTSEL/reset.
 // The board's U11/D1/F1/CN1 and multi-source supply gates remain unresolved.
 #include <Arduino.h>
@@ -16,7 +16,7 @@
 #error "KNX085 requires an RP2040 board"
 #endif
 #ifndef KNX085_MOTOR_DIAG
-#error "KNX085 must be built in the isolated receive/temp-only environment"
+#error "KNX085 must be built only as isolated gated diagnostic"
 #endif
 #ifndef KNX085_HARDWARE_GATE_APPROVED
 #error "KNX085 requires an explicit hardware-output gate value"
@@ -79,6 +79,36 @@ Knx085::InaSample ina{};
 uint32_t lastInaMs=0;
 bool inaInitialized=false;
 int maxSeenMa=0;
+uint16_t lastRawShunt=0, inaConfig=0;
+bool inaConfigOk=false;
+uint8_t idleGoodSamples=0;
+struct TraceRow {
+    uint32_t elapsedMs;
+    int16_t rawShunt;
+    uint16_t busMv;
+    uint8_t status;
+};
+constexpr unsigned kTraceSize=96;
+TraceRow currentTrace[kTraceSize]{};
+unsigned traceCount=0;
+
+void printTrace() {
+    if(!Serial)return;
+    if(motor.active()){
+        Serial.println(F("KNX085 REFUSED_TRACE_WHILE_RUNNING"));
+        return;
+    }
+    Serial.print(F("KNX085 TRACE_BEGIN count="));Serial.println(traceCount);
+    for(unsigned n=0;n<traceCount;++n){
+        const TraceRow &t=currentTrace[n];
+        Serial.print(F("KNX085 TRACE t_ms="));Serial.print(t.elapsedMs);
+        Serial.print(F(" shunt_raw="));Serial.print(t.rawShunt);
+        Serial.print(F(" shunt_uv="));Serial.print(t.rawShunt*10);
+        Serial.print(F(" bus_mv="));Serial.print(t.busMv);
+        Serial.print(F(" valid="));Serial.println(t.status);
+    }
+    Serial.println(F("KNX085 TRACE_END"));
+}
 
 bool readInaReg(uint8_t reg,uint16_t& value) {
     Wire.beginTransmission(kInaCandidate);
@@ -99,19 +129,39 @@ void sampleIna(bool force=false) {
     lastInaMs=now;
     uint16_t shunt=0,bus=0;
     Knx085::InaSample next{};
-    next.readOk=readInaReg(0x01,shunt) && readInaReg(0x02,bus);
+    next.readOk=inaConfigOk &&
+        readInaReg(0x01,shunt) && readInaReg(0x02,bus);
     if(next.readOk){
         // INA219 raw shunt LSB = 10 uV. ONLY with verified R29=200 mOhm,
         // 1 raw count = 0.05 mA; displayed mA is provisional until then.
+        // 1 shunt_raw = 10 uV, 0.2 ohm means 0.05 mA each.
+        // Integer mA used ONLY for software cutoff. TRACE retains raw resolution.
+        lastRawShunt=shunt;
         next.currentMa=(static_cast<int32_t>(static_cast<int16_t>(shunt))*10)/200;
         next.busMv=static_cast<int>((bus>>3)*4);
         next.overflow=(bus&1u)!=0u;
     }
     ina=next;
-    if(motor.active() && ina.currentMa>maxSeenMa)maxSeenMa=ina.currentMa;
+    if(!motor.active() && Knx085::powerOkay(ina,true) && idleGoodSamples<250)
+        ++idleGoodSamples;
+    else if(!Knx085::powerOkay(ina,motor.active()?false:true))
+        idleGoodSamples=0;
+    if(motor.active()) {
+        if(ina.currentMa>maxSeenMa)maxSeenMa=ina.currentMa;
+        if(traceCount<kTraceSize){
+            currentTrace[traceCount++]=TraceRow{
+                static_cast<uint32_t>(now-motor.started()),
+                static_cast<int16_t>(lastRawShunt),
+                static_cast<uint16_t>(ina.busMv),
+                static_cast<uint8_t>(ina.readOk && !ina.overflow)};
+        }
+    }
 }
 void printIna() {
     if(!Serial)return;
+    Serial.print(F("KNX085 INA addr=0x40 config=0x"));Serial.print(inaConfig,HEX);
+    Serial.print(F(" config_ok="));Serial.print(inaConfigOk?1:0);
+    Serial.print(F(" good_idle_samples="));Serial.println(idleGoodSamples);
     Serial.print(F("KNX085 INA read_ok="));Serial.print(ina.readOk?1:0);
     Serial.print(F(" bus_mv="));Serial.print(ina.busMv);
     Serial.print(F(" current_ma_assuming_R29_200mohm="));Serial.print(ina.currentMa);
@@ -290,6 +340,10 @@ void usbCommand(const char *cmd) {
         printMotor();
         return;
     }
+    if(strcmp(cmd,"TRACE")==0){
+        printTrace();
+        return;
+    }
     if(strcmp(cmd,"CLEARFAULT")==0) {
         forceAllInactive();
         sampleIna(true);
@@ -300,7 +354,8 @@ void usbCommand(const char *cmd) {
     if(strcmp(cmd,"ARM MOTORS")==0) {
         forceAllInactive();
         sampleIna(true);
-        const bool ok=motor.arm(millis(),KNX085_HARDWARE_GATE_APPROVED==1,ina);
+        const bool ok=motor.arm(millis(),KNX085_HARDWARE_GATE_APPROVED==1
+                                    && inaConfigOk && idleGoodSamples>=5,ina);
         if(Serial)Serial.println(ok?F("KNX085 ARMED_5S"):F("KNX085 REFUSED_ARM_HARDWARE_OR_POWER_GATE"));
         return;
     }
@@ -322,6 +377,7 @@ void usbCommand(const char *cmd) {
             return;
         }
         maxSeenMa=0;
+        traceCount=0;
         startOutputs();
         if(Serial) {
             Serial.print(F("KNX085 PULSE_STARTED M"));Serial.print(ch);
@@ -338,7 +394,7 @@ void usbCommand(const char *cmd) {
         if(Serial)Serial.println(F("KNX085 RXDUMP_START PASSIVE_ONLY"));
     }
     else if(strcmp(cmd,"HELP")==0){
-        if(Serial)Serial.println(F("KNX085 COMMANDS STATUS TEMPS RXSTATS RXDUMP INA MSTATUS STOP CLEARFAULT ARM MOTORS PULSE M1|M2 F|R 50..250 HELP"));
+        if(Serial)Serial.println(F("KNX085 COMMANDS STATUS TEMPS RXSTATS RXDUMP INA MSTATUS TRACE STOP CLEARFAULT ARM MOTORS PULSE M1|M2 F|R 50..250 HELP"));
     }
     else if(Serial)Serial.println(F("KNX085 REFUSED_UNRECOGNIZED_OR_ACTUATING_COMMAND"));
 }
@@ -459,6 +515,9 @@ void setup() {
     Wire.setClock(100000);
     Wire.setTimeout(15);
     inaInitialized=true;
+    inaConfigOk=readInaReg(0x00,inaConfig)
+        && inaConfig!=0 && inaConfig!=0xffff
+        && (inaConfig&0x07)!=0;
     sampleIna(true);
     lastStatusMs=millis()-kStatusIntervalMs;
 }
