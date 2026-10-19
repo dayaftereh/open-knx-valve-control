@@ -126,3 +126,7 @@ tools/knx088_ina_idle_monitor.py --seconds 45
 
 Messbelege:
 C:\_myspace\workspace\Builds\OpenKNXValveControl\KNX088_INA_IDLE
+
+## KNX089 – aktuelle Firmware nach DMM 0,00 mV (19.10.2026)
+
+Beim Benutzer wurden direkt ueber R29 0,00mV DC gemessen. Die bisherige KNX085-Ausgabe von 92,6mV am INA219 ist damit eine fehlerhafte oder anders verschaltete ANALOGMESSUNG, nicht ein gesicherter echter Motorstrom. Die Konfiguration 0x399F wurde jetzt durch KNX089 direkt aus Register 0x00 gelesen; ADC-Reset aenderte Shuntregister 0x01 nicht (92,59 -> 92,63mV). Es wurde motor-gesperrte KNX089-Diagnosefirmware auf den echten RP2040 geflasht (COM8, KNX_TX LOW, motor_gate=0), KEINE M1-Bewegung. Die KNX085-Motor-USB-Kommandos sind damit auf dem BOARD aktuell NICHT freigegeben. Erst Sensor-/Sensepfad reparieren, dann fuer eine Motorstrommessung den KNX085-unlocked Build erneut bewusst deployen. Siehe docs/KNX089_INA219_R29_ZERO_MV_REGISTER_DIAG_20261019.md.

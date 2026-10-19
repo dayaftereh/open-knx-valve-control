@@ -1,3 +1,9 @@
+# KNX089 Nachtrag / 19.10.2026 – entscheidende DMM-Gegenmessung
+
+Der Nutzer hat **0,00 mV DC direkt ueber dem bestueckten R29** gemessen. Die fruehere favorisierte Hypothese einer echten 463-mA-Last auf M_VCC ist dadurch **stark entkraeftet**. Der motor-gesperrte KNX089-Firmwaretest las den INA219 direkt: CONFIG0x399F, SHUNT0x01 rund 92,6mV, CAL0x05=0, Bus3148mV, nach gezieltem INA-ADC-Reset praktisch unveraendert. Beide I2C-Lesewege funktionierten. Naechster DMM-Test: 0-mV-Wert ueber R33 Pad2/U23 IN+ zu R34 Pad2/U23 IN- mit der direkten R29-Messung vergleichen. [KNX089 Registerdiagnose](KNX089_INA219_R29_ZERO_MV_REGISTER_DIAG_20261019.md). Der Rest dieses Dokuments dokumentiert den frueheren Stand **vor** der DMM-Gegenmessung.
+
+---
+
 # KNX088 – INA219 / M_VCC 463 mA im Stillstand
 
 **19.10.2026, Live- und PCB-Audit über LLO Home.**
