@@ -47,3 +47,27 @@ TRACE command retains raw shunt voltage for later calibration.
 
 See docs/KNX085_M1_CURRENT_TRACE_BENCH_20261019.md.
 No automatic homing-to-block is attempted before current tracing.
+
+
+## Manuelles M1-One-Shot-Paket (19.10.2026)
+
+Der Benutzer möchte die Firmware und ein finales Startskript auf **LLO Home**
+vorbereitet haben. Die Firmware wurde nur offline gebaut, NICHT geflasht.
+Das ausführbare PowerShell-Skript liegt hier:
+
+    tools/knx085_motor_diag/Start-KNX085-M1.ps1
+
+Ohne Parameter zeigt es nur die Planung. Nach physischer Isolierung von
+KNX-TP und CN1/UPDI, alleiniger USB-Versorgung sowie einer verfügbaren
+Versorgungsabschaltung kann der Benutzer mit Run-Parameter und den vier
+entsprechenden Bestätigungsflags exakt eine 150-ms-M1-Strommessung auslösen.
+Das Skript verifiziert vorher USB-ID, inaktive KNX-RX-Zähler,
+Temperaturwerte, den festen UF2-Hash und nach dem Flash INA219/3,3-V
+Leerlaufmessungen. Bei fehlenden Voraussetzungen verweigert es den
+Motorstart und das Firmware-Reset.
+
+Vollständige Bedienung und Pfade:
+[KNX085 manuelles One-Shot-Skript](../../docs/KNX085_M1_ONESHOT_LLO_HOME_20261019.md).
+
+Keine Blockfahrt/Homing oder Nullpunktsetzung in diesem ersten Kurzimpuls.
+120 mA ist der Hersteller-Höchstwert, kein bestätigter Endanschlagstrom.

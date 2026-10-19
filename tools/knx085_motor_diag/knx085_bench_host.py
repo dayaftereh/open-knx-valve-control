@@ -5,6 +5,7 @@ as ONLY power, with physical USB-off access. One brief pulse at a time.
 """
 from __future__ import annotations
 import argparse
+import csv
 import json
 from pathlib import Path
 import re
@@ -165,6 +166,13 @@ def main():
                 if not result["trace"]:
                     raise RuntimeError("Motor pulse ran without INA trace data")
                 result["max_nominal_mA"]=max(r["nominal_mA"] for r in result["trace"] if r["valid"])
+                csvpath=path.with_suffix(".csv")
+                with csvpath.open("w",newline="",encoding="utf8") as csvout:
+                    cols=["ms","shunt_raw","shunt_uV","bus_mV","valid","nominal_mA"]
+                    writer=csv.DictWriter(csvout,fieldnames=cols)
+                    writer.writeheader()
+                    writer.writerows(result["trace"])
+                result["csv"]=str(csvpath)
             else:
                 result["read_only_ina"]=latest(lines,INA).groups() if latest(lines,INA) else None
             result["raw_lines"]=lines
@@ -175,9 +183,25 @@ def main():
             return 0
         finally:
             if args.action=="pulse":
-                # Redundant STOP; firmware must separately auto-stop within 250ms.
-                try: send(ser,"STOP")
-                except Exception: pass
+                # Redundant STOP. Read and persist evidence on BOTH successful
+                # and failed pulse attempts, including current trace on FAULT.
+                try:
+                    send(ser,"STOP")
+                    send(ser,"STATUS")
+                    send(ser,"TRACE")
+                    collect(ser,1.5,lines,lambda line:line=="KNX085 TRACE_END")
+                except Exception as exc:
+                    lines.append(f"KNX085_HOST_DIAGNOSTIC_READBACK_FAILED {exc}")
+                try:
+                    rawpath=path.with_name(path.stem+"_USBRAW.json")
+                    rawpath.write_text(json.dumps({
+                        "port":args.port,"direction":args.direction,
+                        "duration_ms":args.duration_ms,"raw_usb_lines":lines,
+                        "trace_complete":any(x=="KNX085 TRACE_END" for x in lines),
+                    },indent=2,ensure_ascii=False)+"\n",encoding="utf8")
+                    print("KNX085_USBRAW_EVIDENCE",rawpath)
+                except Exception as exc:
+                    print("KNX085_HOST_EVIDENCE_WRITE_ERROR",exc)
 if __name__=="__main__":
     try: raise SystemExit(main())
     except Exception as exc:
