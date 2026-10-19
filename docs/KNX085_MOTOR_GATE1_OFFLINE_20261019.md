@@ -1,3 +1,9 @@
+# NACHTRAG KNX086 / 19.10.2026
+
+**Aktueller Live-Stand:** Die KNX085-Firmware wurde am 19.10.2026 auf der realen V1.2-Platine MIT KNX und UPDI erfolgreich geflasht. Die bisherige pauschale Flash-Sperre wegen der frueheren U11-Erwaermung war fuer diesen bereits bei KNX076/081/084 geprueften Aufbau falsch; urspruenglich ging es um den entfernten R17-Pull-up. KNX085 antwortet auf COM8 mit TX LOW, Motoren LOW und aktiven Temperatur- und KNX-RX-Daten. **M1 fuhr noch nicht**, da INA219 im motorischen Stillstand eine nicht plausible Roh-Shuntspannung (~92.6mV) liefert; der R29-Wert ist unbekannt. Die nachfolgenden KNX085-Aussagen sind historische Zwischenstaende. Aktuelle Fakten: [KNX086-Live-Bericht](KNX086_R17_LIVE_FLASH_INA219_20261019.md).
+
+---
+
 # KNX085 – Gate 1 PASS, Gate 2 blocked, offline motor diagnosis candidate
 
 Date: 2026-10-19 (Europe/Berlin), Agent LLO Home v0.7.9.

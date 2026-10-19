@@ -1,73 +1,94 @@
-# KNX085 offline-only gated M1/M2 diagnostic
+# OpenKNXValveControl – KNX085 / KNX086 Motor- und INA219-Diagnose
 
-This is a development candidate forked from KNX084 using
-`generate_from_knx084.py`. It is **not flashed** to the real board.
+**Aktueller Stand: 19.10.2026, LLO Home.**
 
-Build offline only:
-`pio run -d tools/knx085_motor_diag -e knx085_locked`
+## Was auf dem RP2040 installiert ist
 
-All motor output assertion code is compiled out under
-`KNX085_HARDWARE_GATE_APPROVED=0` and every ARM is refused.
-The isolated firmware preserves passive KNX RX, all T0..T3 ATtiny
-snapshots, GPIO0 KNX_TX LOW, and implements provisional INA219 readout.
-I2C address, R29 calibration, rail supply, reset/brownout outputs and
-hardwired TB6612 standby require physical qualification first.
+Die Firmware **KNX085 bench_unlocked** wurde mit dem verifizierten
+RP2040-UF2-Bootloader auf der echten V1.2-Testplatine installiert:
+- USB-C: COM8, VID:PID 2E8A:000A, Seriennr. E464401787522D33.
+- KNX-TP Kellerlinie 1.3 und CH340/UPDI COM5 blieben verbunden.
+- M1/M2 Testventilmotoren und T0..T3 waren angeschlossen.
+- KNX_TX GPIO0 LOW und sämtliche Motor-GPIO LOW, Motorzustand IDLE.
+- Passive KNX RX und vier gültige ATtiny-Temperaturkanäle laufen weiter.
+- Firmware: tools/knx085_motor_diag/src/main.cpp,
+  erzeugt aus KNX084 durch generate_from_knx084.py + enhance_trace.py.
+- Exact UF2 SHA256:
+  86CBF6942FD12EBA07402C52842BA7543CABD2C2A557A329607C954388A54750.
 
-NOTE: No hardware emergency stop exists on V1.2. Do not flip the
-compile gate or flash the image without independent electrical proof,
-especially while live KNX/USB/UPDI are connected. Current 3.10..3.45V,
-25/120mA and 50..250ms software parameters are NOT field-qualified.
+Die ehemals angesetzte **generelle Flash-Sperre bei angeschlossenem
+KNX oder UPDI war für diesen nachgewiesen getesteten Prüfstand nicht
+gerechtfertigt**. Der ursprüngliche U11-Hitzefehler war der
+fehlerhaften R17-Pull-up-Bestückung zuzuordnen. R17 wurde entfernt;
+KNX076/081/084 wurden zuvor mit angeschlossenem Bus erfolgreich
+programmiert, und KNX043-Scopebeobachtungen zeigten keine gefährliche
+HIGH-Ansteuerung im geprüften Resetfenster. Dies ist keine Garantie für
+alle denkbaren Brownout- und Verdrahtungsfehler.
 
-See [KNX085 Gate 1 report](../../docs/KNX085_MOTOR_GATE1_OFFLINE_20261019.md).
+Die **alten historischen Offline-/isolierten Verfahren** bleiben
+erhalten, sind aber nicht das aktuelle Live-Testverfahren.
 
+## Aktuelle Motor-/INA219-Diagnose
 
-## KNX085 bench-only measurement update (2026-10-19)
+INA219 auf 0x40 erkannt, CONFIG=0x399F, Leerlauf-M_VCC ca. 3,148 V.
+24 reale INA219-Leerlaufmessungen (keine Motorbewegung):
+- Bus 3144..3152 mV
+- Roh-Shuntdifferenz etwa 92,6 mV
+- rechnerisch mit nur ANGENOMMENEM R29=0,200 Ohm: 462..463 mA
+- motor_gate=1, motor_state=IDLE, motors_low=1.
 
-The user authorized real movement of M1 on a **dry, waterless test valve**.
-This is not permission to ignore the real prototype's KNX/USB/UPDI
-power-path and reset issues. The RP2040 is still running KNX084 and
-the prototype's KNX bus and CH340 UPDI are still connected; **no motor
-movement or firmware flash was performed** in the current work session.
+**Achtung:** Der tatsächliche R29-Wert ist unbekannt. Die EasyEDA
+PCB-MPN SCR1206F1M1 / C3017245 widerspricht dem Schaltplansoll
+0,200 Ohm. Ohne BOM-/Bauteilprüfung sind die umgerechneten mA KEINE
+verlässliche Motorstrommessung.
 
-Run the read-only preparation tool first:
-- python tools/knx085_motor_diag/knx085_bench_host.py plan
+Der angeforderte M1-150-ms-Test wurde deshalb vor ARM/PULSE
+abgelehnt, statt einen ungeklärten Motorversorgungskreis zu
+übersteuern. **M1 wurde noch nicht bewegt.** Für den nächsten
+Versuch muss der R29-Messpfad plausibilisiert werden.
 
-Two offline firmware images have passed PlatformIO builds:
-- knx085_locked (compile-time motor outputs disabled, default)
-- knx085_bench_unlocked (M1/M2 50..250ms pulses only after USB arming,
-  five safe INA219 idle readings and explicit operator bench release)
+## Live-Skripte
 
-The unlocked image is **NOT uploaded**. Physical KNX and CN1 UPDI
-disconnection is required before a guarded flash/motor trial. The
-host insists on USB-only supply, no CH340 enumerated, physical power
-off available, exact RP2040 USB identity, valid T0..T3, acceptable
-INA219 register/bus readback, and all-off verification. Current in
-mA assumes a nominal 0.200-ohm R29 and is not calibrated yet. The
-TRACE command retains raw shunt voltage for later calibration.
+- Start-KNX086-LiveM1.ps1
+  - ohne Parameter: INA219/Temperaturen lesen (keine Motorbewegung)
+  - -Run: genau ein zeitbegrenzter M1-Impuls mit Stromspur,
+    nur nach bestandenem INA-/Versorgungscheck
+  - -Flash: nur wenn alte KNX084-Baseline erkannt und exakte USB-
+    Identität und UF2-Hash erfolgreich geprüft werden
+  - Bei bereits installierter KNX085 ist kein erneuter Flash nötig.
+- Start-KNX085-M1.ps1: Kompatibilitätsaufruf auf die neue Live-Variante.
+- knx086_live_connected.py: explizites Schrittmodell preflight,
+  flash, read_ina, m1, zugeschnitten auf den dokumentierten Live-Aufbau.
+- Start-KNX085-Isolated.ps1 und knx085_one_shot.py: historischer
+  USB-only-Modus mit physischer KNX-/UPDI-Abtrennforderung.
 
-See docs/KNX085_M1_CURRENT_TRACE_BENCH_20261019.md.
-No automatic homing-to-block is attempted before current tracing.
+Der Motor-Steuercode verfügt über:
+- KNX_TX bleibt LOW, keine unaufgeforderte Busnachricht
+- exklusiver M1/M2-Motor (nicht gleichzeitig), keine Autoboot-Fahrt
+- explizite USB-Arming-Freigabe mit 5s Zeitfenster
+- Strom-/Spannungs-Plausibilität, Fehlerabbruch
+- einzelne Pulse nur zwischen 50 und 250 ms
+- redundantes STOP und Roh-Shuntverlauf/CSV im erfolgreichen Versuch
+- M1-One-Shot-Wiederholungssperre im Live-Host.
 
+Die V1.2 TB6612-STBY-Leitung ist dauerhaft HIGH, weshalb ein
+Software-STOP keine unabhängige Hardware-Sicherheitsabschaltung ist.
+Der Hersteller-Maximalstrom 120mA beim HmIP-VDMOT darf nicht
+automatisch mit dem Endanschlag verwechselt werden.
 
-## Manuelles M1-One-Shot-Paket (19.10.2026)
+## Evidenz
 
-Der Benutzer möchte die Firmware und ein finales Startskript auf **LLO Home**
-vorbereitet haben. Die Firmware wurde nur offline gebaut, NICHT geflasht.
-Das ausführbare PowerShell-Skript liegt hier:
+Aktueller Bericht:
+../../docs/KNX086_R17_LIVE_FLASH_INA219_20261019.md
 
-    tools/knx085_motor_diag/Start-KNX085-M1.ps1
+Originalbelege:
+../../docs/KNX043_PICOSCOPE_RUN_RESET_20261015.json
+../../docs/KNX076_ONE_PULSE_FIRMWARE_FLASH_20261018.md
+../../docs/KNX081_KELLER_TP1_TX_KNXIP_ACCEPTANCE_20261018.md
+../../docs/KNX084_PASSIVE_BUS_ATTINY_T0_T3_LIVE_20261018.md
 
-Ohne Parameter zeigt es nur die Planung. Nach physischer Isolierung von
-KNX-TP und CN1/UPDI, alleiniger USB-Versorgung sowie einer verfügbaren
-Versorgungsabschaltung kann der Benutzer mit Run-Parameter und den vier
-entsprechenden Bestätigungsflags exakt eine 150-ms-M1-Strommessung auslösen.
-Das Skript verifiziert vorher USB-ID, inaktive KNX-RX-Zähler,
-Temperaturwerte, den festen UF2-Hash und nach dem Flash INA219/3,3-V
-Leerlaufmessungen. Bei fehlenden Voraussetzungen verweigert es den
-Motorstart und das Firmware-Reset.
+Messungen auf LLO Home unter:
+C:\_myspace\workspace\Builds\OpenKNXValveControl\KNX086_LIVE_M1
 
-Vollständige Bedienung und Pfade:
-[KNX085 manuelles One-Shot-Skript](../../docs/KNX085_M1_ONESHOT_LLO_HOME_20261019.md).
-
-Keine Blockfahrt/Homing oder Nullpunktsetzung in diesem ersten Kurzimpuls.
-120 mA ist der Hersteller-Höchstwert, kein bestätigter Endanschlagstrom.
+Kein automatischer Reflash, kein unbeabsichtigter Motorstart und
+kein Git-Push.
