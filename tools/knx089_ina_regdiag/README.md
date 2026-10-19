@@ -68,3 +68,31 @@ R33 Pin2 (IN+) gegen R34 Pin2 (IN−) auf DC-mV messen
 und mit R29 (0,00 mV) vergleichen. Bei 0 mV dort
 Analogfrontend/INA219 prüfen; bei 92,6 mV die
 realen Sense-Leitungen und Lötstellen.
+
+
+## KNX090 – Schlüsselfund aus der Reinigung (19.10.2026)
+
+Der Nutzer entfernte Schmutz/Rückstände an U23, misst zwischen
+R33 Pad2/IN+ und R34 Pad2/IN- noch etwa **82mV** und einen
+ohmschen Wert um **20kOhm**. Nach Reinigung zeigt der
+Live-INA219 weiterhin **92,59mV** im Shuntregister (CONFIG0x399F,
+VBUS3148mV). Kein Reflash und kein Motor-Test.
+
+**Neue Hauptverdachtsursache**: R33/R34 sind im PCB symbolisch
+mit **10Ohm** ausgezeichnet, aber beide mit EDA
+Hersteller-MPN **0402WGF1002TCE / LCSC C25744 = real
+10kOhm (0402)** verknüpft. Zwei bestückte 10kOhm ergeben
+zusammen über R29 nahezu genau 20kOhm, die der Nutzer nennt.
+Vorsicht: Im EasyEDA-Design wird diese 10kOhm-MPN auch als
+Platzhalter für 37 unterschiedliche Widerstandswerte benutzt;
+die MPN ALLEIN beweist keine tatsächliche Bestückung.
+
+**Nächste Messung**: Nur bei vollständig spannungsloser
+Platine (USB/KNX/UPDI ab) R33 und R34 EINZELN jeweils
+zwischen Pad1 und Pad2 auf Ohm prüfen. Soll jeweils 10Ohm.
+Falls je etwa 10kOhm, Widerstände ersetzen und erneut
+INA-/R29-Differenz plausibilisieren. INA219 nicht blind
+ersetzen, bevor R33/R34 geprüft sind.
+
+Dokumentiert:
+docs/KNX090_INA219_CLEANED_R33_R34_MPN_20K_20261019.md
