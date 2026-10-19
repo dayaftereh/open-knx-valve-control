@@ -96,3 +96,33 @@ C:\_myspace\workspace\Builds\OpenKNXValveControl\KNX086_LIVE_M1
 
 Kein automatischer Reflash, kein unbeabsichtigter Motorstart und
 kein Git-Push.
+
+
+## KNX088 – INA219/M_VCC Diagnose vom 19.10.2026
+
+Die user-bestaetigte R29-Bestueckung (0,200 Ohm/1 W) ist in
+Firmware und Auswertung korrekt konfiguriert. Ein neuer rein
+lesender 45-s-USB-Test ergab 41/41 gueltige Werte mit
+462..463 mA auf der M_VCC-Schiene, obwohl alle Motoren IDLE sind.
+Die PCB-Netzlistenpruefung zeigt 23 M_VCC-Pads: R29, R34,
+C31/C36..C43 und nur die vier H-Brueckentreiber U34..U37.
+INA219 IN+/IN- und Formel sind korrekt. Der Eingangsoffset
+des ICs erklaert 92,6mV nicht. Entweder liegt eine echte
+ungewoehnliche Last/Teilkurzschluss auf M_VCC vor, oder ein
+physischer INA219/Sense-Frontendfehler. Ohne separate direkte
+R29-mV-Messung ist die Ursache nicht eindeutig.
+
+**Nichts flashen oder M1 starten, bevor die Ruhestromursache
+bestimmt ist.** Die Motorstrom-Idle-Sperre bleibt unveraendert.
+
+Dokumentation:
+[KNX088 INA219 Root-Cause-Audit](../../docs/KNX088_INA219_MVCC_IDLE_ROOT_CAUSE_20261019.md)
+
+Offline-PCB-Pruefung:
+tools/knx088_ina_net_audit.py
+
+Read-only Live-Zeitreihe:
+tools/knx088_ina_idle_monitor.py --seconds 45
+
+Messbelege:
+C:\_myspace\workspace\Builds\OpenKNXValveControl\KNX088_INA_IDLE
