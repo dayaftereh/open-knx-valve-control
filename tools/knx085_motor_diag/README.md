@@ -1,3 +1,9 @@
+# KNX092 Live-Test – LLO Desktop, 20.10.2026
+
+**Aktueller Hardwarestand:** Testplatine ausschliesslich mit USB-C an RP2040 (COM7, USB-ID E464401787522D33) und einem M1-Motor, ohne KNX/UPDI/Temperatursensoren. Nach Einloeten von je 10 Ohm an R33/R34 ist der INA219-Shunt wieder nahe 0mV (0,12..0,16mV), Bus 3,288V und Ruhestrom ca. 0,6..0,8mA. KNX085-Testfirmware SHA-geprueft per picotool-ROM hochgeladen; der **erste M1-F-Impuls von 150ms** wurde durchgefuehrt. 18 gueltige Strommessungen zwischen 7..143ms, aufgezeichneter Anlaufstrom maximal **108,15mA**, am Ende ca. 31,65mA. Motor automatisch IDLE, redundant STOP bestaetigt, alle Motor-GPIO LOW; Leerlauf danach nominal 0mA. Mechanische Bewegung bisher nicht unabhaengig bestaetigt. Kein automatisches Homing/zweiter Fahrbefehl. [Vollstaendiger KNX092-Live-Bericht](docs/KNX092_DESKTOP_USB_INA_M1_FIRST_TRACE_20261020.md).
+
+---
+
 # OpenKNXValveControl – KNX085 / KNX086 Motor- und INA219-Diagnose
 
 **Aktueller Stand: 19.10.2026, LLO Home.**
