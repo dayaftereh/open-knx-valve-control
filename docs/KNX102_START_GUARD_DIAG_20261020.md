@@ -1,3 +1,9 @@
+# STATUSNACHTRAG KNX103 (20.10.2026)
+
+Die fruehere KNX101-Entwurfsnotiz unten ist historisch: KNX101 wurde inzwischen SHA256-gepinnt, einmal verifiziert geflasht und mit allen fuenf USB/INA-M1-Fahrten erfolgreich getestet. Jetzt am COM7 Geraet installiert, steps_completed=5, Motor IDLE, GPIO LOW, INA0mA. Die GENHOST-Funktion generiert weiterhin ABSICHTLICH einen gesperrten PIN-Platzhalter und darf den geprueften, gepinnten knx101_host.py nicht ohne neue Validierung ueberschreiben. Vollstaendiger aktueller Nachweis: docs/KNX103_M1_USB_POSITION_5STEP_ACCEPTANCE_20261020.md.
+
+---
+
 # KNX102 – Startfehler nach KNX100 SET 250
 
 Stand: 20.10.2026. Projekt OpenKNXValveControl V1.2, LLO Desktop Agent.

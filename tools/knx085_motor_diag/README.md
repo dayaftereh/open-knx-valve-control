@@ -1,3 +1,9 @@
+# KNX103 / 20.10.2026 – Fuenf M1-Positionierfahrten mit INA219 bestaetigt
+
+KNX101 auf RP2040 COM7 erfolgreich installiert; **5/5 einzeln freigegebene USB-Motorfahrten** von R-Referenz ueber interne 50%, 25%, 75% zur F-Referenz absolviert. Alle Starts mit GPIO10-Latch/Pegel/KNX099 ACK geprueft, alle STOP/OFF-Quittungen und **7.354/7.354 INA219-8ms-Samples** lueckenlos. C++17-Replay reproduziert alle fuenf Abschaltzeitpunkte exakt. Kalibrierungsprofil config/knx103_m1_position_bench.json ist SHA256-gebunden; **die Zwischenpositionen sind zeitbasierte Schaetzungen** und nicht mechanisch in mm verifiziert. KNX-/ETS-Freigabe steht aus. Board zum Schluss KNX101 IDLE, GPIO LOW, INA0mA, steps_completed=5, keine weiteren Motorbefehle erlaubt. Bericht: docs/KNX103_M1_USB_POSITION_5STEP_ACCEPTANCE_20261020.md.
+
+---
+
 # KNX099 / 20.10.2026 – M1-Positionsmodell ohne KNX implementiert
 
 Der auf sechs KNX097-Umkehrfahrten und KNX098-Bench-Abnahme basierende reine C++17-Positionskern ist in lib/common/knx099_m1_position_model.hpp implementiert. Unterschiedliche mittlere Richtungszeiten R=24.388ms und F=22.751ms, softwareseitige 8ms-INA219-Endlagendetektion, Fail-Closed-Start/Stop-Quittungen und zeitbasierte Zwischenpositionen wurden programmiert. 11/11 native Tests und **6/6 Wiederholungen aller 17.678 realen INA-Werte** mit identischen Abschaltzeitpunkten bestehen. Der normale RP2040-Controller-Build wurde erfolgreich kompiliert, die neue Steuerung aber noch nicht an echte Motor-GPIOs oder ETS angebunden. Die angeschlossene KNX097-Testfirmware blieb unverändert, Motor IDLE, COM7. Kein automatischer Motorstart. Details: docs/KNX099_POSITION_MODEL_NO_KNX_USB_20261020.md.

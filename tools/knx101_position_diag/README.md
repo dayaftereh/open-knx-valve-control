@@ -1,3 +1,9 @@
+# STATUSNACHTRAG KNX103 (20.10.2026)
+
+Die fruehere KNX101-Entwurfsnotiz unten ist historisch: KNX101 wurde inzwischen SHA256-gepinnt, einmal verifiziert geflasht und mit allen fuenf USB/INA-M1-Fahrten erfolgreich getestet. Jetzt am COM7 Geraet installiert, steps_completed=5, Motor IDLE, GPIO LOW, INA0mA. Die GENHOST-Funktion generiert weiterhin ABSICHTLICH einen gesperrten PIN-Platzhalter und darf den geprueften, gepinnten knx101_host.py nicht ohne neue Validierung ueberschreiben. Vollstaendiger aktueller Nachweis: docs/KNX103_M1_USB_POSITION_5STEP_ACCEPTANCE_20261020.md.
+
+---
+
 # KNX101 – GPIO10-Startdiagnose (Entwurf, nicht deployed)
 
 **Stand: 20.10.2026.** Nur auf dem LLO Desktop Agent vorbereitet. Der laufende RP2040 auf COM7 hat weiterhin KNX100 im verriegelten Zustand `FAULT_LATCHED`; Motor M1 IDLE, Motorausgänge LOW, INA219 0 mA.

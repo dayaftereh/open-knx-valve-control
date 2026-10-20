@@ -21,8 +21,8 @@ import knx092_office_usb_m1 as old
 
 OUT=Path(r"C:\ASH\Workspace\Runtime\KNX101")
 IMAGE=HERE/".pio"/"build"/"knx101_m1_position_diag_5step"/"firmware.uf2"
-PIN_SHA="__KNX101_SHA__"
-PIN_BYTES=0
+PIN_SHA="9900c58675f09e9c7bcd832a3eb224af480e1725046e957898bcc78e8b296a76"
+PIN_BYTES=250880
 BOARD_SERIAL="E464401787522D33"
 SIGNATURE="KNX101 POSITION_USB_ONLY steps=5 order=R,500,250,750,F full_r_ms=24388 full_f_ms=22751 limit_ma=120 rise_ma=45 after_ms=450 consecutive=6 motor_gate=1"
 POS=re.compile(r"KNX101 POSITION phase=([A-Z_]+) evidence=([A-Z_]+) position_r_permille=(\d+) desired_r_permille=(\d+) planned_ms=(\d+) step_issued=(\d+) step_completed=(\d+) last_stop=([A-Z_]+) driver=([A-Z]+) motors_low=(\d)")

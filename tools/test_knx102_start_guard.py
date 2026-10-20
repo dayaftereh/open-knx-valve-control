@@ -42,10 +42,15 @@ class KNX102(unittest.TestCase):
         self.assertNotIn("gpio_put(kKnxTx,1)",self.new)
         self.assertNotIn('if(strncmp(cmd,"PULSE "',self.new)
 
-    def test_04_pin_not_ready_cannot_flash(self):
-        self.assertIn('PIN_SHA="__KNX101_SHA__"',self.host)
-        self.assertIn("PIN_BYTES=0",self.host)
+    def test_04_exact_image_pin_rejects_mismatch(self):
+        # In KNX102, this host pin was a deliberate placeholder. KNX103
+        # explicitly verified the exact UF2 and pinned it for a newly
+        # authorized live diagnostic; no change to motor cutoffs.
+        self.assertIn('PIN_SHA="9900c58675f09e9c7bcd832a3eb224af480e1725046e957898bcc78e8b296a76"',self.host)
+        self.assertIn("PIN_BYTES=250880",self.host)
         self.assertIn("sha==PIN_SHA and len(data)==PIN_BYTES",self.host)
+        self.assertIn("not flag.exists()",self.host)
+        self.assertIn('prior_state["phase"]=="FAULT_LATCHED"',self.host)
 
     @unittest.skipUnless(IMAGE101.exists(),"KNX101 UF2 not built")
     def test_05_separate_diagnostic_image(self):
