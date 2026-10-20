@@ -1,3 +1,9 @@
+# KNX097 / 20.10.2026 – Drei M1-R/F-Reversierzyklen
+
+Auf LLO Desktop COM7 wurden drei vollstaendige R/F-Zyklen mit Stromabschaltung am LOAD_RISE-Kandidaten ausgefuehrt. R: 24,423 / 24,479 / 24,263s, Mittelwert 24,388s; F: 22,767 / 22,815 / 22,671s, Mittelwert 22,751s. Die Spannweiten liegen bei nur 216ms (R) und 144ms (F). Alle 17.678 INA219-Samples bei 8ms sind gueltig und lueckenlos. Nach dem letzten STOP ist M1 IDLE, GPIO LOW, 0mA. Keine ETS-0/100%-Position gesetzt. Details: docs/KNX097_M1_REVERSAL_REPEATABILITY_20261020.md.
+
+---
+
 # KNX096 / 20.10.2026 – M1-F-Gegenfahrt komplett aufgezeichnet
 
 **LLO Desktop, COM7:** Die stromueberwachte Fahrt vom zuvor erkannten R-LOAD_RISE-Kandidaten in Richtung F endete bei **22,695 Sekunden** durch einen zweiten LOAD_RISE-Kandidaten. Der Rohstrom stieg am Ende auf 56,45mA (maximal nahe Ende59,65mA), zuvor betrug der laufende Median20,15mA. Danach STOP ACK, Motorausgaenge LOW, IDLE, INA nominal0mA. Die vollstaendige Firmware-RAM-Aufzeichnung **2837/2837 Rohsamples, 8ms-Abstand ohne Luecken** wurde rein lesend ausgelesen; CSV/JSON auf LLO Desktop Runtime KNX096. Es sind zwei elektrische Endlagen-Kandidaten, noch keine mechanisch bestaetigte 0/100-Prozent-Kalibrierung. [KNX096-Bericht](docs/KNX096_F_OPPOSITE_FULLSTROKE_20261020.md).
