@@ -1,3 +1,9 @@
+# KNX098 / 20.10.2026 – M1-Motortest als Bench-Gate abgeschlossen
+
+**M1-Bench-Abnahme GREEN:** Drei komplette KNX097-Umkehrzyklen R/F mit 6/6 INA219-LOAD_RISE-Abschaltungen, 17.678/17.678 gueltigen 8-ms-Strommessungen und stabilen Richtungszeiten. R-Mittelwert **24,388 s**, F-Mittelwert **22,751 s**, Standardabweichung 91,5 / 59,9 ms. KNX098 hat die Originalkurven zusaetzlich vollstaendig gegen die sechsfach bestaetigte 45-mA-Stromschwelle offline nachgeprueft und SHA256-gebunden eingefroren: config/knx098_m1_bench_calibration.json. **Zwischenpositionen, mechanische 0/100%-Zuordnung und KNX-/ETS-Freigabe sind noch nicht validiert.** Kein weiterer Motorlauf erforderlich; Board derzeit KNX097 IDLE, legs_done=6. Abnahmebericht: docs/KNX098_M1_MOTOR_BENCH_ABNAHME_20261020.md.
+
+---
+
 # KNX097 / 20.10.2026 – Drei M1-R/F-Reversierzyklen
 
 Auf LLO Desktop COM7 wurden drei vollstaendige R/F-Zyklen mit Stromabschaltung am LOAD_RISE-Kandidaten ausgefuehrt. R: 24,423 / 24,479 / 24,263s, Mittelwert 24,388s; F: 22,767 / 22,815 / 22,671s, Mittelwert 22,751s. Die Spannweiten liegen bei nur 216ms (R) und 144ms (F). Alle 17.678 INA219-Samples bei 8ms sind gueltig und lueckenlos. Nach dem letzten STOP ist M1 IDLE, GPIO LOW, 0mA. Keine ETS-0/100%-Position gesetzt. Details: docs/KNX097_M1_REVERSAL_REPEATABILITY_20261020.md.
