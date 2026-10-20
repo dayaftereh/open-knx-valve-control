@@ -1,3 +1,9 @@
+# KNX095 / 20.10.2026 – erster M1-Referenzanschlag-Kandidat
+
+LLO Desktop COM7: M1 bewegt sich laut Nutzer mechanisch. Beim ersten abgesicherten Referenz-Suchlauf KNX095 in Richtung R wurde nach **7,735s** ein anhaltender INA219-Lastanstieg von ~28mA Normalstrom auf **46mA** erkannt. Das MCU stoppte den Motor bei sechs aufeinanderfolgenden Proben >=45mA (LOAD_RISE-Kandidat), vor dem 15s-Limit. 967/967 gueltige Rohmessungen, STOP danach quittiert, GPIO LOW, Motor IDLE, INA nominal0mA. Die Funktion hat **noch keinen permanenten 0%-Referenzpunkt** gesetzt, weil ein Lastanstieg auch von Reibung kommen kann. Kein automatischer Folgeversuch. [KNX095-Messbericht](docs/KNX095_M1_INA_REF_LOADRISE_20261020.md).
+
+---
+
 # KNX094 / 20.10.2026 – M1 Rueckwaertsfahrt 10 Sekunden
 
 Auf LLO Desktop (COM7, exakte RP2040-ID) wurde die KNX094-Firmware eingespielt und **ein einzelner M1-R-Impuls von 10000ms** durchgefuehrt. 1250/1250 INA219-Stromproben gueltig, Peak beim Start **112,05mA**, Laufstrom-Median **28mA**, ab400ms maximal **34,5mA**. **Kein Stromanstieg eines Hard-End-Anschlags**, kein FAULT; Ende zeitbedingt IDLE, STOP bestaetigt, Motor-/KNX-TX-Ausgaenge LOW. Mechanische Drehung/Endlage nicht unabhaengig bestaetigt. Nur USB-C und M1 am Board; INA nach R33/R34-Reparatur plausibel. Aktuelle Firmware KNX094 nimmt nur M1 R10000 nach ARM an, kein automatischer Test. CSV+JSON auf Desktop Runtime; Details in docs/KNX094_M1_R_10S_LIVE_20261020.md.
