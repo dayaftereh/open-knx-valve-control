@@ -1,3 +1,9 @@
+# KNX094 / 20.10.2026 – M1 Rueckwaertsfahrt 10 Sekunden
+
+Auf LLO Desktop (COM7, exakte RP2040-ID) wurde die KNX094-Firmware eingespielt und **ein einzelner M1-R-Impuls von 10000ms** durchgefuehrt. 1250/1250 INA219-Stromproben gueltig, Peak beim Start **112,05mA**, Laufstrom-Median **28mA**, ab400ms maximal **34,5mA**. **Kein Stromanstieg eines Hard-End-Anschlags**, kein FAULT; Ende zeitbedingt IDLE, STOP bestaetigt, Motor-/KNX-TX-Ausgaenge LOW. Mechanische Drehung/Endlage nicht unabhaengig bestaetigt. Nur USB-C und M1 am Board; INA nach R33/R34-Reparatur plausibel. Aktuelle Firmware KNX094 nimmt nur M1 R10000 nach ARM an, kein automatischer Test. CSV+JSON auf Desktop Runtime; Details in docs/KNX094_M1_R_10S_LIVE_20261020.md.
+
+---
+
 # KNX093 / 20.10.2026 – laengerer M1-Hoertest auf LLO Desktop
 
 Am Arbeitsplatz ist aktuell **KNX093** auf dem RP2040 COM7 (Seriennummer E464401787522D33) installiert. Nur USB-C und ein Motor an M1, **kein KNX, UPDI oder Temperatursensor**. Nach Reparatur von R33/R34 (je10Ohm) ist der INA219-Ruhestrom plausibel. Ein einzelner, stromueberwachter **M1 R 800ms** Rueckwaertsimpuls wurde ausgefuehrt: 100/100 INA-Samples gueltig (t7..799ms), Peak **108,9mA**, Strom am Ende **29,95mA**; Firmware-IDLE und redundanter STOP bestaetigt, alle Motor-GPIO LOW, kein Stall-FAULT. Mechanische Bewegung noch vom Benutzer zu bestaetigen. Firmware nimmt nur M1 R800 an, keine automatische Motorfahrt, keine Wiederholung. [KNX093-Testbericht](docs/KNX093_DESKTOP_M1_R800_LIVE_20261020.md).
