@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <Wire.h> // KNX099: make built-in Arduino-Pico Wire visible to PIO LDF
 
 #include <knx.h>
 #include <TPUart/Interface/ArduinoSerial.h>
@@ -11,6 +12,16 @@
 #include "knx024_room_dpt_adapter.hpp"
 #include "knx025_fault_supervisor.hpp"
 #include "knx026_hmi_diagnostics.hpp"
+#include "knx099_m1_position_model.hpp"
+
+// KNX099: Compile the measured, portable M1 position model into the
+// production translation unit WITHOUT creating an instance or connecting
+// motor GPIOs, KNX group objects, position commands or any real actuator.
+// The existing ARDUINO hard fence in RoomControlRuntime remains in force.
+// USB bench drive adapter and actual physical endstop validation are
+// separate future gates.
+static_assert(sizeof(Knx099::Model) > sizeof(Knx099::Calibration),
+              "KNX099 pure position model compile gate failed");
 
 TemperatureBridge temperatureBridge;
 TemperaturePublisher temperaturePublisher;

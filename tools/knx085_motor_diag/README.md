@@ -1,3 +1,9 @@
+# KNX099 / 20.10.2026 – M1-Positionsmodell ohne KNX implementiert
+
+Der auf sechs KNX097-Umkehrfahrten und KNX098-Bench-Abnahme basierende reine C++17-Positionskern ist in lib/common/knx099_m1_position_model.hpp implementiert. Unterschiedliche mittlere Richtungszeiten R=24.388ms und F=22.751ms, softwareseitige 8ms-INA219-Endlagendetektion, Fail-Closed-Start/Stop-Quittungen und zeitbasierte Zwischenpositionen wurden programmiert. 11/11 native Tests und **6/6 Wiederholungen aller 17.678 realen INA-Werte** mit identischen Abschaltzeitpunkten bestehen. Der normale RP2040-Controller-Build wurde erfolgreich kompiliert, die neue Steuerung aber noch nicht an echte Motor-GPIOs oder ETS angebunden. Die angeschlossene KNX097-Testfirmware blieb unverändert, Motor IDLE, COM7. Kein automatischer Motorstart. Details: docs/KNX099_POSITION_MODEL_NO_KNX_USB_20261020.md.
+
+---
+
 # KNX098 / 20.10.2026 – M1-Motortest als Bench-Gate abgeschlossen
 
 **M1-Bench-Abnahme GREEN:** Drei komplette KNX097-Umkehrzyklen R/F mit 6/6 INA219-LOAD_RISE-Abschaltungen, 17.678/17.678 gueltigen 8-ms-Strommessungen und stabilen Richtungszeiten. R-Mittelwert **24,388 s**, F-Mittelwert **22,751 s**, Standardabweichung 91,5 / 59,9 ms. KNX098 hat die Originalkurven zusaetzlich vollstaendig gegen die sechsfach bestaetigte 45-mA-Stromschwelle offline nachgeprueft und SHA256-gebunden eingefroren: config/knx098_m1_bench_calibration.json. **Zwischenpositionen, mechanische 0/100%-Zuordnung und KNX-/ETS-Freigabe sind noch nicht validiert.** Kein weiterer Motorlauf erforderlich; Board derzeit KNX097 IDLE, legs_done=6. Abnahmebericht: docs/KNX098_M1_MOTOR_BENCH_ABNAHME_20261020.md.
