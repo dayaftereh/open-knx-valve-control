@@ -1,3 +1,9 @@
+# KNX096 / 20.10.2026 – M1-F-Gegenfahrt komplett aufgezeichnet
+
+**LLO Desktop, COM7:** Die stromueberwachte Fahrt vom zuvor erkannten R-LOAD_RISE-Kandidaten in Richtung F endete bei **22,695 Sekunden** durch einen zweiten LOAD_RISE-Kandidaten. Der Rohstrom stieg am Ende auf 56,45mA (maximal nahe Ende59,65mA), zuvor betrug der laufende Median20,15mA. Danach STOP ACK, Motorausgaenge LOW, IDLE, INA nominal0mA. Die vollstaendige Firmware-RAM-Aufzeichnung **2837/2837 Rohsamples, 8ms-Abstand ohne Luecken** wurde rein lesend ausgelesen; CSV/JSON auf LLO Desktop Runtime KNX096. Es sind zwei elektrische Endlagen-Kandidaten, noch keine mechanisch bestaetigte 0/100-Prozent-Kalibrierung. [KNX096-Bericht](docs/KNX096_F_OPPOSITE_FULLSTROKE_20261020.md).
+
+---
+
 # KNX095 / 20.10.2026 – erster M1-Referenzanschlag-Kandidat
 
 LLO Desktop COM7: M1 bewegt sich laut Nutzer mechanisch. Beim ersten abgesicherten Referenz-Suchlauf KNX095 in Richtung R wurde nach **7,735s** ein anhaltender INA219-Lastanstieg von ~28mA Normalstrom auf **46mA** erkannt. Das MCU stoppte den Motor bei sechs aufeinanderfolgenden Proben >=45mA (LOAD_RISE-Kandidat), vor dem 15s-Limit. 967/967 gueltige Rohmessungen, STOP danach quittiert, GPIO LOW, Motor IDLE, INA nominal0mA. Die Funktion hat **noch keinen permanenten 0%-Referenzpunkt** gesetzt, weil ein Lastanstieg auch von Reibung kommen kann. Kein automatischer Folgeversuch. [KNX095-Messbericht](docs/KNX095_M1_INA_REF_LOADRISE_20261020.md).
