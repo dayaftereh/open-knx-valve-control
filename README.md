@@ -1,3 +1,9 @@
+# KNX104 / 20.10.2026 – ETS V3 Stellwert-Mapping als Softwarevertrag
+
+**Neu:** Ein C++17-DPT5.001-Adapter ohne Bus- oder Motorzugriff validiert die bereits geplanten KNX008-Objekte KO36–100, trennt die noch unbekannte reale Ventilöffnung F/R und blockiert alle Stellaufträge und semantischen Positionsmeldungen bis zur ausdrücklichen mechanischen und ETS-V3-Freigabe. Alle **14 C++-Testgruppen und 11 Python/ETS-Negativtests** bestehen; der komplette RP2040-Controller-Build kompiliert, bindet den Adapter jedoch nicht an echte GroupObjects oder GPIOs an. Die existierende AppVersion2-ETS-XML bleibt unverändert. **KNX103**: fünf erfolgreiche reale USB-M1-Fahrten mit INA219; die aktuell installierte KNX101-Testfirmware bleibt im Motor-IDLE mit steps_completed=5, ohne weiteren Motorstart. Dokumentation: docs/KNX104_ETS_MOTOR_POSITION_CONTRACT_20261020.md.
+
+---
+
 # KNX103 / 20.10.2026 – Fuenf M1-Positionierfahrten mit INA219 bestaetigt
 
 KNX101 auf RP2040 COM7 erfolgreich installiert; **5/5 einzeln freigegebene USB-Motorfahrten** von R-Referenz ueber interne 50%, 25%, 75% zur F-Referenz absolviert. Alle Starts mit GPIO10-Latch/Pegel/KNX099 ACK geprueft, alle STOP/OFF-Quittungen und **7.354/7.354 INA219-8ms-Samples** lueckenlos. C++17-Replay reproduziert alle fuenf Abschaltzeitpunkte exakt. Kalibrierungsprofil config/knx103_m1_position_bench.json ist SHA256-gebunden; **die Zwischenpositionen sind zeitbasierte Schaetzungen** und nicht mechanisch in mm verifiziert. KNX-/ETS-Freigabe steht aus. Board zum Schluss KNX101 IDLE, GPIO LOW, INA0mA, steps_completed=5, keine weiteren Motorbefehle erlaubt. Bericht: docs/KNX103_M1_USB_POSITION_5STEP_ACCEPTANCE_20261020.md.

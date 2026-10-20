@@ -13,6 +13,7 @@
 #include "knx025_fault_supervisor.hpp"
 #include "knx026_hmi_diagnostics.hpp"
 #include "knx099_m1_position_model.hpp"
+#include "knx104_m1_ets_contract.hpp"
 
 // KNX099: Compile the measured, portable M1 position model into the
 // production translation unit WITHOUT creating an instance or connecting
@@ -22,6 +23,12 @@
 // separate future gates.
 static_assert(sizeof(Knx099::Model) > sizeof(Knx099::Calibration),
               "KNX099 pure position model compile gate failed");
+// KNX104: ETS V3/KO38/KO68-100 application is still PROPOSAL-ONLY.
+// Compile the DPT5.001/motor direction mapping bridge into this TU,
+// but do not instantiate it, subscribe KNX objects, write group values
+// or allow a physical actuator. KNX008 V3 is not in the AppVersion2 XML.
+static_assert(sizeof(Knx104::Contract) > sizeof(Knx104::Settings),
+              "KNX104 ETS software-only mapping compile gate failed");
 
 TemperatureBridge temperatureBridge;
 TemperaturePublisher temperaturePublisher;

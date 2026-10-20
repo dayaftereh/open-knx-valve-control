@@ -1,0 +1,391 @@
+{
+  "schema": "openknxvalve.knx104.motor-ets-contract-preview.v1",
+  "status": "OFFLINE_PROPOSAL_NOT_IN_ETS_XML_NOT_DEPLOYED",
+  "sourceKnx008Sha256": "b541f29c77606821559037861999270b5bf7fc725a1d2ba2eb3f1b6fd63d1cb0",
+  "existingEtsXmlSha256": "1a3f7cf1783e29037b7fa6e7bdd9e6a8662b9f0d398bf89c683b90911519b7a5",
+  "existingXmlApplicationVersion": 2,
+  "futureProposalApplicationVersion": 3,
+  "existingXmlComObjects": 35,
+  "preserveLegacyKoRange": [
+    1,
+    35
+  ],
+  "preserveLegacyDpt5004KoRange": [
+    17,
+    24
+  ],
+  "existingKnx008ProposalKoRange": [
+    36,
+    100
+  ],
+  "existingKnx008ProposalParameterRange": [
+    22,
+    39
+  ],
+  "safeDefaults": {
+    "mode": "Disabled",
+    "mapping": "Unconfirmed",
+    "physicallyVerified": false,
+    "etsV3Commissioned": false,
+    "allowMotorCommands": false,
+    "allowEstimatedPhysicalOpenFeedback": false,
+    "directDemandTimeoutSeconds": 300
+  },
+  "proposedZoneDirectDemandDescriptors": [
+    {
+      "zone": 1,
+      "directDemandRxKo": 38,
+      "dpt": "5.001",
+      "applicationPayloadBytes": 1,
+      "frameKind": "GroupValueWrite",
+      "notLegacyKo17to24": true,
+      "modeRequired": "DirectPercent",
+      "gaBindingMustBeVerified": true
+    },
+    {
+      "zone": 2,
+      "directDemandRxKo": 42,
+      "dpt": "5.001",
+      "applicationPayloadBytes": 1,
+      "frameKind": "GroupValueWrite",
+      "notLegacyKo17to24": true,
+      "modeRequired": "DirectPercent",
+      "gaBindingMustBeVerified": true
+    },
+    {
+      "zone": 3,
+      "directDemandRxKo": 46,
+      "dpt": "5.001",
+      "applicationPayloadBytes": 1,
+      "frameKind": "GroupValueWrite",
+      "notLegacyKo17to24": true,
+      "modeRequired": "DirectPercent",
+      "gaBindingMustBeVerified": true
+    },
+    {
+      "zone": 4,
+      "directDemandRxKo": 50,
+      "dpt": "5.001",
+      "applicationPayloadBytes": 1,
+      "frameKind": "GroupValueWrite",
+      "notLegacyKo17to24": true,
+      "modeRequired": "DirectPercent",
+      "gaBindingMustBeVerified": true
+    },
+    {
+      "zone": 5,
+      "directDemandRxKo": 54,
+      "dpt": "5.001",
+      "applicationPayloadBytes": 1,
+      "frameKind": "GroupValueWrite",
+      "notLegacyKo17to24": true,
+      "modeRequired": "DirectPercent",
+      "gaBindingMustBeVerified": true
+    },
+    {
+      "zone": 6,
+      "directDemandRxKo": 58,
+      "dpt": "5.001",
+      "applicationPayloadBytes": 1,
+      "frameKind": "GroupValueWrite",
+      "notLegacyKo17to24": true,
+      "modeRequired": "DirectPercent",
+      "gaBindingMustBeVerified": true
+    },
+    {
+      "zone": 7,
+      "directDemandRxKo": 62,
+      "dpt": "5.001",
+      "applicationPayloadBytes": 1,
+      "frameKind": "GroupValueWrite",
+      "notLegacyKo17to24": true,
+      "modeRequired": "DirectPercent",
+      "gaBindingMustBeVerified": true
+    },
+    {
+      "zone": 8,
+      "directDemandRxKo": 66,
+      "dpt": "5.001",
+      "applicationPayloadBytes": 1,
+      "frameKind": "GroupValueWrite",
+      "notLegacyKo17to24": true,
+      "modeRequired": "DirectPercent",
+      "gaBindingMustBeVerified": true
+    }
+  ],
+  "proposedMotorTelemetryDescriptors": [
+    {
+      "motor": 1,
+      "estimatedPositionTxKo": 68,
+      "faultTxKo": 76,
+      "referencedTxKo": 84,
+      "movingTxKo": 92,
+      "deviceBusyTxKo": 100,
+      "positionIsOnlyTimeEstimate": true,
+      "defaultPhysicalDirectionConfirmed": false,
+      "defaultPositionTxAvailable": false
+    },
+    {
+      "motor": 2,
+      "estimatedPositionTxKo": 69,
+      "faultTxKo": 77,
+      "referencedTxKo": 85,
+      "movingTxKo": 93,
+      "deviceBusyTxKo": 100,
+      "positionIsOnlyTimeEstimate": true,
+      "defaultPhysicalDirectionConfirmed": false,
+      "defaultPositionTxAvailable": false
+    },
+    {
+      "motor": 3,
+      "estimatedPositionTxKo": 70,
+      "faultTxKo": 78,
+      "referencedTxKo": 86,
+      "movingTxKo": 94,
+      "deviceBusyTxKo": 100,
+      "positionIsOnlyTimeEstimate": true,
+      "defaultPhysicalDirectionConfirmed": false,
+      "defaultPositionTxAvailable": false
+    },
+    {
+      "motor": 4,
+      "estimatedPositionTxKo": 71,
+      "faultTxKo": 79,
+      "referencedTxKo": 87,
+      "movingTxKo": 95,
+      "deviceBusyTxKo": 100,
+      "positionIsOnlyTimeEstimate": true,
+      "defaultPhysicalDirectionConfirmed": false,
+      "defaultPositionTxAvailable": false
+    },
+    {
+      "motor": 5,
+      "estimatedPositionTxKo": 72,
+      "faultTxKo": 80,
+      "referencedTxKo": 88,
+      "movingTxKo": 96,
+      "deviceBusyTxKo": 100,
+      "positionIsOnlyTimeEstimate": true,
+      "defaultPhysicalDirectionConfirmed": false,
+      "defaultPositionTxAvailable": false
+    },
+    {
+      "motor": 6,
+      "estimatedPositionTxKo": 73,
+      "faultTxKo": 81,
+      "referencedTxKo": 89,
+      "movingTxKo": 97,
+      "deviceBusyTxKo": 100,
+      "positionIsOnlyTimeEstimate": true,
+      "defaultPhysicalDirectionConfirmed": false,
+      "defaultPositionTxAvailable": false
+    },
+    {
+      "motor": 7,
+      "estimatedPositionTxKo": 74,
+      "faultTxKo": 82,
+      "referencedTxKo": 90,
+      "movingTxKo": 98,
+      "deviceBusyTxKo": 100,
+      "positionIsOnlyTimeEstimate": true,
+      "defaultPhysicalDirectionConfirmed": false,
+      "defaultPositionTxAvailable": false
+    },
+    {
+      "motor": 8,
+      "estimatedPositionTxKo": 75,
+      "faultTxKo": 83,
+      "referencedTxKo": 91,
+      "movingTxKo": 99,
+      "deviceBusyTxKo": 100,
+      "positionIsOnlyTimeEstimate": true,
+      "defaultPhysicalDirectionConfirmed": false,
+      "defaultPositionTxAvailable": false
+    }
+  ],
+  "knx104AdditionalUNALLOCATEDParameterIDs": [
+    {
+      "number": 40,
+      "name": "Motor1PhysicalDirection",
+      "type": "enum",
+      "values": {
+        "0": "Unconfirmed",
+        "1": "F_End_Closed",
+        "2": "R_End_Closed"
+      },
+      "default": 0,
+      "memoryOffset": "UNALLOCATED",
+      "requiresPhysicalCommissioningEvidence": true
+    },
+    {
+      "number": 41,
+      "name": "Motor2PhysicalDirection",
+      "type": "enum",
+      "values": {
+        "0": "Unconfirmed",
+        "1": "F_End_Closed",
+        "2": "R_End_Closed"
+      },
+      "default": 0,
+      "memoryOffset": "UNALLOCATED",
+      "requiresPhysicalCommissioningEvidence": true
+    },
+    {
+      "number": 42,
+      "name": "Motor3PhysicalDirection",
+      "type": "enum",
+      "values": {
+        "0": "Unconfirmed",
+        "1": "F_End_Closed",
+        "2": "R_End_Closed"
+      },
+      "default": 0,
+      "memoryOffset": "UNALLOCATED",
+      "requiresPhysicalCommissioningEvidence": true
+    },
+    {
+      "number": 43,
+      "name": "Motor4PhysicalDirection",
+      "type": "enum",
+      "values": {
+        "0": "Unconfirmed",
+        "1": "F_End_Closed",
+        "2": "R_End_Closed"
+      },
+      "default": 0,
+      "memoryOffset": "UNALLOCATED",
+      "requiresPhysicalCommissioningEvidence": true
+    },
+    {
+      "number": 44,
+      "name": "Motor5PhysicalDirection",
+      "type": "enum",
+      "values": {
+        "0": "Unconfirmed",
+        "1": "F_End_Closed",
+        "2": "R_End_Closed"
+      },
+      "default": 0,
+      "memoryOffset": "UNALLOCATED",
+      "requiresPhysicalCommissioningEvidence": true
+    },
+    {
+      "number": 45,
+      "name": "Motor6PhysicalDirection",
+      "type": "enum",
+      "values": {
+        "0": "Unconfirmed",
+        "1": "F_End_Closed",
+        "2": "R_End_Closed"
+      },
+      "default": 0,
+      "memoryOffset": "UNALLOCATED",
+      "requiresPhysicalCommissioningEvidence": true
+    },
+    {
+      "number": 46,
+      "name": "Motor7PhysicalDirection",
+      "type": "enum",
+      "values": {
+        "0": "Unconfirmed",
+        "1": "F_End_Closed",
+        "2": "R_End_Closed"
+      },
+      "default": 0,
+      "memoryOffset": "UNALLOCATED",
+      "requiresPhysicalCommissioningEvidence": true
+    },
+    {
+      "number": 47,
+      "name": "Motor8PhysicalDirection",
+      "type": "enum",
+      "values": {
+        "0": "Unconfirmed",
+        "1": "F_End_Closed",
+        "2": "R_End_Closed"
+      },
+      "default": 0,
+      "memoryOffset": "UNALLOCATED",
+      "requiresPhysicalCommissioningEvidence": true
+    },
+    {
+      "number": 48,
+      "name": "Motor1PhysicalMappingVerified",
+      "type": "boolean",
+      "default": false,
+      "memoryOffset": "UNALLOCATED",
+      "requiresIndependentActualMotorDirectionCheck": true
+    },
+    {
+      "number": 49,
+      "name": "Motor2PhysicalMappingVerified",
+      "type": "boolean",
+      "default": false,
+      "memoryOffset": "UNALLOCATED",
+      "requiresIndependentActualMotorDirectionCheck": true
+    },
+    {
+      "number": 50,
+      "name": "Motor3PhysicalMappingVerified",
+      "type": "boolean",
+      "default": false,
+      "memoryOffset": "UNALLOCATED",
+      "requiresIndependentActualMotorDirectionCheck": true
+    },
+    {
+      "number": 51,
+      "name": "Motor4PhysicalMappingVerified",
+      "type": "boolean",
+      "default": false,
+      "memoryOffset": "UNALLOCATED",
+      "requiresIndependentActualMotorDirectionCheck": true
+    },
+    {
+      "number": 52,
+      "name": "Motor5PhysicalMappingVerified",
+      "type": "boolean",
+      "default": false,
+      "memoryOffset": "UNALLOCATED",
+      "requiresIndependentActualMotorDirectionCheck": true
+    },
+    {
+      "number": 53,
+      "name": "Motor6PhysicalMappingVerified",
+      "type": "boolean",
+      "default": false,
+      "memoryOffset": "UNALLOCATED",
+      "requiresIndependentActualMotorDirectionCheck": true
+    },
+    {
+      "number": 54,
+      "name": "Motor7PhysicalMappingVerified",
+      "type": "boolean",
+      "default": false,
+      "memoryOffset": "UNALLOCATED",
+      "requiresIndependentActualMotorDirectionCheck": true
+    },
+    {
+      "number": 55,
+      "name": "Motor8PhysicalMappingVerified",
+      "type": "boolean",
+      "default": false,
+      "memoryOffset": "UNALLOCATED",
+      "requiresIndependentActualMotorDirectionCheck": true
+    },
+    {
+      "number": 56,
+      "name": "ETS_V3_ValveDirectionCommissioningGate",
+      "type": "boolean",
+      "default": false,
+      "memoryOffset": "UNALLOCATED",
+      "mustRemainFalseUntilEtsApp3AndPhysicalDirectionValidated": true
+    }
+  ],
+  "requirements": [
+    "Telegram DPT supplied by trusted ETS GA association, never on-wire inferred.",
+    "Do not read legacy 5.004 KO17..24 as scaling 5.001.",
+    "No motor movement or physical position output while R/F direction unknown.",
+    "KNX099 position and motor INA/GPIO safety remain separate, not a KNX command.",
+    "No production .knxprod or KNX interface exists for this V3 extension."
+  ]
+}
